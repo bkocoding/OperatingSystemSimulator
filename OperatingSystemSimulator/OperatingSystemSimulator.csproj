@@ -1,0 +1,203 @@
+<Project Sdk="Uno.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0-desktop</TargetFrameworks>
+
+    <OutputType>Exe</OutputType>
+    <UnoSingleProject>true</UnoSingleProject>
+
+    <!-- Display name -->
+    <ApplicationTitle>OperatingSystemSimulator</ApplicationTitle>
+    <!-- App Identifier -->
+    <ApplicationId>com.companyname.OperatingSystemSimulator</ApplicationId>
+    <!-- Versions -->
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <ApplicationVersion>1</ApplicationVersion>
+    <!-- Package Publisher -->
+    <ApplicationPublisher>BKOCODE</ApplicationPublisher>
+    <!-- Package Description -->
+    <Description>OperatingSystemSimulator powered by Uno Platform.</Description>
+    <!--
+      If you encounter this error message:
+
+        error NETSDK1148: A referenced assembly was compiled using a newer version of Microsoft.Windows.SDK.NET.dll.
+        Please update to a newer .NET SDK in order to reference this assembly.
+
+      This means that the two packages below must be aligned with the "build" version number of
+      the "Microsoft.Windows.SDK.BuildTools" package above, and the "revision" version number
+      must be the highest found in https://www.nuget.org/packages/Microsoft.Windows.SDK.NET.Ref.
+    -->
+    <WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
+
+    <!--
+      UnoFeatures let's you quickly add and manage implicit package references based on the features you want to use.
+      https://aka.platform.uno/singleproject-features
+    -->
+    <UnoFeatures>
+      Lottie;
+      MediaElement;
+      Hosting;
+      Toolkit;
+      Logging;
+      LoggingSerilog;
+      MauiEmbedding;
+      Mvvm;
+      Configuration;
+    </UnoFeatures>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Apps\Shell\ShellWindow.xaml" />
+    <None Remove="Apps\TestApp.xaml" />
+    <None Remove="biossettings.json" />
+    <None Remove="Hardware\HardwarePage.xaml" />
+    <None Remove="Pages\BIOSSettingsPage.xaml" />
+    <None Remove="Pages\BIOSSettings\BIOSBootPage.xaml" />
+    <None Remove="Pages\BIOSSettings\BIOSInfoPage.xaml" />
+    <None Remove="Pages\BootAnimationPage.xaml" />
+    <None Remove="Pages\BootPage.xaml" />
+    <None Remove="Pages\BugCheckPage.xaml" />
+    <None Remove="Pages\DesktopPage.xaml" />
+    <None Remove="Pages\NetworkBootPage.xaml" />
+    <None Remove="Pages\ShutdownPage.xaml" />
+    <None Remove="Pages\WelcomePage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OperatingSystemSimulator.Extras\OperatingSystemSimulator.Extras.csproj" />
+    <ProjectReference Include="..\OperatingSystemSimulator.MauiControls\OperatingSystemSimulator.MauiControls.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ViewModels\AppViewModels\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\BootPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Hardware\HardwareWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Hardware\HardwarePage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Hardware\HardwarePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Pages\BIOSSsettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\BIOSSettingsPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Pages\BIOSSettings\BIOSSettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Pages\BIOSSettings\BIOSSettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Pages\BIOSSettings\BIOSBootPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\BIOSSettings\BIOSInfoPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Pages\BIOSSettings\BIOSInfoPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\BIOSSettings\BIOSBootPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\WelcomePage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\BootAnimationPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\DesktopPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\ShutdownPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\BugCheckPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="biossettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Pages\BugCheckPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\NetworkBootPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Pages\NetworkBootPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Apps\Shell\ShellWindow.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Apps\Shell\ShellWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Apps\TestApp.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Apps\TestApp.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+</Project>

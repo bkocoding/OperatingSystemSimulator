@@ -1,0 +1,104 @@
+﻿<Page
+    x:Class="OperatingSystemSimulator.Pages.DesktopPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:OperatingSystemSimulator.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="Purple">
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+    <Button VerticalAlignment="Top" Width="80" Height="50" HorizontalAlignment="Left" Margin="10" Grid.Row="0" Background="Transparent" BorderBrush="Transparent" Click="APP1_Click">
+      <Button.Content>
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+          </Grid.RowDefinitions>
+          <TextBlock HorizontalAlignment="Center" Grid.Row="0">😊</TextBlock>
+          <TextBlock  Grid.Row="1">TESTAPP</TextBlock>
+        </Grid>
+      </Button.Content>
+    </Button>
+
+    <Button VerticalAlignment="Top" Width="80" Height="50"  HorizontalAlignment="Left" Margin="10" Grid.Row="1" Background="Transparent" BorderBrush="Transparent" IsEnabled="False">
+      <Button.Content>
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+          </Grid.RowDefinitions>
+          <TextBlock HorizontalAlignment="Center" Grid.Row="0">📝</TextBlock>
+          <TextBlock Grid.Row="1">Notepad</TextBlock>
+        </Grid>
+      </Button.Content>
+    </Button>
+
+    <Popup x:Name="MyPopup" IsLightDismissEnabled="True">
+      <!--<Grid Background="LightGray" Width="200" Height="200"/>-->
+    </Popup>
+
+    <StackPanel VerticalAlignment="Bottom" Grid.Row="5" Background="Gray" Height="55">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="Auto"/>
+
+        </Grid.ColumnDefinitions>
+
+        <Button Grid.Column="0" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="3,3" Background="Transparent" BorderBrush="Transparent" Click="Shutdown_Click">
+          <Button.Content>
+            <Grid>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+              </Grid.RowDefinitions>
+              <TextBlock HorizontalAlignment="Center" Grid.Column="0" Grid.Row="0">⛔</TextBlock>
+              <TextBlock Foreground="Black"  Grid.Row="1">Shut Down</TextBlock>
+            </Grid>
+          </Button.Content>
+        </Button>
+
+        <Button VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="3,3" Grid.Column="1" Background="Transparent" BorderBrush="Transparent" IsEnabled="False">
+          <Button.Content>
+            <Grid>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+              </Grid.RowDefinitions>
+              <TextBlock HorizontalAlignment="Center" Grid.Row="0">☢️</TextBlock>
+              <TextBlock Foreground="Black" Grid.Row="1">Task Manager</TextBlock>
+            </Grid>
+          </Button.Content>
+        </Button>
+
+        <Button Grid.Column="3" x:Name="WifiButton" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="Black" Width="Auto" Background="Transparent" BorderBrush="Transparent" IsEnabled="False">
+          <Button.Content>
+            <Grid>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+              </Grid.RowDefinitions>
+              <TextBlock HorizontalAlignment="Center" Grid.Row="0">🛜</TextBlock>
+              <TextBlock Foreground="Black" Grid.Row="1">No Connection</TextBlock>
+            </Grid>
+          </Button.Content>
+        </Button>
+        <TextBlock  Grid.Column="5" x:Name="DateTimeText" Text="{Binding DateTimeText}" HorizontalAlignment="Right" TextAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="Black" Width="Auto"/>
+      </Grid>
+    </StackPanel>
+  </Grid>
+</Page>

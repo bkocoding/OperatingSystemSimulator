@@ -1,0 +1,5 @@
+{
+  "FirstBootOption": "Simulated Operating System",
+  "SecondBootOption": "Network Boot",
+  "CMOSReset": false
+}

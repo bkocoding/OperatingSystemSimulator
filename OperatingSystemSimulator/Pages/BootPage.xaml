@@ -1,0 +1,23 @@
+﻿<Page
+    x:Class="OperatingSystemSimulator.Pages.BootPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:OperatingSystemSimulator.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="Black"
+    IsTabStop="True">
+
+  <Grid IsTabStop="True">
+    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10">
+      <TextBlock x:Name="BootInfoText" FontSize="20" Foreground="Lime" TextAlignment="Left" />
+    </StackPanel>
+    <TextBlock x:Name="SettingsInfoText" Visibility="Collapsed" 
+               FontSize="16" 
+               Foreground="White" 
+               HorizontalAlignment="Left" 
+               VerticalAlignment="Bottom" 
+               Margin="10" >Press <Bold>F2</Bold> to enter firmware settings</TextBlock>
+  </Grid>
+</Page>
