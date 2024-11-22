@@ -72,7 +72,7 @@
           </Button.Content>
         </Button>
 
-        <Button VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="3,3" Grid.Column="1" Background="Transparent" BorderBrush="Transparent" IsEnabled="False">
+        <Button VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="3,3" Grid.Column="1" Background="Transparent" BorderBrush="Transparent" Click="TaskMgr_Click">
           <Button.Content>
             <Grid>
               <Grid.RowDefinitions>

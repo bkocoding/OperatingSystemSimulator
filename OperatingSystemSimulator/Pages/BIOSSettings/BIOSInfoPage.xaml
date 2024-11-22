@@ -70,7 +70,7 @@
         <TextBlock Text=": Operating System Simulator Hardware" Foreground="#333333" FontSize="18" Grid.Row="2" Grid.Column="1" Margin="10,10,0,0"/>
         <TextBlock Text=": 1.2" Foreground="#333333" FontSize="18" Grid.Row="3" Grid.Column="1" Margin="10,10,0,0"/>
         <TextBlock Text=": Generic X86_64 CPU @ 1.0 GHz" Foreground="#333333" FontSize="18" Grid.Row="4" Grid.Column="1" Margin="10,10,0,0"/>
-        <TextBlock Text=": 64 MB" Foreground="#333333" FontSize="18" Grid.Row="5" Grid.Column="1" Margin="10,10,0,0"/>
+        <TextBlock Text="{Binding MemorySize}" Foreground="#333333" FontSize="18" Grid.Row="5" Grid.Column="1" Margin="10,10,0,0"/>
       </Grid>
 
     </StackPanel>

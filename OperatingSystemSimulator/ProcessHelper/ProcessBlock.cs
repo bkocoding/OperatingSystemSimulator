@@ -1,4 +1,5 @@
 using Microsoft.UI.Xaml.Controls.Primitives;
+using OperatingSystemSimulator.Apps;
 
 namespace OperatingSystemSimulator.ProcessHelper
 {
@@ -12,22 +13,55 @@ namespace OperatingSystemSimulator.ProcessHelper
         public Popup? Popup { get; set; }
         public object? App { get; }
         public string Name { get; }
-        public int StartAdress { get; set; }
-        public int EndAdress { get; set; }
         public bool IsIdle { get; set; } = false;
+        public bool IsRequired { get; set; } = false;
         public int Size { get; set; }
 
+        /// <summary>
+        /// For creating a new UI application Process Block, User Level and not required for OS
+        /// </summary>
+        /// <param name="pid"></param>
+        /// <param name="popup"></param>
+        /// <param name="app"></param>
+        /// <param name="name"></param>
         public ProcessBlock(int pid, Popup popup, object app, string name)
         {
             Pid = pid;
             Popup = popup;
             App = app;
             Name = name;
+            IntializePID();
             InitializePopup();
+        }
+        /// <summary>
+        /// For creating a new OS application Process Block, Kernel Level and required for OS
+        /// </summary>
+        /// <param name="pid"></param>
+        /// <param name="name"></param>
+        public ProcessBlock(int pid, string name) 
+        {
+            Pid = pid;
+            Name = name;
+            IsRequired = true;
+            IntializePID();
+        }
+
+        private void IntializePID()
+        {
+            if (App is TestApp testApp)
+            {
+                testApp.Pid = Pid;
+            }
+            else if (App is TaskManagerApp taskManagerApp)
+            {
+                taskManagerApp.Pid = Pid;
+            }
+
         }
 
         private void InitializePopup()
         {
+
             Popup.Child = App as UIElement;
 
             double newWidthOffset;
@@ -47,7 +81,7 @@ namespace OperatingSystemSimulator.ProcessHelper
             previousHeightOffset = newHeightOffset;
 
             Popup.HorizontalOffset = (Window.Current.Bounds.Width - newWidthOffset) / 2;
-            Popup.VerticalOffset = (Window.Current.Bounds.Height - newHeightOffset) / 2;
+            Popup.VerticalOffset = (Window.Current.Bounds.Height - newHeightOffset) / 4;
             Popup.IsOpen = true;
         }
     }

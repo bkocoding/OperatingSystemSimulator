@@ -1,6 +1,7 @@
 
 using System.Drawing;
 using OperatingSystemSimulator.Extras.ConsoleLogger;
+using OperatingSystemSimulator.ProcessHelper;
 
 namespace OperatingSystemSimulator.Pages;
 public sealed partial class WelcomePage : Page
@@ -31,7 +32,6 @@ public sealed partial class WelcomePage : Page
         timer = new DispatcherTimer();
         timer.Interval = TimeSpan.FromMilliseconds(250);
         timer.Tick += Timer_Tick;
-        ConsoleLogger.Log("OS is initialized, PID: 1", LogType.Init);
         ConsoleLogger.Log("Desktop is loading", LogType.Info);
         timer.Start();
     }

@@ -7,6 +7,7 @@ public sealed partial class BugCheckPage : Page
 {
     public BugCheckPage()
     {
+        Task.Delay(1000).Wait();
         InitializeComponent();
     }
 
@@ -42,6 +43,7 @@ public sealed partial class BugCheckPage : Page
             await Task.Delay(interval);
         }
         await Task.Delay(1000);
+        ConsoleLogger.Log("BugCheck completed, rebooting...", LogType.Info);
         Frame.Navigate(typeof(BootPage));
     }
 }

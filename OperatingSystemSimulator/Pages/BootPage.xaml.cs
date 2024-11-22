@@ -1,8 +1,9 @@
-using Microsoft.UI.Xaml.Input;
 using OperatingSystemSimulator.Extras.ConsoleLogger;
+using OperatingSystemSimulator.MemoryHelper;
 using OperatingSystemSimulator.Services;
 using Windows.System;
 using Windows.UI.Core;
+using MemoryManager = OperatingSystemSimulator.MemoryHelper.MemoryManager;
 
 namespace OperatingSystemSimulator.Pages;
 public sealed partial class BootPage : Page
@@ -19,14 +20,12 @@ public sealed partial class BootPage : Page
     private readonly string[] _postMessages =
     {
             "*** Testing RAM...",
-            "--- RAMTEST NOT IMPLEMENTED YET",
-            "RAM OK! Size: 64000000 Byte(s)",
+            $"RAM OK! Size: {MemoryManager.memorySize} Byte(s)",
     };
 
     private readonly string[] _beforeBootMessages =
     {
             "Scanning for devices...",
-            "--- DEVSCAN NOT IMPLEMENTED YET",
             "Disk Device(s) Found: SATA-1",
             "Starting disk devices...",
             "Mounting file systems...",

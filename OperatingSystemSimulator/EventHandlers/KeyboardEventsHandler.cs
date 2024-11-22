@@ -1,5 +1,6 @@
 
 using OperatingSystemSimulator.Extras.ConsoleLogger;
+using OperatingSystemSimulator.ProcessHelper;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
@@ -57,7 +58,7 @@ namespace OperatingSystemSimulator.EventHandlers
                             {
                                 string[] parameters = { "PID: 1\nProcess Name: OS", "MANUALY_TRIGGERED" };
                                 ConsoleLogger.Log("Manual BughCheck Triggered", LogType.Info);
-                                Task.Delay(1000).Wait();
+                                //Task.Delay(1000).Wait();
                                 currentFrame.Navigate(typeof(BugCheckPage), parameters);
                             }
                             break;
@@ -83,6 +84,15 @@ namespace OperatingSystemSimulator.EventHandlers
                         ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(1280, 720);
                     }
 
+                }
+                else if (args?.VirtualKey == VirtualKey.Q) {
+                    if (currentFrame?.Content is DesktopPage) 
+                    {
+                        if (Window.Current.CoreWindow.GetKeyState(VirtualKey.Control).HasFlag(CoreVirtualKeyStates.Down)) 
+                        {
+                            ProcessManager.Instance.TerminateFocusedProcess();
+                        }
+                    }
                 }
 
             }

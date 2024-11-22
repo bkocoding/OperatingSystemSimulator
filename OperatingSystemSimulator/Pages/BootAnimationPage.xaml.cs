@@ -1,4 +1,5 @@
 using Microsoft.UI.Xaml.Media.Animation;
+using OperatingSystemSimulator.ProcessHelper;
 using Windows.Foundation;
 
 namespace OperatingSystemSimulator.Pages
@@ -15,14 +16,16 @@ namespace OperatingSystemSimulator.Pages
         {
             await Task.Delay(3000);
 
+            ProcessManager.Instance.StartOSServices();
+
             EmojiText.Visibility = Visibility.Visible;
 
             await Task.Delay(2000);
-
             Spinner.Visibility = Visibility.Visible;
             StartSpinnerAnimation();
 
             await Task.Delay(3000);
+            ProcessManager.Instance.StartLogOnUser();
             NavigateToLogOn();
         }
 

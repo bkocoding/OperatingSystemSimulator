@@ -15,7 +15,7 @@
       <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
 
-    <shell:ShellWindow x:Name="TitleBar" Grid.Row="0"/>
+    <shell:ShellWindow x:Name="ShellTitleBar" Grid.Row="0"/>
 
     <Border Background="LightGray" BorderBrush="Black" BorderThickness="1" Width="200" Height="200" Grid.Row="1">
       <TextBlock x:Name="ContentText" Margin="10" Foreground="Black"/>

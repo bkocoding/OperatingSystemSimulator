@@ -2,6 +2,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using OperatingSystemSimulator.ProcessHelper;
 using Windows.Foundation;
+using OperatingSystemSimulator.EventHandlers;
 
 namespace OperatingSystemSimulator.Apps.Shell
 {
@@ -10,9 +11,8 @@ namespace OperatingSystemSimulator.Apps.Shell
         public int Pid { get; set; }
 
         private string? _title;
-        private Popup popupInstance;
+        private Popup? popupInstance;
 
-        private bool isDragging = false;
         private Point initialPopupPosition;
 
         public string? title
@@ -31,7 +31,6 @@ namespace OperatingSystemSimulator.Apps.Shell
         public ShellWindow()
         {
             InitializeComponent();
-
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -41,19 +40,14 @@ namespace OperatingSystemSimulator.Apps.Shell
 
         private void Pointer_Pressed(object sender, PointerRoutedEventArgs e)
         {
-            if (popupInstance == null)
-            {
-                popupInstance = ProcessManager.Instance.GetProcessByPid(Pid).Popup;
-            }
-            isDragging = true;
+            var pointerPosition = e.GetCurrentPoint(Window.Current.Content as UIElement).Position;
 
+            MouseEventsHandler.Instance.StartDragging(Pid, pointerPosition);
         }
 
-        private void Pointer_Released(object sender, PointerRoutedEventArgs e)
+        private void UserControl_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
-
+            ProcessManager.Instance.BringToFront(Pid);
         }
-
-       
     }
 }

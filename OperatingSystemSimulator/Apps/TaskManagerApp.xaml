@@ -1,0 +1,60 @@
+﻿<UserControl
+    x:Class="OperatingSystemSimulator.Apps.TaskManagerApp"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:OperatingSystemSimulator.Apps"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:shell="using:OperatingSystemSimulator.Apps.Shell"
+    xmlns:processHelper="using:OperatingSystemSimulator.ProcessHelper"
+    mc:Ignorable="d"
+    d:DesignHeight="400"
+    d:DesignWidth="470"
+    PointerPressed="UserControl_PointerPressed">
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+    <shell:ShellWindow x:Name="ShellTitleBar" Grid.Row="0"/>
+
+    <Border Background="LightSlateGray" BorderBrush="Black" BorderThickness="1" Width="470" Height="400" Grid.Row="1">
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Background="Gray" Height="30" Spacing="10">
+          <TextBlock Margin="23,0,0,0" VerticalAlignment="Center" Foreground="Black" Text="PID" FontWeight="Bold" HorizontalAlignment="Center" Width="50"/>
+          <TextBlock VerticalAlignment="Center" Foreground="Black" Text="Name" FontWeight="Bold" HorizontalAlignment="Center" Width="200"/>
+        </StackPanel>
+
+        <ListView x:Name="ProcessListView" SelectionMode="Single" Margin="10,10,10,10" ItemsSource="{Binding Processes}" Grid.Row="2" SelectionChanged="ProcessListView_SelectionChanged">
+          <ListView.ItemTemplate>
+            <DataTemplate x:DataType="processHelper:ProcessBlock">
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="50"/>
+                  <ColumnDefinition Width="150"/>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock VerticalAlignment="Center" Foreground="Black" Text="{x:Bind Pid}" Grid.Column="0"/>
+                <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Foreground="Black" Text="{x:Bind Name}" Grid.Column="1"/>
+
+                <Button Foreground="Black" Content="Bring To Front" Tag="{x:Bind Pid}" HorizontalAlignment="Center" Grid.Column="2" BorderThickness="0" Padding="10,5" Click="BringToFront_Click"/>
+                <Button Foreground="Black" Content="Terminate" Tag="{x:Bind Pid}" HorizontalAlignment="Center" Grid.Column="3" BorderThickness="0" Padding="10,5" Click="Terminate_Click"/>
+              </Grid>
+            </DataTemplate>
+          </ListView.ItemTemplate>
+        </ListView>
+      </Grid>
+    </Border>
+
+  </Grid>
+</UserControl>

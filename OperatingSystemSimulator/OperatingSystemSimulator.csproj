@@ -46,6 +46,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Apps\Shell\ShellWindow.xaml" />
+    <None Remove="Apps\TaskManagerApp.xaml" />
     <None Remove="Apps\TestApp.xaml" />
     <None Remove="biossettings.json" />
     <None Remove="Hardware\HardwarePage.xaml" />
@@ -64,10 +65,6 @@
   <ItemGroup>
     <ProjectReference Include="..\OperatingSystemSimulator.Extras\OperatingSystemSimulator.Extras.csproj" />
     <ProjectReference Include="..\OperatingSystemSimulator.MauiControls\OperatingSystemSimulator.MauiControls.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ViewModels\AppViewModels\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -196,6 +193,16 @@
 
   <ItemGroup>
     <Page Update="Apps\TestApp.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Apps\TaskManagerApp.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Apps\TaskManagerApp.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

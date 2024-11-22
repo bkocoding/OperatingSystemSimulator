@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using OperatingSystemSimulator.MemoryHelper;
 
 namespace OperatingSystemSimulator.ViewModels.PageViewModels
 {
@@ -8,6 +9,7 @@ namespace OperatingSystemSimulator.ViewModels.PageViewModels
         private string _currentTime;
         private string _currentDate;
         private Timer _timer;
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -31,10 +33,13 @@ namespace OperatingSystemSimulator.ViewModels.PageViewModels
             }
         }
 
-        public BIOSInfoViewModel()
-        {
-            UpdateTimeAndDate(); 
+        public string MemorySize { 
+            get => $": {(MemoryManager.memorySize / 1000000)} MB";
+        }
 
+        public BIOSInfoViewModel()
+        {            
+            UpdateTimeAndDate(); 
             _timer = new Timer(UpdateTimeAndDateCallback, null, 0, 1000);
         }
 
