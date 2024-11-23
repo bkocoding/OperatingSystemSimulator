@@ -10,6 +10,6 @@
 
     <Grid>
     <TextBlock x:Name="sdtext" FontSize="20" Text="Shutting Down" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-    <Button x:Name="restartButton" Content="Restart Computer" HorizontalAlignment="Center" VerticalAlignment="Center" Click="restartbtn_click"/>
+    <Button x:Name="restartButton" Content="Restart Computer" HorizontalAlignment="Center" VerticalAlignment="Center" Click="Restartbtn_click"/>
   </Grid>
 </Page>

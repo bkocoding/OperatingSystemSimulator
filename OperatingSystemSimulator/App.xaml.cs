@@ -13,6 +13,11 @@ public partial class App : Application
     {
         InitializeComponent();
         ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(1280, 720);
+        HardwareWindow = new Window
+        {
+            Title = "Virtual Hardware",
+            Content = HardwarePage
+        };
     }
 
     protected Window? MainWindow { get; private set; }
@@ -109,11 +114,6 @@ public partial class App : Application
         MainWindow.Activate();
 
         ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(1280, 260);
-        HardwareWindow = new Window
-        {
-            Title = "Virtual Hardware",
-            Content = HardwarePage
-        };
         HardwareWindow.Activate();
         ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(1280, 720);
     }

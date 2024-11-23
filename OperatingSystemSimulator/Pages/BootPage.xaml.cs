@@ -8,7 +8,7 @@ using MemoryManager = OperatingSystemSimulator.MemoryHelper.MemoryManager;
 namespace OperatingSystemSimulator.Pages;
 public sealed partial class BootPage : Page
 {
-    private DispatcherTimer _timer;
+    private readonly DispatcherTimer _timer;
     public bool isBusy = true;
     private bool isEnteringBIOS = false;
     private int _messageIndex = 0;
@@ -18,13 +18,13 @@ public sealed partial class BootPage : Page
     private readonly BIOSSettingsService _biosSettingsService;
 
     private readonly string[] _postMessages =
-    {
+    [
             "*** Testing RAM...",
             $"RAM OK! Size: {MemoryManager.memorySize} Byte(s)",
-    };
+    ];
 
     private readonly string[] _beforeBootMessages =
-    {
+    [
             "Scanning for devices...",
             "Disk Device(s) Found: SATA-1",
             "Starting disk devices...",
@@ -35,26 +35,32 @@ public sealed partial class BootPage : Page
             "--- NETWORK BOOTING DISABLED!",
             "Scanning disks for bootable parts...",
             "OS found 1: SATA-1 PARTITION-1",
-    };
+    ];
 
     private readonly string[] _afterBootMessages =
-    {
+    [
         "Selected Boot Partition: SATA-1 PARTITION 1, Type: MBR",
         "Booting OS..."
-    };
+    ];
 
     public BootPage()
     {
         InitializeComponent();
 
-        _biosSettingsService = (Application.Current as App)?.Host?.Services.GetRequiredService<BIOSSettingsService>();
+        _biosSettingsService = (Application.Current as App)?.Host?.Services.GetRequiredService<BIOSSettingsService>()
+                               ?? throw new InvalidOperationException("BIOSSettingsService is not available");
         _firstBootOrder = _biosSettingsService.Settings.FirstBootOption;
 
-        Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
+        if (Window.Current?.CoreWindow != null)
+        {
+            Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
+        }
 
         SetBootPartition();
-        _timer = new DispatcherTimer();
-        _timer.Interval = TimeSpan.FromMilliseconds(new Random().Next(200, 800));
+        _timer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromMilliseconds(new Random().Next(200, 800))
+        };
         _timer.Tick += OnTimerTick;
         _currentMessages = _postMessages;
         _timer.Start();
@@ -68,7 +74,10 @@ public sealed partial class BootPage : Page
     protected override void OnNavigatedFrom(NavigationEventArgs e)
     {
         base.OnNavigatedFrom(e);
-        Window.Current.CoreWindow.KeyDown -= CoreWindow_KeyDown;
+        if (Window.Current?.CoreWindow != null)
+        {
+            Window.Current.CoreWindow.KeyDown -= CoreWindow_KeyDown;
+        }
     }
 
     private void SetBootPartition()
@@ -84,7 +93,7 @@ public sealed partial class BootPage : Page
         }
     }
 
-    private void OnTimerTick(object sender, object e)
+    private void OnTimerTick(object? sender, object? e)
     {
         if (_currentMessages == _afterBootMessages && isEnteringBIOS)
         {
@@ -96,11 +105,11 @@ public sealed partial class BootPage : Page
 
             if (message.Contains("---"))
             {
-                ConsoleLogger.Log(message.Substring(4), LogType.Error);
+                ConsoleLogger.Log(message[4..], LogType.Error);
             }
             else if (message.Contains("***"))
             {
-                ConsoleLogger.Log(message.Substring(4), LogType.Info);
+                ConsoleLogger.Log(message[4..], LogType.Info);
             }
             else
             {
@@ -159,25 +168,21 @@ public sealed partial class BootPage : Page
 
     private async void CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
     {
-        Frame currentFrame = (Frame)Window.Current.Content;
-
-        if (args.VirtualKey == VirtualKey.F2)
+        if (Window.Current?.Content is Frame currentFrame)
         {
-
-            if (!isBusy && !isEnteringBIOS)
+            if (args.VirtualKey == VirtualKey.F2)
             {
-                ChangeSettingsInfoText();
-                while (!isBusy) 
+                if (!isBusy && !isEnteringBIOS)
                 {
-                    await Task.Delay(100);
+                    ChangeSettingsInfoText();
+                    while (!isBusy)
+                    {
+                        await Task.Delay(100);
+                    }
+                    currentFrame.Navigate(typeof(BIOSInfoPage));
+                    ConsoleLogger.Log("Entered BIOS Firmware Settings", LogType.Info);
                 }
-                currentFrame.Navigate(typeof(BIOSInfoPage));
-                ConsoleLogger.Log("Entered BIOS Firmware Settings", LogType.Info);
             }
-
-
         }
-
-
     }
 }

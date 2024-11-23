@@ -2,59 +2,60 @@ using Microsoft.UI.Xaml.Media.Animation;
 using OperatingSystemSimulator.ProcessHelper;
 using Windows.Foundation;
 
-namespace OperatingSystemSimulator.Pages
+namespace OperatingSystemSimulator.Pages;
+
+public sealed partial class BootAnimationPage : Page
 {
-    public sealed partial class BootAnimationPage : Page
+    public BootAnimationPage()
     {
-        public BootAnimationPage()
+        InitializeComponent();
+        StartAnimationSequence();
+    }
+
+    private async void StartAnimationSequence()
+    {
+        await Task.Delay(3000);
+
+        ProcessManager.Instance.StartOSServices();
+
+        EmojiText.Visibility = Visibility.Visible;
+
+        await Task.Delay(2000);
+        Spinner.Visibility = Visibility.Visible;
+        StartSpinnerAnimation();
+
+        await Task.Delay(3000);
+        ProcessManager.Instance.StartLogOnUser();
+        NavigateToLogOn();
+    }
+
+    private void StartSpinnerAnimation()
+    {
+        RotateTransform rotateTransform = new();
+        Spinner.RenderTransform = rotateTransform;
+        Spinner.RenderTransformOrigin = new Point(0.5, 0.5);
+
+        DoubleAnimation rotateAnimation = new()
         {
-            this.InitializeComponent();
-            StartAnimationSequence();
-        }
+            From = 0,
+            To = 360,
+            Duration = new Duration(TimeSpan.FromSeconds(1)),
+            RepeatBehavior = RepeatBehavior.Forever
+        };
 
-        private async void StartAnimationSequence()
+        Storyboard storyboard = new();
+        storyboard.Children.Add(rotateAnimation);
+        Storyboard.SetTarget(rotateAnimation, rotateTransform);
+        Storyboard.SetTargetProperty(rotateAnimation, "Angle");
+
+        storyboard.Begin();
+    }
+
+    private static void NavigateToLogOn()
+    {
+        if (Window.Current?.Content is Frame currentFrame)
         {
-            await Task.Delay(3000);
-
-            ProcessManager.Instance.StartOSServices();
-
-            EmojiText.Visibility = Visibility.Visible;
-
-            await Task.Delay(2000);
-            Spinner.Visibility = Visibility.Visible;
-            StartSpinnerAnimation();
-
-            await Task.Delay(3000);
-            ProcessManager.Instance.StartLogOnUser();
-            NavigateToLogOn();
-        }
-
-        private void StartSpinnerAnimation()
-        {
-            RotateTransform rotateTransform = new RotateTransform();
-            Spinner.RenderTransform = rotateTransform;
-            Spinner.RenderTransformOrigin = new Point(0.5, 0.5);
-
-            DoubleAnimation rotateAnimation = new DoubleAnimation
-            {
-                From = 0,
-                To = 360,
-                Duration = new Duration(TimeSpan.FromSeconds(1)),
-                RepeatBehavior = RepeatBehavior.Forever
-            };
-
-            Storyboard storyboard = new Storyboard();
-            storyboard.Children.Add(rotateAnimation);
-            Storyboard.SetTarget(rotateAnimation, rotateTransform);
-            Storyboard.SetTargetProperty(rotateAnimation, "Angle");
-
-            storyboard.Begin();
-        }
-
-        private void NavigateToLogOn() 
-        {
-            Frame currentFrame = (Frame)Window.Current.Content;
-            currentFrame?.Navigate(typeof(WelcomePage));
+            currentFrame.Navigate(typeof(WelcomePage));
         }
     }
 }

@@ -1,7 +1,7 @@
 namespace OperatingSystemSimulator.Models;
 public record BIOSSettings
 {
-    public string FirstBootOption { get; set; }
-    public string SecondBootOption { get; set; }
+    public required string FirstBootOption { get; set; }
+    public required string SecondBootOption { get; set; }
     public bool CMOSReset { get; set; }
 }
