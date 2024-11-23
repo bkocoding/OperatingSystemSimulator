@@ -27,7 +27,10 @@ public class ProcessManager
             {
                 lock (lockObject)
                 {
-                    instance ??= new ProcessManager();
+                    if (instance == null)
+                    {
+                        instance = new ProcessManager();
+                    }
                 }
             }
             return instance;
@@ -70,12 +73,8 @@ public class ProcessManager
 
         if (!processBlock.IsRequired)
         {
-            if (processBlock.Popup != null)
-            {
-                processBlock.Popup.IsOpen = false;
-                processBlock.Popup.IsOpen = false;
-                processBlock.Popup.Child = null;
-            }
+            processBlock.Popup.IsOpen = false;
+            processBlock.Popup.Child = null;
             if (focusedPopup == processBlock.Popup)
             {
                 focusedPopup = null;
@@ -95,18 +94,12 @@ public class ProcessManager
             }
             else
             {
-                string[] parameters = ["PID: " + pid + "\nProcess Name: " + processBlock.Name, "CRITICAL_PROCESS_DIED"];
-                if (Window.Current?.Content is Frame currentFrame)
-                {
-                    OnProcessTerminated(processBlock, reason);
-                    ProcessBlocks.Remove(processBlock);
-                    currentFrame.Navigate(typeof(BugCheckPage), parameters);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                string[] parameters = { "PID: " + pid + "\nProcess Name: " + processBlock.Name, "CRITICAL_PROCESS_DIED" };
+                Frame currentFrame = (Frame)Window.Current.Content;
+                OnProcessTerminated(processBlock, reason);
+                ProcessBlocks.Remove(processBlock);
+                currentFrame.Navigate(typeof(BugCheckPage), parameters);
+                return true;
             }
 
         }
@@ -180,14 +173,11 @@ public class ProcessManager
         var processBlock = GetProcessByPid(pid);
         if (processBlock != null)
         {
-            if(processBlock.Popup != null)
+            if (focusedPopup != processBlock.Popup)
             {
-                if (focusedPopup != processBlock.Popup)
-                {
-                    focusedPopup = processBlock.Popup;
-                    processBlock.Popup.IsOpen = false;
-                    processBlock.Popup.IsOpen = true;
-                }
+                focusedPopup = processBlock.Popup;
+                processBlock.Popup.IsOpen = false;
+                processBlock.Popup.IsOpen = true;
             }
         }
     }
@@ -204,13 +194,27 @@ public class ProcessManager
     private static void OnProcessTerminated(ProcessBlock processBlock, TerminateReasons reason)
     {
         string log = $"{processBlock.Name} is terminated, PID: {processBlock.Pid}, Reason: {reason.GetDescription()}";
-        var logType = reason switch
+        LogType logType;
+
+        switch (reason)
         {
-            TerminateReasons.Self => LogType.Info,
-            TerminateReasons.System => LogType.Warning,
-            TerminateReasons.User => LogType.Warning,
-            _ => LogType.Error,
-        };
+            case TerminateReasons.Self:
+                logType = LogType.Info;
+                break;
+
+            case TerminateReasons.System:
+                logType = LogType.Warning;
+                break;
+
+            case TerminateReasons.User:
+                logType = LogType.Warning;
+                break;
+
+            default:
+                logType = LogType.Error;
+                break;
+        }
+
         ConsoleLogger.Log(log, logType);
     }
 

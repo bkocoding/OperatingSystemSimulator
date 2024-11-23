@@ -2,73 +2,71 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using OperatingSystemSimulator.MemoryHelper;
 
-namespace OperatingSystemSimulator.ViewModels.PageViewModels;
-
-public class BIOSInfoViewModel : INotifyPropertyChanged
+namespace OperatingSystemSimulator.ViewModels.PageViewModels
 {
-    private string _currentTime;
-    private string _currentDate;
-    private readonly Timer _timer;
-
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    public string CurrentTime
+    public class BIOSInfoViewModel : INotifyPropertyChanged
     {
-        get => _currentTime;
-        set
+        private string _currentTime;
+        private string _currentDate;
+        private Timer _timer;
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public string CurrentTime
         {
-            _currentTime = value;
-            OnPropertyChanged();
+            get => _currentTime;
+            set
+            {
+                _currentTime = value;
+                OnPropertyChanged();
+            }
         }
-    }
 
-    public string CurrentDate
-    {
-        get => _currentDate;
-        set
+        public string CurrentDate
         {
-            _currentDate = value;
-            OnPropertyChanged();
+            get => _currentDate;
+            set
+            {
+                _currentDate = value;
+                OnPropertyChanged();
+            }
         }
-    }
 
-    public static string MemorySize
-    {
-        get => $": {(MemoryManager.memorySize / 1000000)} MB";
-    }
+        public string MemorySize { 
+            get => $": {(MemoryManager.memorySize / 1000000)} MB";
+        }
 
-    public BIOSInfoViewModel()
-    {
-        _currentTime = string.Empty;
-        _currentDate = string.Empty;
-        UpdateTimeAndDate();
-        _timer = new Timer(UpdateTimeAndDateCallback, null, 0, 1000);
-    }
+        public BIOSInfoViewModel()
+        {            
+            UpdateTimeAndDate(); 
+            _timer = new Timer(UpdateTimeAndDateCallback, null, 0, 1000);
+        }
 
-    private void UpdateTimeAndDateCallback(object? state)
-    {
-        UpdateTimeAndDate();
-    }
+        private void UpdateTimeAndDateCallback(object state)
+        {
+            UpdateTimeAndDate();
+        }
 
-    private void UpdateTimeAndDate()
-    {
-        CurrentTime = ": " + DateTime.Now.ToString("HH:mm:ss");
-        CurrentDate = ": " + DateTime.Now.ToString("dd.MM.yyyy");
-    }
+        private void UpdateTimeAndDate()
+        {
+            CurrentTime = ": " + DateTime.Now.ToString("HH:mm:ss");
+            CurrentDate = ": " + DateTime.Now.ToString("dd.MM.yyyy");
+        }
 
-    protected void OnPropertyChanged([CallerMemberName] string name = "")
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-    }
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
 
-    public void StopTimer()
-    {
-        _timer?.Change(Timeout.Infinite, Timeout.Infinite);
-    }
+        public void StopTimer()
+        {
+            _timer?.Change(Timeout.Infinite, Timeout.Infinite);
+        }
 
-    public void StartTimer()
-    {
-        _timer?.Change(0, 1000);
+        public void StartTimer()
+        {
+            _timer?.Change(0, 1000);
+        }
     }
 }

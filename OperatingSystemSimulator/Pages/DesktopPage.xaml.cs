@@ -24,13 +24,13 @@ public sealed partial class DesktopPage : Page
     private void APP1_Click(object sender, RoutedEventArgs e)
     {
         string title = "Test APP";
-        ProcessManager.Instance.CreateProcess(new Popup(), new TestApp(title), title, false);
+        var processBlock = ProcessManager.Instance.CreateProcess(new Popup(), new TestApp(title), title, false);
 
     }
 
     private void TaskMgr_Click(object sender, RoutedEventArgs e)
     {
         string title = "Task Manager";
-        ProcessManager.Instance.CreateProcess(new Popup(), new TaskManagerApp(title), title, true);
+        var processBlock = ProcessManager.Instance.CreateProcess(new Popup(), new TaskManagerApp(title), title, true);
     }
 }

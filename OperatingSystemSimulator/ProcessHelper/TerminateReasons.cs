@@ -1,24 +1,24 @@
-namespace OperatingSystemSimulator.ProcessHelper;
-
-public enum TerminateReasons
+namespace OperatingSystemSimulator.ProcessHelper
 {
-    Self,
-    User,
-    System,
-    Unexpected
-}
-
-public static class TerminateReasonsExtensions
-{
-    public static string GetDescription(this TerminateReasons reason)
+    public enum TerminateReasons
     {
-        return reason switch
+        Self,
+        User,
+        System,
+        Unexpected
+    }
+
+    public static class TerminateReasonsExtensions
+    {
+        public static string GetDescription(this TerminateReasons reason)
         {
-            TerminateReasons.Self => "Requested by application itself.",
-            TerminateReasons.User => "Requested by user.",
-            TerminateReasons.System => "Requested by system.",
-            TerminateReasons.Unexpected => "Application terminated unexpectedly.",
-            _ => "Unknown termination reason."
-        };
+            return reason switch
+            {
+                TerminateReasons.Self => "Requested by application itself.",
+                TerminateReasons.User => "Requested by user.",
+                TerminateReasons.System => "Requested by system.",
+                TerminateReasons.Unexpected => "Application terminated unexpectedly."
+            };
+        }
     }
 }

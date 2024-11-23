@@ -6,7 +6,7 @@ public class MemoryManager
 {
     private static MemoryManager? instance;
     private static readonly object lockObject = new();
-    //private static readonly int pageSize = 4096;
+    private static readonly int pageSize = 4096;
     public static readonly int memorySize = 64000000;
 
     public ObservableCollection<MemoryBlock> MemoryBlocks { get; private set; }
@@ -30,12 +30,12 @@ public class MemoryManager
             return instance;
         }
     }
-    //TODO: MemoryManager to be implemented
-    //public bool IsMemoryHasAvailableSpace(int size)
-    //{
 
-    //    return true;
-    //}
+    public bool IsMemoryHasAvailableSpace(int size)
+    {
+
+        return true;
+    }
 
     public MemoryBlock AllocateMemory(ProcessBlock processBlock)
     {

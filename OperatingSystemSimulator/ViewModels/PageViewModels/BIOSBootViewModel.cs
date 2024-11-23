@@ -2,52 +2,54 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using OperatingSystemSimulator.Services;
 
-namespace OperatingSystemSimulator.ViewModels.PageViewModels;
-
-public class BIOSBootViewModel : INotifyPropertyChanged
+namespace OperatingSystemSimulator.ViewModels.PageViewModels
 {
-    private readonly BIOSSettingsService _biosSettingsService;
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    public BIOSBootViewModel()
+    public class BIOSBootViewModel : INotifyPropertyChanged
     {
-        _biosSettingsService = (Application.Current as App)?.Host?.Services.GetRequiredService<BIOSSettingsService>()
-                               ?? throw new InvalidOperationException("BIOSSettingsService is not available");
+        private readonly BIOSSettingsService _biosSettingsService;
 
-        LoadSettings();
-    }
+        public event PropertyChangedEventHandler PropertyChanged;
 
-    protected void OnPropertyChanged([CallerMemberName] string name = "")
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-    }
-
-    private string fbo = string.Empty;
-    public string FBO
-    {
-        get { return fbo; }
-        set
+        public BIOSBootViewModel()
         {
-            fbo = value;
-            OnPropertyChanged();
-        }
-    }
+            _biosSettingsService = (Application.Current as App)?.Host?.Services.GetRequiredService<BIOSSettingsService>();
 
-    private string sbo = string.Empty;
-    public string SBO
-    {
-        get { return sbo; }
-        set
+            LoadSettings();
+        }
+
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
-            sbo = value;
-            OnPropertyChanged();
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
-    }
 
-    private void LoadSettings()
-    {
-        FBO = _biosSettingsService.Settings.FirstBootOption;
-        SBO = _biosSettingsService.Settings.SecondBootOption;
+        private string fbo;
+        public string FBO
+        {
+            get { return fbo; }
+            set
+            {
+                fbo = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string sbo;
+        public string SBO
+        {
+            get { return sbo; }
+            set
+            {
+                sbo = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void LoadSettings()
+        {
+            FBO = _biosSettingsService.Settings.FirstBootOption;
+            SBO = _biosSettingsService.Settings.SecondBootOption;
+        }
+
+
     }
 }

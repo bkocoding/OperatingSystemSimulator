@@ -1,43 +1,45 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace OperatingSystemSimulator.ViewModels.PageViewModels;
-
-public class DesktopViewModel : INotifyPropertyChanged
+namespace OperatingSystemSimulator.ViewModels.PageViewModels
 {
-    private string _dateTimeText;
-
-    public string DateTimeText
+    public class DesktopViewModel : INotifyPropertyChanged
     {
-        get => _dateTimeText;
-        set
+        private string _dateTimeText;
+
+        public string DateTimeText
         {
-            _dateTimeText = value;
-            OnPropertyChanged();
+            get => _dateTimeText;
+            set
+            {
+                _dateTimeText = value;
+                OnPropertyChanged();
+            }
         }
-    }
 
-    public DesktopViewModel()
-    {
-        _dateTimeText = string.Empty;
-        UpdateDateTime();
-        _ = new Timer(UpdateDateTimeCallback, null, 0, 1000);
-    }
+        private Timer _timer;
 
-    private void UpdateDateTimeCallback(object? state)
-    {
-        UpdateDateTime();
-    }
+        public DesktopViewModel()
+        {
+            UpdateDateTime();
+            _timer = new Timer(UpdateDateTimeCallback, null, 0, 1000); // Her saniyede bir güncelle
+        }
 
-    private void UpdateDateTime()
-    {
-        DateTimeText = DateTime.Now.ToString("HH:mm") + "\n" + DateTime.Now.ToString("dd.MM.yyyy");
-    }
+        private void UpdateDateTimeCallback(object state)
+        {
+            UpdateDateTime();
+        }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
+        private void UpdateDateTime()
+        {
+            DateTimeText = DateTime.Now.ToString("HH:mm") + "\n" + DateTime.Now.ToString("dd.MM.yyyy");
+        }
 
-    protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

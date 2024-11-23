@@ -5,65 +5,71 @@ using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 
-namespace OperatingSystemSimulator.EventHandlers;
+namespace OperatingSystemSimulator.EventHandlers
 
-
-public class KeyboardEventsHandler
 {
-    public class KeyboardEventHandler
+    public class KeyboardEventsHandler
     {
-        private static KeyboardEventHandler? instance;
-        private static readonly object lockObject = new();
-
-        private App _app = (App)Application.Current!;
-
-        //private bool isEnteringFirmwareSettings = false;
-        public static KeyboardEventHandler Instance
+        public class KeyboardEventHandler
         {
-            get
+            private static KeyboardEventHandler? instance;
+            private static readonly object lockObject = new();
+
+            private App _app = (App)Application.Current;
+
+            private bool isEnteringFirmwareSettings = false;
+            public static KeyboardEventHandler Instance
             {
-                if (instance == null)
+                get
                 {
-                    lock (lockObject)
+                    if (instance == null)
                     {
-                        instance ??= new KeyboardEventHandler();
+                        lock (lockObject)
+                        {
+                            if (instance == null)
+                            {
+                                instance = new KeyboardEventHandler();
+                            }
+                        }
                     }
+                    return instance;
                 }
-                return instance;
             }
-        }
 
-        private KeyboardEventHandler()
-        {
-            if (Window.Current != null && Window.Current.CoreWindow != null)
+            private KeyboardEventHandler()
             {
-                Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
+                if (Window.Current != null && Window.Current.CoreWindow != null)
+                {
+                    Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
+                }
             }
-        }
 
-        private void CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
-        {
-            if (Window.Current?.Content is Frame currentFrame)
+            private void CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
             {
+                Frame currentFrame = (Frame)Window.Current.Content;
+
                 if (args.VirtualKey == VirtualKey.F11)
                 {
+
                     switch (currentFrame?.Content)
                     {
                         case DesktopPage:
-                            if (Window.Current?.CoreWindow?.GetKeyState(VirtualKey.Control).HasFlag(CoreVirtualKeyStates.Down) == true && Window.Current?.CoreWindow?.GetKeyState(VirtualKey.Menu).HasFlag(CoreVirtualKeyStates.Down) == true)
+                            if (Window.Current.CoreWindow.GetKeyState(VirtualKey.Control).HasFlag(CoreVirtualKeyStates.Down) && Window.Current.CoreWindow.GetKeyState(VirtualKey.Menu).HasFlag(CoreVirtualKeyStates.Down))
                             {
-                                string[] parameters = ["PID: 1\nProcess Name: OS", "MANUALY_TRIGGERED"];
+                                string[] parameters = { "PID: 1\nProcess Name: OS", "MANUALY_TRIGGERED" };
                                 ConsoleLogger.Log("Manual BughCheck Triggered", LogType.Info);
+                                //Task.Delay(1000).Wait();
                                 currentFrame.Navigate(typeof(BugCheckPage), parameters);
                             }
                             break;
                     }
+
                 }
-                else if (args.VirtualKey == VirtualKey.F6)
+                else if (args?.VirtualKey == VirtualKey.F6)
                 {
-                    if (Window.Current?.CoreWindow?.GetKeyState(VirtualKey.Control).HasFlag(CoreVirtualKeyStates.Down) == true && Window.Current?.CoreWindow?.GetKeyState(VirtualKey.Menu).HasFlag(CoreVirtualKeyStates.Down) == true)
+                    if (Window.Current.CoreWindow.GetKeyState(VirtualKey.Control).HasFlag(CoreVirtualKeyStates.Down) && Window.Current.CoreWindow.GetKeyState(VirtualKey.Menu).HasFlag(CoreVirtualKeyStates.Down))
                     {
-                        _app = (App)Application.Current!;
+                        _app = (App)Application.Current;
 
                         if (_app.HardwareWindow == null || !_app.HardwareWindow.Visible)
                         {
@@ -77,17 +83,18 @@ public class KeyboardEventsHandler
                         _app.HardwareWindow.Activate();
                         ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(1280, 720);
                     }
+
                 }
-                else if (args.VirtualKey == VirtualKey.Q)
-                {
-                    if (currentFrame.Content is DesktopPage)
+                else if (args?.VirtualKey == VirtualKey.Q) {
+                    if (currentFrame?.Content is DesktopPage) 
                     {
-                        if (Window.Current?.CoreWindow?.GetKeyState(VirtualKey.Control).HasFlag(CoreVirtualKeyStates.Down) == true)
+                        if (Window.Current.CoreWindow.GetKeyState(VirtualKey.Control).HasFlag(CoreVirtualKeyStates.Down)) 
                         {
                             ProcessManager.Instance.TerminateFocusedProcess();
                         }
                     }
                 }
+
             }
         }
     }

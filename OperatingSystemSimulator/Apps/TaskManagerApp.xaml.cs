@@ -20,7 +20,7 @@ public sealed partial class TaskManagerApp : UserControl
         InitializeComponent();
         ViewModel = new TaskManagerViewModel();
         DataContext = ViewModel;
-        ShellTitleBar.Title = title;
+        ShellTitleBar.title = title;
     }
 
     private void UserControl_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
@@ -30,11 +30,11 @@ public sealed partial class TaskManagerApp : UserControl
 
     private void BringToFront_Click(object sender, RoutedEventArgs e)
     {
-        if (sender is Button button)
+        var button = sender as Button;
+        if (button != null)
         {
             int pid = (int)button.Tag;
-            var process = ProcessManager.Instance.GetProcessByPid(pid);
-            if (process != null && !process.IsRequired)
+            if (!ProcessManager.Instance.GetProcessByPid(pid).IsRequired) 
             {
                 ProcessManager.Instance.BringToFront(pid);
             }
@@ -42,7 +42,8 @@ public sealed partial class TaskManagerApp : UserControl
     }
     private void Terminate_Click(object sender, RoutedEventArgs e)
     {
-        if (sender is Button button)
+        var button = sender as Button;
+        if (button != null)
         {
             int pid = (int)button.Tag;
             ProcessManager.Instance.TerminateProcess(pid, TerminateReasons.User);
