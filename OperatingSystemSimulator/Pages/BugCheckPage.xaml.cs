@@ -44,6 +44,7 @@ public sealed partial class BugCheckPage : Page
         }
         await Task.Delay(1000);
         ConsoleLogger.Log("BugCheck completed, rebooting...", LogType.Info);
+        ProcessManager.Instance.TerminateProcess(1, TerminateReasons.System);
         Frame.Navigate(typeof(BootPage));
     }
 }

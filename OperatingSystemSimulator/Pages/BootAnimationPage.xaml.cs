@@ -8,15 +8,16 @@ namespace OperatingSystemSimulator.Pages
     {
         public BootAnimationPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
+            HardwarePageViewModel.Instance.HdRead = new BrushConverter().ConvertFromString("#00FF00") as SolidColorBrush;
             StartAnimationSequence();
         }
 
         private async void StartAnimationSequence()
         {
-            await Task.Delay(3000);
-
             ProcessManager.Instance.StartOSServices();
+
+            await Task.Delay(3000);
 
             EmojiText.Visibility = Visibility.Visible;
 

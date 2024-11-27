@@ -22,7 +22,7 @@ namespace OperatingSystemSimulator.ViewModels.PageViewModels
         public DesktopViewModel()
         {
             UpdateDateTime();
-            _timer = new Timer(UpdateDateTimeCallback, null, 0, 1000); // Her saniyede bir güncelle
+            _timer = new Timer(UpdateDateTimeCallback, null, 0, 1000);
         }
 
         private void UpdateDateTimeCallback(object state)
@@ -35,9 +35,9 @@ namespace OperatingSystemSimulator.ViewModels.PageViewModels
             DateTimeText = DateTime.Now.ToString("HH:mm") + "\n" + DateTime.Now.ToString("dd.MM.yyyy");
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

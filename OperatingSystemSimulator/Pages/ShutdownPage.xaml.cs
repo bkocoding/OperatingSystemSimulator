@@ -1,4 +1,4 @@
-using OperatingSystemSimulator.Extras.ConsoleLogger;
+using OperatingSystemSimulator.ProcessHelper;
 
 namespace OperatingSystemSimulator.Pages;
 
@@ -28,7 +28,7 @@ public sealed partial class ShutdownPage : Page
         {
             sdtext.Text = "";
             _timer.Dispose();
-            Background = new SolidColorBrush(Windows.UI.Color.FromArgb(255,0,0,0));
+            Background = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 0, 0, 0));
             StartDelayTimer();
             return;
         }
@@ -54,11 +54,11 @@ public sealed partial class ShutdownPage : Page
     private void DelayTimerCallback(object state)
     {
         _delayTimer.Dispose();
-        ConsoleLogger.Log("Process 1 (OS) is terminated", LogType.Info);
+        ProcessManager.Instance.TerminateProcess(1, TerminateReasons.System);
         UpdateUIAfterDelay();
     }
 
-    private void UpdateUIAfterDelay()
+    private async void UpdateUIAfterDelay()
     {
         if (restartButton.Dispatcher.HasThreadAccess)
         {
@@ -66,10 +66,10 @@ public sealed partial class ShutdownPage : Page
         }
         else
         {
-            restartButton.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-            {
-                restartButton.Visibility = Visibility.Visible;
-            });
+            await restartButton.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+              {
+                  restartButton.Visibility = Visibility.Visible;
+              });
         }
     }
 

@@ -15,6 +15,7 @@ namespace OperatingSystemSimulator.ProcessHelper
         public string Name { get; }
         public bool IsIdle { get; set; } = false;
         public bool IsRequired { get; set; } = false;
+        public bool HasUI { get; set; } = true;
         public int Size { get; set; }
 
         /// <summary>
@@ -34,7 +35,7 @@ namespace OperatingSystemSimulator.ProcessHelper
             InitializePopup();
         }
         /// <summary>
-        /// For creating a new OS application Process Block, Kernel Level and required for OS
+        /// For creating a new UI-less application Process Block, Kernel Level and required for OS
         /// </summary>
         /// <param name="pid"></param>
         /// <param name="name"></param>
@@ -43,6 +44,7 @@ namespace OperatingSystemSimulator.ProcessHelper
             Pid = pid;
             Name = name;
             IsRequired = true;
+            HasUI = false;
             IntializePID();
         }
 

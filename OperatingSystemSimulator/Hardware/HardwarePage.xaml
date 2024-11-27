@@ -31,16 +31,16 @@
     <Border Background="#FF8C00" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
       <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
         <TextBlock Text="RUNNING:" Foreground="White" HorizontalAlignment="Center" FontSize="14"/>
-        <TextBlock Text="PROCESS-NAME" Foreground="White" HorizontalAlignment="Center" FontSize="14"/>
+        <TextBlock x:Name="RunningProcess" Text="{Binding RunningProcess}" Foreground="White" HorizontalAlignment="Center" FontSize="14"/>
       </StackPanel>
     </Border>
 
     <Border Background="Transparent" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
-      <TextBlock Text="←" Foreground="White" FontSize="40" VerticalAlignment="Center" HorizontalAlignment="Center" />
+      <TextBlock x:Name="KeyStrokeInput" Text="←" Foreground="{Binding KeyStrokeInput}" FontSize="40" VerticalAlignment="Center" HorizontalAlignment="Center" />
     </Border>
 
     <Border Background="Transparent" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
-      <TextBlock Text="→" Foreground="White" FontSize="40" VerticalAlignment="Center" HorizontalAlignment="Center" />
+      <TextBlock x:Name="NetworkInput" Text="→" Foreground="{Binding NetworkInput}" FontSize="40" VerticalAlignment="Center" HorizontalAlignment="Center" />
     </Border>
 
     <Border Background="#32CD32" Grid.Row="0" Grid.Column="2">
@@ -60,11 +60,11 @@
     </Border>
 
     <Border Background="Transparent" Grid.Row="1" Grid.Column="3">
-      <TextBlock Text="→" Foreground="White" FontSize="40" VerticalAlignment="Center" HorizontalAlignment="Center" />
+      <TextBlock x:Name="NetworkOutput" Text="→" Foreground="{Binding NetworkOutput}" FontSize="40" VerticalAlignment="Center" HorizontalAlignment="Center" />
     </Border>
 
     <Border Background="Transparent" Grid.Row="2" Grid.Column="3">
-      <TextBlock Text="←" Foreground="White" FontSize="40" VerticalAlignment="Center" HorizontalAlignment="Center" />
+      <TextBlock x:Name="AudioOutput"  Text="←" Foreground="{Binding AudioOutput}" FontSize="40" VerticalAlignment="Center" HorizontalAlignment="Center" />
     </Border>
 
     <Border Background="#696969" Visibility="Visible" Grid.Row="1" Grid.Column="4" Grid.RowSpan="2">
@@ -80,15 +80,17 @@
 
     <Border Background="Transparent" Grid.Row="1" Grid.Column="5">
       <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-        <TextBlock Text="↑" Foreground="White" FontSize="40" HorizontalAlignment="Center" />
-        <TextBlock Text="↓" Foreground="White" FontSize="40" HorizontalAlignment="Center" />
+        <TextBlock x:Name="HdRead" Text="↑" Foreground="{Binding HdRead}" FontSize="40" HorizontalAlignment="Center" />
+        <TextBlock x:Name="HdWrite" Text="↓" Foreground="{Binding HdWrite}" FontSize="40" HorizontalAlignment="Center" />
       </StackPanel>
     </Border>
 
     <Border Background="Transparent" Grid.Row="1" Grid.Column="6">
-      <TextBlock Text="↑" Foreground="White" FontSize="40" VerticalAlignment="Center" HorizontalAlignment="Center" />
+      <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+        <TextBlock Text="OPERATION:" Foreground="White" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" />
+        <TextBlock x:Name="HdOperation" Text="{Binding HdOperation}" Foreground="White" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" />
+    </StackPanel>
     </Border>
-
     <Border Background="#0000FF" Grid.Row="2" Grid.Column="5" Grid.ColumnSpan="2">
       <TextBlock Text="Hard Drive" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14"/>
     </Border>

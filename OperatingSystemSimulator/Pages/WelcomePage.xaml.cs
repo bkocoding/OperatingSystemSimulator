@@ -43,6 +43,7 @@ public sealed partial class WelcomePage : Page
         {
             timer.Stop();
             ConsoleLogger.Log("Desktop is loaded", LogType.Info);
+            HardwarePageViewModel.Instance.HdRead = new BrushConverter().ConvertFromString("#FFFFFF") as SolidColorBrush;
             wctext.Text = "Welcome";
             StartDelayTimer();
         }

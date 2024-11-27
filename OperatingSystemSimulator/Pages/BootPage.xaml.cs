@@ -1,5 +1,4 @@
 using OperatingSystemSimulator.Extras.ConsoleLogger;
-using OperatingSystemSimulator.MemoryHelper;
 using OperatingSystemSimulator.Services;
 using Windows.System;
 using Windows.UI.Core;
@@ -14,6 +13,7 @@ public sealed partial class BootPage : Page
     private int _messageIndex = 0;
     private string[] _currentMessages;
     private string _firstBootOrder;
+    private readonly HardwarePageViewModel HardwarePageViewModel = HardwarePageViewModel.Instance;
 
     private readonly BIOSSettingsService _biosSettingsService;
 
@@ -46,7 +46,8 @@ public sealed partial class BootPage : Page
     public BootPage()
     {
         InitializeComponent();
-
+        HardwarePageViewModel.Instance.RunningProcess = "BIOS Firmware";
+        HardwarePageViewModel.Instance.HdOperation = "DISK NOT MOUNTED";
         _biosSettingsService = (Application.Current as App)?.Host?.Services.GetRequiredService<BIOSSettingsService>();
         _firstBootOrder = _biosSettingsService.Settings.FirstBootOption;
 
@@ -104,6 +105,35 @@ public sealed partial class BootPage : Page
             }
             else
             {
+                if (message == "Scanning for devices..." ||
+                message == "Disk Device(s) Found: SATA-1" ||
+                message == "Starting disk devices..." ||
+                message == "Mounting file systems..." ||
+                message == "Checking disk integrity..." ||
+                message == "Disk integrity OK!")
+                {
+                    HardwarePageViewModel.HdRead = new BrushConverter().ConvertFromString("#00FF00") as SolidColorBrush;
+
+                }
+                else if (message == "Configuring network interfaces...")
+                {
+                    HardwarePageViewModel.HdRead = new BrushConverter().ConvertFromString("#FFFFFF") as SolidColorBrush;
+
+                    HardwarePageViewModel.NetworkOutput = new BrushConverter().ConvertFromString("#00FF00") as SolidColorBrush;
+                    Task.Delay(100).Wait();
+                    HardwarePageViewModel.NetworkOutput = new BrushConverter().ConvertFromString("#FFFFFF") as SolidColorBrush;
+
+
+                    HardwarePageViewModel.NetworkInput = new BrushConverter().ConvertFromString("#00FF00") as SolidColorBrush;
+                    Task.Delay(100).Wait();
+                    HardwarePageViewModel.NetworkInput = new BrushConverter().ConvertFromString("#FFFFFF") as SolidColorBrush;
+
+
+                }
+                else if (message == "Scanning disks for bootable parts...") 
+                {
+                    HardwarePageViewModel.HdRead = new BrushConverter().ConvertFromString("#00FF00") as SolidColorBrush;
+                }
                 ConsoleLogger.Log(message, LogType.Info);
                 BootInfoText.Text += message + "\n";
             }
@@ -131,6 +161,7 @@ public sealed partial class BootPage : Page
                 _timer.Stop();
                 if (!isEnteringBIOS)
                 {
+                    HardwarePageViewModel.HdRead = new BrushConverter().ConvertFromString("#FFFFFF") as SolidColorBrush;
                     switch (_firstBootOrder)
                     {
                         case "Simulated Operating System":
@@ -167,7 +198,7 @@ public sealed partial class BootPage : Page
             if (!isBusy && !isEnteringBIOS)
             {
                 ChangeSettingsInfoText();
-                while (!isBusy) 
+                while (!isBusy)
                 {
                     await Task.Delay(100);
                 }

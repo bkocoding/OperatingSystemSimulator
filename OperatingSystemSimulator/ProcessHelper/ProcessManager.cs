@@ -129,6 +129,10 @@ public class ProcessManager
     {
         foreach (var processBlock in ProcessBlocks.ToList().OrderByDescending(p => p.Pid))
         {
+            if (processBlock.Pid == 1)
+            {
+                continue;
+            }
             TerminateProcess(processBlock.Pid, reason);
         }
         nextPid = 100;
