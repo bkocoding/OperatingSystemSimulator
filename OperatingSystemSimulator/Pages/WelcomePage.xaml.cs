@@ -1,7 +1,4 @@
-
-using System.Drawing;
 using OperatingSystemSimulator.Extras.ConsoleLogger;
-using OperatingSystemSimulator.ProcessHelper;
 
 namespace OperatingSystemSimulator.Pages;
 public sealed partial class WelcomePage : Page
@@ -43,7 +40,8 @@ public sealed partial class WelcomePage : Page
         {
             timer.Stop();
             ConsoleLogger.Log("Desktop is loaded", LogType.Info);
-            HardwarePageViewModel.Instance.HdRead = new BrushConverter().ConvertFromString("#FFFFFF") as SolidColorBrush;
+            HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Idle);
+            HardwarePageViewModel.Instance.SetHDOperation(HDOperations.Idle);
             wctext.Text = "Welcome";
             StartDelayTimer();
         }

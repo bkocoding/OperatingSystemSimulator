@@ -1,3 +1,4 @@
+using OperatingSystemSimulator.EventHandlers;
 using OperatingSystemSimulator.Extras.ConsoleLogger;
 using OperatingSystemSimulator.Services;
 using Windows.System;
@@ -46,8 +47,9 @@ public sealed partial class BootPage : Page
     public BootPage()
     {
         InitializeComponent();
-        HardwarePageViewModel.Instance.RunningProcess = "BIOS Firmware";
-        HardwarePageViewModel.Instance.HdOperation = "DISK NOT MOUNTED";
+        MouseEventsHandler.Instance.IsPointerOutsideWindow();
+        HardwarePageViewModel.Instance.SetRunningProcess("BIOS Firmware");
+        HardwarePageViewModel.Instance.SetHDOperation(HDOperations.NotMounted);
         _biosSettingsService = (Application.Current as App)?.Host?.Services.GetRequiredService<BIOSSettingsService>();
         _firstBootOrder = _biosSettingsService.Settings.FirstBootOption;
 
@@ -112,27 +114,30 @@ public sealed partial class BootPage : Page
                 message == "Checking disk integrity..." ||
                 message == "Disk integrity OK!")
                 {
-                    HardwarePageViewModel.HdRead = new BrushConverter().ConvertFromString("#00FF00") as SolidColorBrush;
-
+                    HardwarePageViewModel.SetHDOperation(HDOperations.SMART);
+                    HardwarePageViewModel.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Running);
                 }
                 else if (message == "Configuring network interfaces...")
                 {
-                    HardwarePageViewModel.HdRead = new BrushConverter().ConvertFromString("#FFFFFF") as SolidColorBrush;
+                    HardwarePageViewModel.SetHDOperation(HDOperations.NotMounted);
+                    HardwarePageViewModel.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Idle);
 
-                    HardwarePageViewModel.NetworkOutput = new BrushConverter().ConvertFromString("#00FF00") as SolidColorBrush;
+                    HardwarePageViewModel.SetHardwareStatus(HardwareProperties.NetworkOutput, HardwareStatuses.Running);
                     Task.Delay(100).Wait();
-                    HardwarePageViewModel.NetworkOutput = new BrushConverter().ConvertFromString("#FFFFFF") as SolidColorBrush;
+                    HardwarePageViewModel.SetHardwareStatus(HardwareProperties.NetworkOutput, HardwareStatuses.Idle);
 
 
-                    HardwarePageViewModel.NetworkInput = new BrushConverter().ConvertFromString("#00FF00") as SolidColorBrush;
+                    HardwarePageViewModel.SetHardwareStatus(HardwareProperties.NetworkInput, HardwareStatuses.Running);
                     Task.Delay(100).Wait();
-                    HardwarePageViewModel.NetworkInput = new BrushConverter().ConvertFromString("#FFFFFF") as SolidColorBrush;
+                    HardwarePageViewModel.SetHardwareStatus(HardwareProperties.NetworkInput, HardwareStatuses.Idle);
+
 
 
                 }
                 else if (message == "Scanning disks for bootable parts...") 
                 {
-                    HardwarePageViewModel.HdRead = new BrushConverter().ConvertFromString("#00FF00") as SolidColorBrush;
+                    HardwarePageViewModel.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Running);
+                    HardwarePageViewModel.SetHDOperation(HDOperations.MBR);
                 }
                 ConsoleLogger.Log(message, LogType.Info);
                 BootInfoText.Text += message + "\n";
@@ -161,13 +166,16 @@ public sealed partial class BootPage : Page
                 _timer.Stop();
                 if (!isEnteringBIOS)
                 {
-                    HardwarePageViewModel.HdRead = new BrushConverter().ConvertFromString("#FFFFFF") as SolidColorBrush;
+                    HardwarePageViewModel.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Idle);
                     switch (_firstBootOrder)
                     {
                         case "Simulated Operating System":
+                            HardwarePageViewModel.SetHDOperation(HDOperations.OperatingSystem);
+                            HardwarePageViewModel.SetRunningProcess("Kernel");
                             Frame.Navigate(typeof(BootAnimationPage));
                             break;
                         case "Network Boot":
+                            HardwarePageViewModel.SetHDOperation(HDOperations.NotMounted);
                             Frame.Navigate(typeof(NetworkBootPage));
                             break;
 
@@ -202,6 +210,7 @@ public sealed partial class BootPage : Page
                 {
                     await Task.Delay(100);
                 }
+                HardwarePageViewModel.SetHDOperation(HDOperations.NotMounted);
                 currentFrame.Navigate(typeof(BIOSInfoPage));
                 ConsoleLogger.Log("Entered BIOS Firmware Settings", LogType.Info);
             }

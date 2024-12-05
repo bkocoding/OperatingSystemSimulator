@@ -31,19 +31,43 @@ public class MemoryManager
         }
     }
 
-    public bool IsMemoryHasAvailableSpace(int size)
+   public MemoryBlock? AllocateMemory(ProcessBlock processBlock, int size)
     {
-
-        return true;
+        int startAddress = 0;
+        int endAddress = 0;
+        foreach (MemoryBlock block in MemoryBlocks)
+        {
+            if (block.ProcessBlock == null)
+            {
+                if (block.Size >= size)
+                {
+                    startAddress = block.StartAddress;
+                    endAddress = block.StartAddress + size;
+                    block.ProcessBlock = processBlock;
+                    block.Size = block.Size - size;
+//                    block.StartAddress = block.StartAddress + size;
+                    return new MemoryBlock(processBlock, startAddress, endAddress);
+                }
+            }
+        }
+        return null;
     }
 
-    public MemoryBlock AllocateMemory(ProcessBlock processBlock)
+    public void DeallocateMemory(ProcessBlock processBlock)
     {
-        int startAdr = 0;
-        int endAdr = 0;
-        MemoryBlock memoryBlock = new(processBlock, startAdr, endAdr);
-        MemoryBlocks.Add(memoryBlock);
-        return memoryBlock;
+        foreach (MemoryBlock block in MemoryBlocks)
+        {
+            if (block.ProcessBlock == processBlock)
+            {
+                block.ProcessBlock = null;
+                block.Size = block.EndAddress - block.StartAddress;
+            }
+        }
+    }
+
+    public void InitializeMemory()
+    {
+        MemoryBlocks.Add(new MemoryBlock(0, memorySize));
     }
 
 }

@@ -37,8 +37,12 @@ public class ProcessManager
         }
     }
 
-    public ProcessBlock CreateProcess(Popup popup, object app, string name, bool isSingleInstance)
+    public bool IsTurnedOn { get; set; } = true;
+
+    public async Task<ProcessBlock> CreateProcess(Popup popup, object app, string name, bool isSingleInstance)
     {
+        HardwarePageViewModel.Instance.SetHDOperation(HDOperations.AppData);
+        HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Running);
         if (isSingleInstance)
         {
             foreach (ProcessBlock block in ProcessBlocks)
@@ -58,7 +62,9 @@ public class ProcessManager
         var processBlock = new ProcessBlock(pid, popup, app, name);
         ProcessBlocks.Add(processBlock);
         OnProcessCreated(processBlock);
-
+        await Task.Delay(100);
+        HardwarePageViewModel.Instance.SetHDOperation(HDOperations.Idle);
+        HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Idle);
         return processBlock;
     }
 
@@ -124,7 +130,7 @@ public class ProcessManager
         return false;
 
     }
-
+   
     public void TerminateAllProcesses(TerminateReasons reason)
     {
         foreach (var processBlock in ProcessBlocks.ToList().OrderByDescending(p => p.Pid))
@@ -172,26 +178,32 @@ public class ProcessManager
         }
     }
 
-    public void BringToFront(int pid)
+    public async void BringToFront(int pid)
     {
         var processBlock = GetProcessByPid(pid);
         if (processBlock != null)
         {
             if (focusedPopup != processBlock.Popup)
             {
+                HardwarePageViewModel.Instance.SetRunningProcess(processBlock.Name);
                 focusedPopup = processBlock.Popup;
                 processBlock.Popup.IsOpen = false;
                 processBlock.Popup.IsOpen = true;
+                await Task.Delay(400);
+                HardwarePageViewModel.Instance.SetRunningProcess("Kernel");
             }
         }
     }
 
-    private void OnProcessCreated(ProcessBlock processBlock)
+    private async void OnProcessCreated(ProcessBlock processBlock)
     {
         ConsoleLogger.Log($"{processBlock.Name} is initialized, PID: {processBlock.Pid}", LogType.Init);
         if (processBlock.Popup != null)
         {
             focusedPopup = processBlock.Popup;
+            HardwarePageViewModel.Instance.SetRunningProcess(processBlock.Name);
+            await Task.Delay(1000);
+            HardwarePageViewModel.Instance.SetRunningProcess("Kernel");
         }
     }
 

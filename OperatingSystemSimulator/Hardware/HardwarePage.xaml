@@ -36,7 +36,7 @@
     </Border>
 
     <Border Background="Transparent" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
-      <TextBlock x:Name="KeyStrokeInput" Text="←" Foreground="{Binding KeyStrokeInput}" FontSize="40" VerticalAlignment="Center" HorizontalAlignment="Center" />
+      <TextBlock x:Name="KeyStrokeInput" Text="←" Foreground="{Binding KeyStroke}" FontSize="40" VerticalAlignment="Center" HorizontalAlignment="Center" />
     </Border>
 
     <Border Background="Transparent" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">

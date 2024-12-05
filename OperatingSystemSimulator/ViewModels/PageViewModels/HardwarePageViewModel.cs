@@ -1,6 +1,5 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Windows.UI;
 
 namespace OperatingSystemSimulator.ViewModels.PageViewModels;
 
@@ -31,94 +30,178 @@ public class HardwarePageViewModel : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    private string _runningProcess = "";
+    public HardwarePage? hardwarePage { get; set; }
 
-    public string RunningProcess
+    //private string _runningProcess = "";
+
+    //private string RunningProcess
+    //{
+    //    get => _runningProcess;
+    //    set
+    //    {
+    //        _runningProcess = value;
+    //        OnPropertyChanged();
+    //    }
+    //}
+
+    //private string _hdOperation = "DISK NOT MOUNTED";
+
+    //private string HdOperation
+    //{
+    //    get => _hdOperation;
+    //    set
+    //    {
+    //        _hdOperation = value;
+    //        OnPropertyChanged();
+    //    }
+    //}
+
+    //private SolidColorBrush _keyStroke = HardwareStatuses.Idle.GetBrush();
+
+    //private SolidColorBrush KeyStroke
+    //{
+    //    get => _keyStroke;
+    //    set
+    //    {
+    //        _keyStroke = value;
+    //        OnPropertyChanged();
+    //    }
+    //}
+
+    //private SolidColorBrush _networkOutput = HardwareStatuses.Idle.GetBrush();
+    //private SolidColorBrush NetworkOutput
+    //{
+    //    get => _networkOutput;
+    //    set
+    //    {
+    //        _networkOutput = value;
+    //        OnPropertyChanged();
+    //    }
+    //}
+
+    //private SolidColorBrush _networkInput = HardwareStatuses.Idle.GetBrush();
+    //private SolidColorBrush NetworkInput
+    //{
+    //    get => _networkInput;
+    //    set
+    //    {
+    //        _networkInput = value;
+    //        OnPropertyChanged();
+    //    }
+    //}
+
+    //private SolidColorBrush _audioOutput = HardwareStatuses.Idle.GetBrush();
+    //private SolidColorBrush AudioOutput
+    //{
+    //    get => _audioOutput;
+    //    set
+    //    {
+    //        _audioOutput = value;
+    //        OnPropertyChanged();
+    //    }
+    //}
+
+    //private SolidColorBrush _hdWrite = HardwareStatuses.Idle.GetBrush();
+    //private SolidColorBrush HdWrite
+    //{
+    //    get => _hdWrite;
+    //    set
+    //    {
+    //        _hdWrite = value;
+    //        OnPropertyChanged();
+    //    }
+    //}
+
+    //private SolidColorBrush _hdRead = HardwareStatuses.Idle.GetBrush();
+    //private SolidColorBrush HdRead
+    //{
+    //    get => _hdRead;
+    //    set
+    //    {
+    //        _hdRead = value;
+    //        OnPropertyChanged();
+    //    }
+    //}
+
+    public void ResetStatuses()
     {
-        get => _runningProcess;
-        set
+        //KeyStroke = HardwareStatuses.Idle.GetBrush();
+        //NetworkOutput = HardwareStatuses.Idle.GetBrush();
+        //NetworkInput = HardwareStatuses.Idle.GetBrush();
+        //AudioOutput = HardwareStatuses.Idle.GetBrush();
+        //HdWrite = HardwareStatuses.Idle.GetBrush();
+        //HdRead = HardwareStatuses.Idle.GetBrush();
+        //HdOperation = "DISK NOT MOUNTED";
+        //RunningProcess = "";
+
+        if (hardwarePage != null)
         {
-            _runningProcess = value;
-            OnPropertyChanged();
+            hardwarePage.SetHardwareStatus(HardwareProperties.KeyStroke, HardwareStatuses.Idle);
+            hardwarePage.SetHardwareStatus(HardwareProperties.NetworkOutput, HardwareStatuses.Idle);
+            hardwarePage.SetHardwareStatus(HardwareProperties.NetworkInput, HardwareStatuses.Idle);
+            hardwarePage.SetHardwareStatus(HardwareProperties.AudioOutput, HardwareStatuses.Idle);
+            hardwarePage.SetHardwareStatus(HardwareProperties.HdWrite, HardwareStatuses.Idle);
+            hardwarePage.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Idle);
+            hardwarePage.SetHDOperation(HDOperations.NotMounted);
+            hardwarePage.SetRunningProcess("");
         }
     }
 
-    private string _hdOperation = "DISK NOT MOUNTED";
-
-    public string HdOperation 
+    public void SetHardwareStatus(HardwareProperties property, HardwareStatuses status)
     {
-        get => _hdOperation;
-        set
+        //var brush = status.GetBrush();
+
+        //switch (property)
+        //{
+        //    case HardwareProperties.KeyStroke:
+        //        KeyStroke = brush;
+        //        break;
+
+        //    case HardwareProperties.NetworkOutput:
+        //        NetworkOutput = brush;
+        //        break;
+
+        //    case HardwareProperties.NetworkInput:
+        //        NetworkInput = brush;
+        //        break;
+
+        //    case HardwareProperties.AudioOutput:
+        //        AudioOutput = brush;
+        //        break;
+
+        //    case HardwareProperties.HdWrite:
+        //        HdWrite = brush;
+        //        break;
+
+        //    case HardwareProperties.HdRead:
+        //        HdRead = brush;
+        //        break;
+
+        //    default:
+        //        throw new ArgumentOutOfRangeException(nameof(property), property, null);
+        //}
+
+        if(hardwarePage != null)
         {
-            _hdOperation = value;
-            OnPropertyChanged();
+            hardwarePage.SetHardwareStatus(property, status);
         }
     }
 
-    private SolidColorBrush _keyStrokeInput = new BrushConverter().ConvertFromString("#FFFFFF") as SolidColorBrush;
-
-    public SolidColorBrush KeyStrokeInput
+    public void SetHDOperation(HDOperations operation)
     {
-        get => _keyStrokeInput;
-        set
+        //HdOperation = operation;
+        if (hardwarePage != null)
         {
-            _keyStrokeInput = value;
-            OnPropertyChanged();
+            hardwarePage.SetHDOperation(operation);
         }
     }
 
-    private SolidColorBrush _networkOutput = new BrushConverter().ConvertFromString("#FFFFFF") as SolidColorBrush;
-    public SolidColorBrush NetworkOutput 
+    public void SetRunningProcess(string process)
     {
-        get => _networkOutput;
-        set 
+        //RunningProcess = process;
+        if (hardwarePage != null)
         {
-            _networkOutput = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private SolidColorBrush _networkInput = new BrushConverter().ConvertFromString("#FFFFFF") as SolidColorBrush;
-    public SolidColorBrush NetworkInput
-    {
-        get => _networkInput;
-        set
-        {
-            _networkInput = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private SolidColorBrush _audioOutput = new BrushConverter().ConvertFromString("#FFFFFF") as SolidColorBrush;
-    public SolidColorBrush AudioOutput
-    {
-        get => _audioOutput;
-        set
-        {
-            _audioOutput = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private SolidColorBrush _hdWrite = new BrushConverter().ConvertFromString("#FFFFFF") as SolidColorBrush;
-    public SolidColorBrush HdWrite
-    {
-        get => _hdWrite;
-        set
-        {
-            _hdWrite = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private SolidColorBrush _hdRead = new BrushConverter().ConvertFromString("#FFFFFF") as SolidColorBrush;
-    public SolidColorBrush HdRead
-    {
-        get => _hdRead;
-        set
-        {
-            _hdRead = value;
-            OnPropertyChanged();
+            hardwarePage.SetRunningProcess(process);
         }
     }
 

@@ -12,6 +12,7 @@ public sealed partial class ShutdownPage : Page
 
     public ShutdownPage()
     {
+        HardwarePageViewModel.Instance.SetHDOperation(HDOperations.OperatingSystem);
         InitializeComponent();
         restartButton.Visibility = Visibility.Collapsed;
         StartDotAnimation();
@@ -60,6 +61,9 @@ public sealed partial class ShutdownPage : Page
 
     private async void UpdateUIAfterDelay()
     {
+        HardwarePageViewModel.Instance.SetHDOperation(HDOperations.NotMounted);
+        HardwarePageViewModel.Instance.SetRunningProcess("Not Running");
+        ProcessManager.Instance.IsTurnedOn = false;
         if (restartButton.Dispatcher.HasThreadAccess)
         {
             restartButton.Visibility = Visibility.Visible;
@@ -75,7 +79,7 @@ public sealed partial class ShutdownPage : Page
 
     private void restartbtn_click(object sender, RoutedEventArgs e)
     {
-
+        ProcessManager.Instance.IsTurnedOn = true;
         Frame.Navigate(typeof(BootPage));
     }
 }

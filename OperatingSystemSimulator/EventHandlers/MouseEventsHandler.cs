@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml.Controls.Primitives;
 using OperatingSystemSimulator.ProcessHelper;
+using Windows.Devices.AllJoyn;
 using Windows.Foundation;
 using Windows.UI.Core;
 
@@ -41,8 +42,13 @@ namespace OperatingSystemSimulator.EventHandlers
             Window.Current.CoreWindow.PointerReleased += OnPointerReleased;
         }
 
-        private void OnPointerMoved(CoreWindow sender, PointerEventArgs e)
+        private async void OnPointerMoved(CoreWindow sender, PointerEventArgs e)
         {
+            if (!ProcessManager.Instance.IsTurnedOn)
+            {
+                return;
+            }
+            HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.KeyStroke, HardwareStatuses.Running);
             var pointerPosition = e.CurrentPoint.Position;
             var windowBounds = Window.Current.Bounds;
 
@@ -67,6 +73,9 @@ namespace OperatingSystemSimulator.EventHandlers
                     draggingPopup.VerticalOffset = newTop;
                 }
             }
+            await Task.Delay(1);
+            HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.KeyStroke, HardwareStatuses.Idle);
+
         }
 
         private void OnPointerReleased(CoreWindow sender, PointerEventArgs e)
@@ -76,7 +85,7 @@ namespace OperatingSystemSimulator.EventHandlers
 
         public void StartDragging(int pid, Point initialPointerPosition)
         {
-//            ProcessManager.Instance.BringToFront(pid);
+            //ProcessManager.Instance.BringToFront(pid);
             draggingPopup = ProcessManager.Instance.GetProcessByPid(pid).Popup;
             initialPointerOffset = new Point(
                 initialPointerPosition.X - draggingPopup.HorizontalOffset,
