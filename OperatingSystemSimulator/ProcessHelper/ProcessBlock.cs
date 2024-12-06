@@ -16,6 +16,7 @@ public class ProcessBlock
     public bool IsIdle { get; set; } = false;
     public bool IsRequired { get; set; } = false;
     public bool HasUI { get; set; } = true;
+    public bool IsUtilizationEnough { get; set; } = true;
     public int Size { get; set; }
 
     /// <summary>
@@ -25,12 +26,14 @@ public class ProcessBlock
     /// <param name="popup"></param>
     /// <param name="app"></param>
     /// <param name="name"></param>
-    public ProcessBlock(int pid, Popup popup, object app, string name)
+    /// <param name="isUtilizationEnough"></param>
+    public ProcessBlock(int pid, Popup popup, object app, string name, bool isUtilizationEnough)
     {
         Pid = pid;
         Popup = popup;
         App = app;
         Name = name;
+        IsUtilizationEnough = isUtilizationEnough;
         IntializePID();
         InitializePopup();
     }
@@ -39,10 +42,11 @@ public class ProcessBlock
     /// </summary>
     /// <param name="pid"></param>
     /// <param name="name"></param>
-    public ProcessBlock(int pid, string name) 
+    public ProcessBlock(int pid, string name, bool isUtilizationEnough) 
     {
         Pid = pid;
         Name = name;
+        IsUtilizationEnough = isUtilizationEnough;
         IsRequired = true;
         HasUI = false;
         IntializePID();
@@ -57,6 +61,10 @@ public class ProcessBlock
         else if (App is TaskManagerApp taskManagerApp)
         {
             taskManagerApp.Pid = Pid;
+        }
+        else if (App is NotepadApp notepadApp)
+        {
+            notepadApp.Pid = Pid;
         }
 
     }

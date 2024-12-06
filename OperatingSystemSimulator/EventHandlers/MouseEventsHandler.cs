@@ -1,6 +1,5 @@
 using Microsoft.UI.Xaml.Controls.Primitives;
 using OperatingSystemSimulator.ProcessHelper;
-using Windows.Devices.AllJoyn;
 using Windows.Foundation;
 using Windows.UI.Core;
 
@@ -11,8 +10,6 @@ namespace OperatingSystemSimulator.EventHandlers
         private static MouseEventsHandler? instance;
         private static readonly object lockObject = new();
 
-        private Point lastKnownPositionInsideWindow;
-        private bool isOutsideWindow;
         private Popup? draggingPopup;
         private Point initialPointerOffset;
 
@@ -40,6 +37,20 @@ namespace OperatingSystemSimulator.EventHandlers
         {
             Window.Current.CoreWindow.PointerMoved += OnPointerMoved;
             Window.Current.CoreWindow.PointerReleased += OnPointerReleased;
+            Window.Current.CoreWindow.PointerPressed += OnPointerPressed;
+        }
+
+        private async void OnPointerPressed(CoreWindow sender, PointerEventArgs args)
+        {
+            HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.KeyStroke, HardwareStatuses.Running);
+            await Task.Delay(10);
+            HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.KeyStroke, HardwareStatuses.Idle);
+
+        }
+
+        public void Initialize()
+        {
+            return;
         }
 
         private async void OnPointerMoved(CoreWindow sender, PointerEventArgs e)
@@ -81,25 +92,21 @@ namespace OperatingSystemSimulator.EventHandlers
         private void OnPointerReleased(CoreWindow sender, PointerEventArgs e)
         {
             draggingPopup = null;
+            HardwarePageViewModel.Instance.SetRunningProcess("Kernel");
         }
 
         public void StartDragging(int pid, Point initialPointerPosition)
         {
-            //ProcessManager.Instance.BringToFront(pid);
-            draggingPopup = ProcessManager.Instance.GetProcessByPid(pid).Popup;
+            var process = ProcessManager.Instance.GetProcessByPid(pid);
+            if (process == null)
+            {
+                return;
+            }
+            HardwarePageViewModel.Instance.SetRunningProcess(process.Name);
+            draggingPopup = process.Popup;
             initialPointerOffset = new Point(
                 initialPointerPosition.X - draggingPopup.HorizontalOffset,
                 initialPointerPosition.Y - draggingPopup.VerticalOffset);
-        }
-
-        public Point GetLastKnownPositionInsideWindow()
-        {
-            return lastKnownPositionInsideWindow;
-        }
-
-        public bool IsPointerOutsideWindow()
-        {
-            return isOutsideWindow;
         }
     }
 }

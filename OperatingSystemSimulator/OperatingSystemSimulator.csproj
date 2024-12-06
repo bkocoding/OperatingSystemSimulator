@@ -45,6 +45,7 @@
     </UnoFeatures>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Apps\NotepadApp.xaml" />
     <None Remove="Apps\Shell\ShellWindow.xaml" />
     <None Remove="Apps\TaskManagerApp.xaml" />
     <None Remove="Apps\TestApp.xaml" />
@@ -203,6 +204,16 @@
 
   <ItemGroup>
     <Page Update="Apps\TaskManagerApp.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Apps\NotepadApp.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Apps\NotepadApp.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

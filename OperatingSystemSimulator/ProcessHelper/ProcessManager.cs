@@ -9,6 +9,7 @@ public class ProcessManager
     private static ProcessManager? instance;
     private static readonly object lockObject = new();
 
+    private Random random = new Random();
     public ObservableCollection<ProcessBlock> ProcessBlocks { get; private set; }
 
     private int nextPid = 100;
@@ -18,6 +19,9 @@ public class ProcessManager
     {
         ProcessBlocks = [];
     }
+
+    private Queue<string> operationQueue = new();
+    private bool isProcessingQueue = false;
 
     public static ProcessManager Instance
     {
@@ -39,30 +43,31 @@ public class ProcessManager
 
     public bool IsTurnedOn { get; set; } = true;
 
-    public async Task<ProcessBlock> CreateProcess(Popup popup, object app, string name, bool isSingleInstance)
+    public async Task<ProcessBlock> CreateProcess(object app, string name, bool isSingleInstance, bool isUtilizationEnough)
     {
         HardwarePageViewModel.Instance.SetHDOperation(HDOperations.AppData);
         HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Running);
+
+        Popup popup = new();
+
         if (isSingleInstance)
         {
             foreach (ProcessBlock block in ProcessBlocks)
             {
-                if (block.App != null)
+                if (block.App != null && app.GetType() == block.App.GetType())
                 {
-                    if (app.GetType() == block.App.GetType())
-                    {
-                        BringToFront(block.Pid);
-                        return block;
-                    }
+                    BringToFront(block.Pid);
+                    return block;
                 }
             }
         }
 
         int pid = nextPid++;
-        var processBlock = new ProcessBlock(pid, popup, app, name);
+        var processBlock = new ProcessBlock(pid, popup, app, name, isUtilizationEnough);
         ProcessBlocks.Add(processBlock);
         OnProcessCreated(processBlock);
-        await Task.Delay(100);
+
+        await RandomDelay(true);
         HardwarePageViewModel.Instance.SetHDOperation(HDOperations.Idle);
         HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Idle);
         return processBlock;
@@ -130,7 +135,7 @@ public class ProcessManager
         return false;
 
     }
-   
+
     public void TerminateAllProcesses(TerminateReasons reason)
     {
         foreach (var processBlock in ProcessBlocks.ToList().OrderByDescending(p => p.Pid))
@@ -149,61 +154,115 @@ public class ProcessManager
         return ProcessBlocks.FirstOrDefault(p => p.Pid == pid);
     }
 
+    private void EnqueueRunningProcess(string processName)
+    {
+        lock (operationQueue)
+        {
+            operationQueue.Enqueue(processName);
+        }
+        ProcessQueue();
+    }
+
+    private async void ProcessQueue()
+    {
+        if (isProcessingQueue) return;
+
+        isProcessingQueue = true;
+
+        while (true)
+        {
+            string? processName = null;
+
+            lock (operationQueue)
+            {
+                if (operationQueue.Count > 0)
+                {
+                    processName = operationQueue.Dequeue();
+                }
+            }
+
+            if (!string.IsNullOrEmpty(processName))
+            {
+                HardwarePageViewModel.Instance.SetRunningProcess(processName);
+                await RandomDelay(false);
+            }
+            else
+            {
+                HardwarePageViewModel.Instance.SetRunningProcess("Kernel");
+                break;
+            }
+        }
+
+        isProcessingQueue = false;
+    }
+
+    private async Task RandomDelay(bool isSmallOperation)
+    {
+        int delay;
+        if (!isSmallOperation)
+        {
+            delay = random.Next(300, 601);
+        }
+        else
+        {
+            delay = random.Next(250, 301);
+        }
+        await Task.Delay(delay);
+    }
+
     public void StartOSServices()
     {
         ProcessBlock[] OSServices =
-        [
-            new(1, "Kernel"),
-            new(2, "Time Service"),
-            new(3, "Network Service")
-        ];
+        {
+            new(1, "Kernel", false),
+            new(2, "Time Service", false),
+            new(3, "Network Service", true)
+        };
+
         foreach (var service in OSServices)
         {
             ProcessBlocks.Add(service);
             OnProcessCreated(service);
+            EnqueueRunningProcess(service.Name);
         }
     }
 
     public void StartLogOnUser()
     {
         ProcessBlock[] LogOnServices =
-        [
-            new(4, "LogOn Service"),
-            new(5, "Desktop Service")
-        ];
+        {
+            new(4, "LogOn Service", true),
+            new(5, "Desktop Service", true)
+        };
+
         foreach (var service in LogOnServices)
         {
             ProcessBlocks.Add(service);
             OnProcessCreated(service);
+            EnqueueRunningProcess(service.Name);
         }
     }
 
-    public async void BringToFront(int pid)
+    public void BringToFront(int pid)
     {
         var processBlock = GetProcessByPid(pid);
-        if (processBlock != null)
+        if (processBlock != null && focusedPopup != processBlock.Popup)
         {
-            if (focusedPopup != processBlock.Popup)
-            {
-                HardwarePageViewModel.Instance.SetRunningProcess(processBlock.Name);
-                focusedPopup = processBlock.Popup;
-                processBlock.Popup.IsOpen = false;
-                processBlock.Popup.IsOpen = true;
-                await Task.Delay(400);
-                HardwarePageViewModel.Instance.SetRunningProcess("Kernel");
-            }
+            focusedPopup = processBlock.Popup;
+            processBlock.Popup.IsOpen = false;
+            processBlock.Popup.IsOpen = true;
+
+            EnqueueRunningProcess(processBlock.Name);
         }
     }
 
-    private async void OnProcessCreated(ProcessBlock processBlock)
+    private void OnProcessCreated(ProcessBlock processBlock)
     {
         ConsoleLogger.Log($"{processBlock.Name} is initialized, PID: {processBlock.Pid}", LogType.Init);
         if (processBlock.Popup != null)
         {
             focusedPopup = processBlock.Popup;
-            HardwarePageViewModel.Instance.SetRunningProcess(processBlock.Name);
-            await Task.Delay(1000);
-            HardwarePageViewModel.Instance.SetRunningProcess("Kernel");
+            EnqueueRunningProcess(processBlock.Name);
         }
     }
 

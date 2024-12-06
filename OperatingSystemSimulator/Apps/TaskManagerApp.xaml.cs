@@ -15,12 +15,12 @@ public sealed partial class TaskManagerApp : UserControl
             ShellTitleBar.Pid = _pid;
         }
     }
-    public TaskManagerApp(string title)
+    public TaskManagerApp()
     {
         InitializeComponent();
         ViewModel = new TaskManagerViewModel();
         DataContext = ViewModel;
-        ShellTitleBar.title = title;
+        ShellTitleBar.title = "Task Manager";
     }
 
     private void UserControl_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)

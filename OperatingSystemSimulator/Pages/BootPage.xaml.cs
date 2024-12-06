@@ -47,7 +47,7 @@ public sealed partial class BootPage : Page
     public BootPage()
     {
         InitializeComponent();
-        MouseEventsHandler.Instance.IsPointerOutsideWindow();
+        MouseEventsHandler.Instance.Initialize();
         HardwarePageViewModel.Instance.SetRunningProcess("BIOS Firmware");
         HardwarePageViewModel.Instance.SetHDOperation(HDOperations.NotMounted);
         _biosSettingsService = (Application.Current as App)?.Host?.Services.GetRequiredService<BIOSSettingsService>();

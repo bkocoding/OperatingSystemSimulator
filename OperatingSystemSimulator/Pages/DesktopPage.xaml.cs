@@ -21,16 +21,22 @@ public sealed partial class DesktopPage : Page
         Frame.Navigate(typeof(ShutdownPage));
     }
 
-    private void APP1_Click(object sender, RoutedEventArgs e)
+    private async void APP1_Click(object sender, RoutedEventArgs e)
     {
-        string title = "Test APP";
-        var processBlock = ProcessManager.Instance.CreateProcess(new Popup(), new TestApp(title), title, false);
+        string title = "Test App";
+        await ProcessManager.Instance.CreateProcess(new TestApp(), title, false, true);
 
     }
 
-    private void TaskMgr_Click(object sender, RoutedEventArgs e)
+    private async void TaskMgr_Click(object sender, RoutedEventArgs e)
     {
         string title = "Task Manager";
-        var processBlock = ProcessManager.Instance.CreateProcess(new Popup(), new TaskManagerApp(title), title, true);
+        await ProcessManager.Instance.CreateProcess(new TaskManagerApp(), title, true, false);
+    }
+
+    private async void Notepad_Click(object sender, RoutedEventArgs e)
+    {
+        string title = "Notepad";
+       await ProcessManager.Instance.CreateProcess(new NotepadApp("Untitled"), title, false, false);
     }
 }

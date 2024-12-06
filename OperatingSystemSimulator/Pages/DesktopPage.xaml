@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="Purple">
+    Background="#2C3D55">
 
   <Grid>
     <Grid.RowDefinitions>
@@ -26,12 +26,12 @@
             <RowDefinition Height="Auto"/>
           </Grid.RowDefinitions>
           <TextBlock HorizontalAlignment="Center" Grid.Row="0">😊</TextBlock>
-          <TextBlock  Grid.Row="1">TESTAPP</TextBlock>
+          <TextBlock  Grid.Row="1">Test App</TextBlock>
         </Grid>
       </Button.Content>
     </Button>
 
-    <Button VerticalAlignment="Top" Width="80" Height="50"  HorizontalAlignment="Left" Margin="10" Grid.Row="1" Background="Transparent" BorderBrush="Transparent" IsEnabled="False">
+    <Button VerticalAlignment="Top" Width="80" Height="50"  HorizontalAlignment="Left" Margin="10" Grid.Row="1" Background="Transparent" BorderBrush="Transparent"  Click="Notepad_Click">
       <Button.Content>
         <Grid>
           <Grid.RowDefinitions>

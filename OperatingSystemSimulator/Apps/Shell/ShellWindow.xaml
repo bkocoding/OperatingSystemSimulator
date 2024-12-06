@@ -16,7 +16,7 @@
           <ColumnDefinition Width="Auto"/>
           <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Column="1" x:Name="titleText" VerticalAlignment="Center" Margin="5" HorizontalAlignment="Center"/>
+        <TextBlock Grid.Column="1" x:Name="titleText" VerticalAlignment="Center" Margin="5" HorizontalAlignment="Center" TextWrapping="Wrap" MaxLines="1"/>
         <Button Grid.Column="2" Content="X" HorizontalAlignment="Right" Background="Transparent" BorderBrush="{x:Null}" Click="Button_Click"/>
       </Grid>
     </StackPanel>

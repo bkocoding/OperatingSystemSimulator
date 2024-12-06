@@ -15,10 +15,10 @@ public sealed partial class TestApp : UserControl
         }
     }
 
-    public TestApp(string title)
+    public TestApp()
     {
         InitializeComponent();
-        ShellTitleBar.title = title;
+        ShellTitleBar.title = "Test App";
         
     }
 
