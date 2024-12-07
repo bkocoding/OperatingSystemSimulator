@@ -1,4 +1,6 @@
 using Microsoft.UI.Xaml.Controls.Primitives;
+using OperatingSystemSimulator.Apps.Shell;
+using OperatingSystemSimulator.MemoryHelper;
 using OperatingSystemSimulator.ProcessHelper;
 using Windows.Foundation;
 using Windows.UI.Core;
@@ -95,15 +97,29 @@ namespace OperatingSystemSimulator.EventHandlers
             HardwarePageViewModel.Instance.SetRunningProcess("Kernel");
         }
 
-        public void StartDragging(int pid, Point initialPointerPosition)
+        public void StartDragging(int pid, Point initialPointerPosition, bool isApp)
         {
-            var process = ProcessManager.Instance.GetProcessByPid(pid);
-            if (process == null)
+
+            if (isApp)
             {
-                return;
-            }
+                var process = ProcessManager.Instance.GetProcessByPid(pid);
+                if (process == null)
+                {
+                    return;
+                }
             HardwarePageViewModel.Instance.SetRunningProcess(process.Name);
             draggingPopup = process.Popup;
+            }
+            else
+            {
+                var messageBlock = MessageManager.Instance.GetMessageBlock(pid);
+                if (messageBlock == null)
+                {
+                    return;
+                }
+                HardwarePageViewModel.Instance.SetRunningProcess("Kernel");
+                draggingPopup = messageBlock.Popup;
+            }
             initialPointerOffset = new Point(
                 initialPointerPosition.X - draggingPopup.HorizontalOffset,
                 initialPointerPosition.Y - draggingPopup.VerticalOffset);

@@ -10,7 +10,7 @@ public sealed partial class TestApp : UserControl
         set
         {
             _pid = value;
-            ShellTitleBar.Pid = _pid;
+            ShellTitleBar.EId = _pid;
             ContentText.Text = $"PID: {_pid}";
         }
     }

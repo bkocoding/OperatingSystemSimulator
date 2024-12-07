@@ -4,50 +4,71 @@ using OperatingSystemSimulator.ProcessHelper;
 using Windows.Foundation;
 using OperatingSystemSimulator.EventHandlers;
 
-namespace OperatingSystemSimulator.Apps.Shell
+namespace OperatingSystemSimulator.Apps.Shell;
+
+public sealed partial class ShellWindow : UserControl
 {
-    public sealed partial class ShellWindow : UserControl
+    public int EId { get; set; }
+    public bool IsApp { get; set; } = true;
+
+    private string? _title;
+    private Popup? popupInstance;
+
+    private Point initialPopupPosition;
+
+    public string? title
     {
-        public int Pid { get; set; }
-
-        private string? _title;
-        private Popup? popupInstance;
-
-        private Point initialPopupPosition;
-
-        public string? title
+        get => _title;
+        set
         {
-            get => _title;
-            set
+            if (_title != value)
             {
-                if (_title != value)
-                {
-                    _title = value;
-                    titleText.Text = _title;
-                }
+                _title = value;
+                titleText.Text = _title;
             }
         }
+    }
 
-        public ShellWindow()
+    public ShellWindow()
+    {
+        InitializeComponent();
+    }
+
+    private void Button_Click(object sender, RoutedEventArgs e)
+    {
+        if (IsApp)
         {
-            InitializeComponent();
+            if (ProcessManager.Instance.GetProcessByPid(EId).App is NotepadApp notepadApp)
+            {
+                notepadApp.TryTerminate();
+            }
+            else
+            {
+                ProcessManager.Instance.TerminateProcess(EId, TerminateReasons.Self);
+            }
         }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
+        else
         {
-            ProcessManager.Instance.TerminateProcess(Pid, TerminateReasons.Self);
+            MessageManager.Instance.Close(EId);
         }
+    }
 
-        private void Pointer_Pressed(object sender, PointerRoutedEventArgs e)
+    private void Pointer_Pressed(object sender, PointerRoutedEventArgs e)
+    {
+        var pointerPosition = e.GetCurrentPoint(Window.Current.Content as UIElement).Position;
+
+        MouseEventsHandler.Instance.StartDragging(EId, pointerPosition, IsApp);
+    }
+
+    private void UserControl_PointerPressed(object sender, PointerRoutedEventArgs e)
+    {
+        if (IsApp)
         {
-            var pointerPosition = e.GetCurrentPoint(Window.Current.Content as UIElement).Position;
-
-            MouseEventsHandler.Instance.StartDragging(Pid, pointerPosition);
+            ProcessManager.Instance.BringToFront(EId);
         }
-
-        private void UserControl_PointerPressed(object sender, PointerRoutedEventArgs e)
+        else
         {
-            ProcessManager.Instance.BringToFront(Pid);
+            MessageManager.Instance.BringToFront(EId);
         }
     }
 }

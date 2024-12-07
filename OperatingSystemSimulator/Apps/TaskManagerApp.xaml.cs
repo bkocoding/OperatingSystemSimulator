@@ -12,7 +12,7 @@ public sealed partial class TaskManagerApp : UserControl
         set
         {
             _pid = value;
-            ShellTitleBar.Pid = _pid;
+            ShellTitleBar.EId = _pid;
         }
     }
     public TaskManagerApp()

@@ -11,7 +11,7 @@
     d:DesignWidth="400"
     PointerPressed="UserControl_PointerPressed">
 
-  <Grid Background="#2C3D55" BorderThickness="1" BorderBrush="Black">
+  <Grid Background="#3a3a3a" BorderThickness="1" BorderBrush="Black">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto"/>
       <RowDefinition Height="Auto"/>
@@ -21,7 +21,7 @@
     <shell:ShellWindow x:Name="ShellTitleBar" Grid.Row="0" MaxWidth="400"/>
 
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" Margin="5">
-      <Button x:Name="SaveButton" Content="Save" Height="25" Margin="0,0,10,0" Click="SaveButton_Click" Foreground="Black" Background="#D2D7DF"/>
+      <Button x:Name="SaveButton" Content="Save" Height="25" Margin="0,0,10,0" Click="SaveButton_Click" Foreground="Black" Background="#D2D7DF" IsEnabled="False"/>
       <Button x:Name="SaveAsButton" Content="Save As" Height="25" Click="SaveAsButton_Click" Foreground="Black" Background="#D2D7DF"/>
     </StackPanel>
 

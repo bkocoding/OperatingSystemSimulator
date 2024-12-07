@@ -44,10 +44,6 @@
       </Button.Content>
     </Button>
 
-    <Popup x:Name="MyPopup" IsLightDismissEnabled="True">
-      <!--<Grid Background="LightGray" Width="200" Height="200"/>-->
-    </Popup>
-
     <StackPanel VerticalAlignment="Bottom" Grid.Row="5" Background="Gray" Height="55">
       <Grid>
         <Grid.ColumnDefinitions>

@@ -11,9 +11,23 @@ public class ProcessManager
 
     private Random random = new Random();
     public ObservableCollection<ProcessBlock> ProcessBlocks { get; private set; }
-
     private int nextPid = 100;
+
+    public event Action<Popup?>? FocusedPopupChanged;
+
     private Popup? focusedPopup;
+    public Popup? FocusedPopup
+    {
+        get => focusedPopup;
+        set
+        {
+            if (focusedPopup != value)
+            {
+                focusedPopup = value;
+                FocusedPopupChanged?.Invoke(focusedPopup);
+            }
+        }
+    }
 
     private ProcessManager()
     {
@@ -86,9 +100,9 @@ public class ProcessManager
         {
             processBlock.Popup.IsOpen = false;
             processBlock.Popup.Child = null;
-            if (focusedPopup == processBlock.Popup)
+            if (FocusedPopup == processBlock.Popup)
             {
-                focusedPopup = null;
+                FocusedPopup = null;
             }
             processBlock.Popup = null;
 
@@ -119,14 +133,14 @@ public class ProcessManager
 
     public bool TerminateFocusedProcess()
     {
-        if (focusedPopup == null)
+        if (FocusedPopup == null)
         {
             return false;
         }
 
         foreach (var block in ProcessBlocks)
         {
-            if (block.Popup == focusedPopup)
+            if (block.Popup == FocusedPopup)
             {
                 TerminateProcess(block.Pid, TerminateReasons.Self);
                 return true;
@@ -246,9 +260,9 @@ public class ProcessManager
     public void BringToFront(int pid)
     {
         var processBlock = GetProcessByPid(pid);
-        if (processBlock != null && focusedPopup != processBlock.Popup)
+        if (processBlock != null && FocusedPopup != processBlock.Popup)
         {
-            focusedPopup = processBlock.Popup;
+            FocusedPopup = processBlock.Popup;
             processBlock.Popup.IsOpen = false;
             processBlock.Popup.IsOpen = true;
 
@@ -261,7 +275,7 @@ public class ProcessManager
         ConsoleLogger.Log($"{processBlock.Name} is initialized, PID: {processBlock.Pid}", LogType.Init);
         if (processBlock.Popup != null)
         {
-            focusedPopup = processBlock.Popup;
+            FocusedPopup = processBlock.Popup;
             EnqueueRunningProcess(processBlock.Name);
         }
     }

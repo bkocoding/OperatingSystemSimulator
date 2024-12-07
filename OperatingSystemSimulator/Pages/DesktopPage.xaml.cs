@@ -37,6 +37,6 @@ public sealed partial class DesktopPage : Page
     private async void Notepad_Click(object sender, RoutedEventArgs e)
     {
         string title = "Notepad";
-       await ProcessManager.Instance.CreateProcess(new NotepadApp("Untitled"), title, false, false);
+       await ProcessManager.Instance.CreateProcess(new NotepadApp(), title, false, false);
     }
 }
