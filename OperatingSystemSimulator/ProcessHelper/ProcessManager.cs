@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using OperatingSystemSimulator.Apps;
 using OperatingSystemSimulator.Extras.ConsoleLogger;
+using Uno.Disposables;
 
 namespace OperatingSystemSimulator.ProcessHelper;
 
@@ -142,7 +144,14 @@ public class ProcessManager
         {
             if (block.Popup == FocusedPopup)
             {
-                TerminateProcess(block.Pid, TerminateReasons.Self);
+                if (block.App is NotepadApp notepad)
+                {
+                    notepad.TryTerminate();
+                }
+                else
+                {
+                    TerminateProcess(block.Pid, TerminateReasons.Self);
+                }
                 return true;
             }
         }
@@ -158,7 +167,19 @@ public class ProcessManager
             {
                 continue;
             }
-            TerminateProcess(processBlock.Pid, reason);
+            else if (reason != TerminateReasons.Unexpected && processBlock.App is NotepadApp notepad)
+            {
+                notepad.TryTerminate();
+            }
+            else if(processBlock.App is NotepadApp notepadApp)
+            {
+                notepadApp.UnsubscribeToFocusedPopUpChangedEvent();
+                TerminateProcess(processBlock.Pid, reason);
+            }
+            else
+            {
+                TerminateProcess(processBlock.Pid, reason);
+            }
         }
         nextPid = 100;
     }

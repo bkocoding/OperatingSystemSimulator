@@ -135,12 +135,24 @@ public sealed partial class NotepadApp : UserControl
         {
             if (!exitMessageExists)
             {
+                ProcessManager.Instance.FocusedPopupChanged -= OnFocusedPopupChanged;
                 ProcessManager.Instance.TerminateProcess(Pid, TerminateReasons.Self);
             }
-            else { 
+            else
+            {
                 MessageManager.Instance.BringToFront(lastMessageID.Value);
             }
         }
+    }
+    public void UnsubscribeToFocusedPopUpChangedEvent()
+    {
+        ProcessManager.Instance.FocusedPopupChanged -= OnFocusedPopupChanged;
+    }
+
+    ~NotepadApp()
+    {
+        ProcessManager.Instance.FocusedPopupChanged -= OnFocusedPopupChanged;
+
     }
 
 }

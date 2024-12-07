@@ -33,7 +33,7 @@ public class MessageManager
         MessageBlocks = [];
     }
 
-    public MessageBlock CreateMessage(int pid, string title, string message, bool hasCancel) 
+    public MessageBlock CreateMessage(int pid, string title, string message, bool hasCancel)
     {
         MessageBlock messageBlock = new(nextMid, pid, title, message, hasCancel);
         nextMid++;
@@ -49,6 +49,7 @@ public class MessageManager
         MessageBlock? messageBlock = GetMessageBlock(mid);
         if (messageBlock != null)
         {
+            ProcessManager.Instance.FocusedPopup = null;
             messageBlock.Popup.IsOpen = false;
             messageBlock.Popup.IsOpen = true;
         }
@@ -67,6 +68,6 @@ public class MessageManager
     }
     public MessageBlock? GetMessageBlock(int mid)
     {
-        return MessageBlocks.FirstOrDefault(p=> p.Mid == mid);
+        return MessageBlocks.FirstOrDefault(p => p.Mid == mid);
     }
 }
