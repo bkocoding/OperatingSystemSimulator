@@ -31,6 +31,7 @@ public sealed partial class NotepadApp : UserControl
     private bool isChanged = false;
     private bool isFile = false;
     private bool exitMessageExists = false;
+    private bool WrappingEnabled = true;
     private int? lastMessageID;
     public NotepadApp(string title)
     {
@@ -123,7 +124,7 @@ public sealed partial class NotepadApp : UserControl
     {
         if (isChanged && !exitMessageExists)
         {
-            var messageBlock = MessageManager.Instance.CreateMessage(Pid, "Notepad", "Do you want to save changes?", true);
+            var messageBlock = MessageManager.Instance.CreateMessage(Pid, "Warning - Notepad", "Do you want to save changes?", true);
             lastMessageID = messageBlock.Mid;
             exitMessageExists = true;
             bool? result = await messageBlock.MessageResult.Task;
@@ -204,4 +205,24 @@ public sealed partial class NotepadApp : UserControl
 
     }
 
+    private void WrappingButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (WrappingEnabled)
+        {
+            WrappingEnabled = false;
+            WrappingButton.Content = "No Wrap";
+            NotepadTextBox.TextWrapping = TextWrapping.NoWrap;
+
+        }
+        else 
+        {
+            WrappingEnabled = true;
+            WrappingButton.Content = "Wrap";
+            NotepadTextBox.TextWrapping = TextWrapping.Wrap;
+        }
+        var currentText = NotepadTextBox.Text;
+        NotepadTextBox.Text = string.Empty;
+        NotepadTextBox.Text = currentText;
+
+    }
 }

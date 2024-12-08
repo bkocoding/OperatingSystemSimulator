@@ -1,4 +1,5 @@
 
+using Microsoft.UI.Windowing;
 using OperatingSystemSimulator.Extras.ConsoleLogger;
 using OperatingSystemSimulator.ProcessHelper;
 using Windows.System;
@@ -84,6 +85,8 @@ public class KeyboardEventsHandler
                         };
                     }
                     _app.HardwareWindow.Activate();
+                    var overlappedPresenter = (OverlappedPresenter)_app.HardwareWindow.AppWindow.Presenter;
+                    overlappedPresenter.IsResizable = false;
                     ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(1280, 720);
                 }
             }

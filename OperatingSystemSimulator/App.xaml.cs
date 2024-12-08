@@ -1,3 +1,7 @@
+using System.Drawing;
+using Microsoft.Maui;
+using Microsoft.Maui.Platform;
+using Microsoft.UI.Windowing;
 using OperatingSystemSimulator.Services;
 using Uno.Resizetizer;
 using Windows.UI.ViewManagement;
@@ -105,17 +109,23 @@ public partial class App : Application
             // parameter
             rootFrame.Navigate(typeof(BootPage), args.Arguments);
         }
-        // Ensure the current window is active
+
         MainWindow.Activate();
 
         ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(1280, 260);
         HardwareWindow = new Window
         {
             Title = "Virtual Hardware",
-            Content = HardwarePage
+            Content = HardwarePage,
         };
+
+        var OPHardwareWindow = (OverlappedPresenter)HardwareWindow.AppWindow.Presenter;
+
+        OPHardwareWindow.IsResizable = false;
+
         MainWindow.Closed += (s, e) => HardwareWindow.Close();
         HardwareWindow.Activate();
         ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(1280, 720);
     }
+
 }

@@ -6,7 +6,7 @@ public class MemoryManager
 {
     private static MemoryManager? instance;
     private static readonly object lockObject = new();
-    private static readonly int pageSize = 4096;
+    private static readonly int maxPageFileSize = 80000;
     public static readonly int memorySize = 64000000;
 
     public ObservableCollection<MemoryBlock> MemoryBlocks { get; private set; }
@@ -31,7 +31,7 @@ public class MemoryManager
         }
     }
 
-   public MemoryBlock? AllocateMemory(ProcessBlock processBlock, int size)
+   public MemoryBlock? AllocateMemory(ProcessBlock processBlock)
     {
         int startAddress = 0;
         int endAddress = 0;
@@ -39,13 +39,13 @@ public class MemoryManager
         {
             if (block.ProcessBlock == null)
             {
-                if (block.Size >= size)
+                if (block.Size >= processBlock.Size)
                 {
                     startAddress = block.StartAddress;
-                    endAddress = block.StartAddress + size;
+                    endAddress = block.StartAddress + processBlock.Size;
                     block.ProcessBlock = processBlock;
-                    block.Size = block.Size - size;
-//                    block.StartAddress = block.StartAddress + size;
+                    block.Size = block.Size - processBlock.Size;
+
                     return new MemoryBlock(processBlock, startAddress, endAddress);
                 }
             }

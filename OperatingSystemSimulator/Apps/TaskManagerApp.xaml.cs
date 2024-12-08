@@ -46,6 +46,11 @@ public sealed partial class TaskManagerApp : UserControl
         if (button != null)
         {
             int pid = (int)button.Tag;
+
+            if (ProcessManager.Instance.GetProcessByPid(pid).App is NotepadApp notepad) {
+                notepad.UnsubscribeToFocusedPopUpChangedEvent();
+            }
+
             ProcessManager.Instance.TerminateProcess(pid, TerminateReasons.User);
         }
     }

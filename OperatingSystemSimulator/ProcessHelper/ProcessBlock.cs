@@ -79,12 +79,12 @@ public class ProcessBlock
 
         do
         {
-            newWidthOffset = random.Next(50, 601);
+            newWidthOffset = random.Next(50, (int)(Window.Current.Bounds.Width)/2);
         } while (newWidthOffset == previousWidthOffset);
-
+        
         do
         {
-            newHeightOffset = random.Next(50, 601);
+            newHeightOffset = random.Next(50, (int)(Window.Current.Bounds.Width)/2);
         } while (newHeightOffset == previousHeightOffset);
 
         previousWidthOffset = newWidthOffset;

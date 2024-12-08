@@ -1,3 +1,4 @@
+using Microsoft.Maui;
 using Windows.UI;
 
 namespace OperatingSystemSimulator.Hardware;

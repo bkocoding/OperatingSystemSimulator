@@ -6,7 +6,13 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="#333333">
+    Background="#333333"
+  MinHeight="260"
+  MinWidth="1280"
+  MaxHeight="260"
+  MaxWidth="1280"
+  Width="1280"
+  Height="260">
 
   <Grid>
     <Grid.RowDefinitions>
@@ -89,7 +95,7 @@
       <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
         <TextBlock Text="OPERATION:" Foreground="White" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" />
         <TextBlock x:Name="HdOperation" Text="{Binding HdOperation}" Foreground="White" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" />
-    </StackPanel>
+      </StackPanel>
     </Border>
     <Border Background="#0000FF" Grid.Row="2" Grid.Column="5" Grid.ColumnSpan="2">
       <TextBlock Text="Hard Drive" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14"/>
