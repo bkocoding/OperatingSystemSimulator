@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using OperatingSystemSimulator.Apps;
 using OperatingSystemSimulator.Extras.ConsoleLogger;
 using Uno.Disposables;
+using Windows.UI.Input.Inking;
 
 namespace OperatingSystemSimulator.ProcessHelper;
 
@@ -33,11 +34,15 @@ public class ProcessManager
 
     private ProcessManager()
     {
-        ProcessBlocks = [];
+        ProcessBlocks = new ObservableCollection<ProcessBlock>();
     }
 
     private Queue<string> operationQueue = new();
     private bool isProcessingQueue = false;
+
+    // Interrupt-related fields
+    private bool isInterruptActive = false;
+    private string? interruptOperation;
 
     public static ProcessManager Instance
     {
@@ -100,6 +105,7 @@ public class ProcessManager
 
         if (!processBlock.IsRequired)
         {
+            InterruptQueue(pid);
             processBlock.Popup.IsOpen = false;
             processBlock.Popup.Child = null;
             if (FocusedPopup == processBlock.Popup)
@@ -171,7 +177,7 @@ public class ProcessManager
             {
                 notepad.TryTerminate();
             }
-            else if(processBlock.App is NotepadApp notepadApp)
+            else if (processBlock.App is NotepadApp notepadApp)
             {
                 notepadApp.UnsubscribeToFocusedPopUpChangedEvent();
                 TerminateProcess(processBlock.Pid, reason);
@@ -189,11 +195,21 @@ public class ProcessManager
         return ProcessBlocks.FirstOrDefault(p => p.Pid == pid);
     }
 
-    private void EnqueueRunningProcess(string processName)
+    private void EnqueueRunningProcess(int pid)
     {
         lock (operationQueue)
         {
-            operationQueue.Enqueue(processName);
+            operationQueue.Enqueue(GetProcessByPid(pid).Name);
+        }
+        ProcessQueue();
+    }
+
+    public void InterruptQueue(int pid)
+    {
+        lock (operationQueue)
+        {
+            isInterruptActive = true;
+            interruptOperation = GetProcessByPid(pid).Name;
         }
         ProcessQueue();
     }
@@ -210,7 +226,13 @@ public class ProcessManager
 
             lock (operationQueue)
             {
-                if (operationQueue.Count > 0)
+                if (isInterruptActive && interruptOperation != null)
+                {
+                    processName = interruptOperation;
+                    isInterruptActive = false;
+                    interruptOperation = null;
+                }
+                else if (operationQueue.Count > 0)
                 {
                     processName = operationQueue.Dequeue();
                 }
@@ -258,7 +280,7 @@ public class ProcessManager
         {
             ProcessBlocks.Add(service);
             OnProcessCreated(service);
-            EnqueueRunningProcess(service.Name);
+            EnqueueRunningProcess(service.Pid);
         }
     }
 
@@ -274,7 +296,7 @@ public class ProcessManager
         {
             ProcessBlocks.Add(service);
             OnProcessCreated(service);
-            EnqueueRunningProcess(service.Name);
+            EnqueueRunningProcess(service.Pid);
         }
     }
 
@@ -287,7 +309,7 @@ public class ProcessManager
             processBlock.Popup.IsOpen = false;
             processBlock.Popup.IsOpen = true;
 
-            EnqueueRunningProcess(processBlock.Name);
+            EnqueueRunningProcess(processBlock.Pid);
         }
     }
 
@@ -297,12 +319,13 @@ public class ProcessManager
         if (processBlock.Popup != null)
         {
             FocusedPopup = processBlock.Popup;
-            EnqueueRunningProcess(processBlock.Name);
+            EnqueueRunningProcess(processBlock.Pid);
         }
     }
 
     private static void OnProcessTerminated(ProcessBlock processBlock, TerminateReasons reason)
     {
+        
         string log = $"{processBlock.Name} is terminated, PID: {processBlock.Pid}, Reason: {reason.GetDescription()}";
         LogType logType;
 
@@ -327,5 +350,4 @@ public class ProcessManager
 
         ConsoleLogger.Log(log, logType);
     }
-
 }

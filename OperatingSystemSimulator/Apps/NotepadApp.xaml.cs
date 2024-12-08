@@ -56,11 +56,25 @@ public sealed partial class NotepadApp : UserControl
     private void SaveButton_Click(object sender, RoutedEventArgs e)
     {
         ProcessManager.Instance.BringToFront(Pid);
+        SaveChanges();
+        if (true) //TODO: Check if the file is saved successfully via SelectFileDialog
+        {
+            SetTitle(Title);
+            isChanged = false;
+        }
     }
 
     private void SaveAsButton_Click(object sender, RoutedEventArgs e)
     {
         ProcessManager.Instance.BringToFront(Pid);
+        SaveAs();
+        if (true) //TODO: Check if the file is saved successfully via CreateFileDialog
+        {
+            Title = "New File";
+            SetTitle(Title);
+            isChanged = false;
+            isFile = true;
+        }
     }
 
     private void UserControl_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
@@ -82,6 +96,7 @@ public sealed partial class NotepadApp : UserControl
             SetTitle("* " + Title);
             isChanged = true;
         }
+        ProcessManager.Instance.InterruptQueue(Pid);
     }
 
     private void ActivateTyping()
@@ -116,7 +131,14 @@ public sealed partial class NotepadApp : UserControl
             if (result == true)
             {
                 exitMessageExists = false;
-                //TODO: SaveChanges() Logic
+                if (isFile)
+                {
+                    SaveChanges();
+                }
+                else
+                {
+                    SaveAs();
+                }
                 ProcessManager.Instance.FocusedPopupChanged -= OnFocusedPopupChanged;
                 ProcessManager.Instance.TerminateProcess(Pid, TerminateReasons.Self);
             }
@@ -144,6 +166,33 @@ public sealed partial class NotepadApp : UserControl
             }
         }
     }
+
+    private async void SaveChanges()
+    {
+        if (!isChanged)
+        {
+            return;
+        }
+        //TODO: Change the file to save it
+        HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdWrite, HardwareStatuses.Running);
+        HardwarePageViewModel.Instance.SetHDOperation(HDOperations.ChangingFile);
+        await Task.Delay(300);
+        HardwarePageViewModel.Instance.SetHDOperation(HDOperations.Idle);
+        HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdWrite, HardwareStatuses.Idle);
+
+    }
+
+    private async void SaveAs()
+    {
+        //TODO: Create a new file and save
+        HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdWrite, HardwareStatuses.Running);
+        HardwarePageViewModel.Instance.SetHDOperation(HDOperations.CreatingFile);
+        await Task.Delay(300);
+        HardwarePageViewModel.Instance.SetHDOperation(HDOperations.Idle);
+        HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdWrite, HardwareStatuses.Idle);
+        SaveButton.IsEnabled = true;
+    }
+
     public void UnsubscribeToFocusedPopUpChangedEvent()
     {
         ProcessManager.Instance.FocusedPopupChanged -= OnFocusedPopupChanged;

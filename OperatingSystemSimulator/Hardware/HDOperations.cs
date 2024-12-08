@@ -7,8 +7,10 @@ public enum HDOperations
     OperatingSystem,
     MBR,
     SMART,
-    AppData
-
+    AppData,
+    CreatingFile,
+    ChangingFile,
+    DeletingFile
 }
 
 public static class HDOperationsExtensions
@@ -23,7 +25,10 @@ public static class HDOperationsExtensions
             HDOperations.MBR => "Master Boot Record",
             HDOperations.SMART => "S.M.A.R.T. Status",
             HDOperations.AppData => "Application Data",
-            _ => throw new ArgumentOutOfRangeException(nameof(operation), operation, null)
+            HDOperations.CreatingFile => "Creating File",
+            HDOperations.ChangingFile => "Changing File",
+            HDOperations.DeletingFile => "Deleting File",
+            _ => "Standard Operation"
         };
     }
 }

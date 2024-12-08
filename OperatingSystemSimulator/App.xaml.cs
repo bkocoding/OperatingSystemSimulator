@@ -114,6 +114,7 @@ public partial class App : Application
             Title = "Virtual Hardware",
             Content = HardwarePage
         };
+        MainWindow.Closed += (s, e) => HardwareWindow.Close();
         HardwareWindow.Activate();
         ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(1280, 720);
     }
