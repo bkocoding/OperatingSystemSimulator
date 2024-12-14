@@ -6,7 +6,8 @@ public class MemoryManager
 {
     private static MemoryManager? instance;
     private static readonly object lockObject = new();
-    private static readonly int maxPageFileSize = 80000;
+    private static readonly int maxPageFileSize = 160000;
+    private static readonly int pageSize = 80000;
     public static readonly int memorySize = 64000000;
 
     public ObservableCollection<MemoryBlock> MemoryBlocks { get; private set; }
@@ -31,7 +32,7 @@ public class MemoryManager
         }
     }
 
-   public MemoryBlock? AllocateMemory(ProcessBlock processBlock)
+public MemoryBlock? AllocateMemory(ProcessBlock processBlock)
     {
         int startAddress = 0;
         int endAddress = 0;

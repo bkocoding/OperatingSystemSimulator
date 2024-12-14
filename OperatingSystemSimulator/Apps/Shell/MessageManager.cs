@@ -1,5 +1,4 @@
 using System.Collections.ObjectModel;
-using Microsoft.UI.Windowing;
 using OperatingSystemSimulator.ProcessHelper;
 
 namespace OperatingSystemSimulator.Apps.Shell;
@@ -9,7 +8,7 @@ public class MessageManager
     private static readonly object lockObject = new();
 
     public ObservableCollection<MessageBlock> MessageBlocks { get; private set; }
-    private int nextMid = 100;
+    private int nextMid = 10;
 
     public static MessageManager Instance
     {
@@ -63,6 +62,7 @@ public class MessageManager
             messageBlock.Popup.Child = null;
             messageBlock.Popup = null;
             messageBlock.MessageBox = null;
+            MessageBlocks.Remove(messageBlock);
             GC.Collect();
         }
     }

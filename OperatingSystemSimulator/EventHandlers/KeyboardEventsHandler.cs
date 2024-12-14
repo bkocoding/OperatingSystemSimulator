@@ -51,6 +51,7 @@ public class KeyboardEventsHandler
                 return;
             }
             HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.KeyStroke, HardwareStatuses.Running);
+            ProcessManager.Instance.InterruptQueueAsync(1);
             Frame currentFrame = (Frame)Window.Current.Content;
 
             if (args.VirtualKey == VirtualKey.F11)
@@ -77,7 +78,7 @@ public class KeyboardEventsHandler
 
                     if (_app.HardwareWindow == null || !_app.HardwareWindow.Visible)
                     {
-                        ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(1280, 260);
+                        ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(750, 260);
                         _app.HardwareWindow = new Window
                         {
                             Title = "Virtual Hardware",

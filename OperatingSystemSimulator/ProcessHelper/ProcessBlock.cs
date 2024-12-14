@@ -35,7 +35,6 @@ public class ProcessBlock
         Name = name;
         IsUtilizationEnough = isUtilizationEnough;
         IntializePID();
-        InitializePopup();
     }
     /// <summary>
     /// For creating a new UI-less application Process Block, Kernel Level and required for OS
@@ -69,7 +68,7 @@ public class ProcessBlock
 
     }
 
-    private void InitializePopup()
+    public void InitializePopup()
     {
 
         Popup.Child = App as UIElement;

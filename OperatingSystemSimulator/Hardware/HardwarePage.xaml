@@ -8,10 +8,10 @@
     mc:Ignorable="d"
     Background="#333333"
   MinHeight="260"
-  MinWidth="1280"
+  MinWidth="750"
   MaxHeight="260"
-  MaxWidth="1280"
-  Width="1280"
+  MaxWidth="750"
+  Width="750"
   Height="260">
 
   <Grid>
@@ -21,13 +21,13 @@
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="*" />
-      <ColumnDefinition Width="*" />
-      <ColumnDefinition Width="*" />
-      <ColumnDefinition Width="*" />
-      <ColumnDefinition Width="*" />
-      <ColumnDefinition Width="*" />
-      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="150" />
+      <ColumnDefinition Width="50" />
+      <ColumnDefinition Width="100" />
+      <ColumnDefinition Width="50" />
+      <ColumnDefinition Width="175" />
+      <ColumnDefinition Width="50" />
+      <ColumnDefinition Width="175" />
     </Grid.ColumnDefinitions>
 
     <Border Background="#800000" Grid.Row="0" Grid.RowSpan="2" Grid.Column="0">
@@ -66,21 +66,21 @@
     </Border>
 
     <Border Background="Transparent" Grid.Row="1" Grid.Column="3">
-      <TextBlock x:Name="NetworkOutput" Text="→" Foreground="{Binding NetworkOutput}" FontSize="40" VerticalAlignment="Center" HorizontalAlignment="Center" />
+      <TextBlock x:Name="NetworkOutput" Text="⬏" Foreground="{Binding NetworkOutput}" FontSize="40" VerticalAlignment="Center" HorizontalAlignment="Center" />
     </Border>
 
     <Border Background="Transparent" Grid.Row="2" Grid.Column="3">
-      <TextBlock x:Name="AudioOutput"  Text="←" Foreground="{Binding AudioOutput}" FontSize="40" VerticalAlignment="Center" HorizontalAlignment="Center" />
+      <TextBlock x:Name="AudioOutput"  Text="↲" Foreground="{Binding AudioOutput}" FontSize="40" VerticalAlignment="Center" HorizontalAlignment="Center" />
     </Border>
 
     <Border Background="#696969" Visibility="Visible" Grid.Row="1" Grid.Column="4" Grid.RowSpan="2">
-      <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+      <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0">
         <TextBlock Text="PID: " Foreground="White" FontSize="12" />
         <TextBlock Text="NAME: " Foreground="White" FontSize="12" />
         <TextBlock Text="MEMORY SIZE: " Foreground="White" FontSize="12" />
-        <TextBlock Text="START ADDRESS: " Foreground="White" FontSize="12" />
-        <TextBlock Text="END ADDRESS: " Foreground="White" FontSize="12" />
         <TextBlock Text="IDLE STATUS: " Foreground="White" FontSize="12" />
+        <TextBlock Text="ASSIGNED PAGES: " Foreground="White" FontSize="12" />
+        <TextBlock Text="PAGES_LIST" Foreground="White" FontSize="12" />
       </StackPanel>
     </Border>
 

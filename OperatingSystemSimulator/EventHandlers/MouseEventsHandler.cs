@@ -45,6 +45,7 @@ namespace OperatingSystemSimulator.EventHandlers
         private async void OnPointerPressed(CoreWindow sender, PointerEventArgs args)
         {
             HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.KeyStroke, HardwareStatuses.Running);
+            ProcessManager.Instance.InterruptQueueAsync(1);
             await Task.Delay(10);
             HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.KeyStroke, HardwareStatuses.Idle);
 

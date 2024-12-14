@@ -6,7 +6,7 @@ public class MessageBlock
 {
     private double previousWidthOffset = 200;
     private double previousHeightOffset = 200;
-    public TaskCompletionSource<bool?> MessageResult { get; } = new();
+    public TaskCompletionSource<MessageResults> MessageResult { get; } = new();
 
     public int Mid { get; }
     public int BPid { get; set; }
@@ -52,13 +52,19 @@ public class MessageBlock
     }
     public void HandleOk()
     {
-        MessageResult.TrySetResult(true);
+        MessageResult.TrySetResult(MessageResults.OK);
         MessageManager.Instance.Close(Mid);
     }
 
     public void HandleCancel()
     {
-        MessageResult.TrySetResult(false);
+        MessageResult.TrySetResult(MessageResults.Cancelled);
+        MessageManager.Instance.Close(Mid);
+    }
+
+    public void HandleClosed()
+    {
+        MessageResult.TrySetResult(MessageResults.Closed);
         MessageManager.Instance.Close(Mid);
     }
 }

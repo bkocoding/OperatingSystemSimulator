@@ -49,6 +49,7 @@ public sealed partial class ShellWindow : UserControl
         }
         else
         {
+            MessageManager.Instance.GetMessageBlock(EId).HandleClosed();
             MessageManager.Instance.Close(EId);
         }
     }

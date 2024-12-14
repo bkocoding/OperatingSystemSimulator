@@ -112,7 +112,7 @@ public partial class App : Application
 
         MainWindow.Activate();
 
-        ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(1280, 260);
+        ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(750, 260);
         HardwareWindow = new Window
         {
             Title = "Virtual Hardware",

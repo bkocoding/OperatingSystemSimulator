@@ -2,8 +2,6 @@ using System.Collections.ObjectModel;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using OperatingSystemSimulator.Apps;
 using OperatingSystemSimulator.Extras.ConsoleLogger;
-using Uno.Disposables;
-using Windows.UI.Input.Inking;
 
 namespace OperatingSystemSimulator.ProcessHelper;
 
@@ -34,13 +32,12 @@ public class ProcessManager
 
     private ProcessManager()
     {
-        ProcessBlocks = new ObservableCollection<ProcessBlock>();
+        ProcessBlocks = [];
     }
 
-    private Queue<string> operationQueue = new();
+    public Queue<string> operationQueue = new();
     private bool isProcessingQueue = false;
 
-    // Interrupt-related fields
     private bool isInterruptActive = false;
     private string? interruptOperation;
 
@@ -86,11 +83,12 @@ public class ProcessManager
         int pid = nextPid++;
         var processBlock = new ProcessBlock(pid, popup, app, name, isUtilizationEnough);
         ProcessBlocks.Add(processBlock);
-        OnProcessCreated(processBlock);
 
         await RandomDelay(true);
         HardwarePageViewModel.Instance.SetHDOperation(HDOperations.Idle);
         HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Idle);
+        OnProcessCreated(processBlock);
+        processBlock.InitializePopup();
         return processBlock;
     }
 
@@ -105,12 +103,24 @@ public class ProcessManager
 
         if (!processBlock.IsRequired)
         {
-            InterruptQueue(pid);
+            InterruptQueueAsync(pid);
             processBlock.Popup.IsOpen = false;
             processBlock.Popup.Child = null;
             if (FocusedPopup == processBlock.Popup)
             {
-                FocusedPopup = null;
+                foreach (var block in ProcessBlocks.Reverse())
+                {
+                    if (block.Pid != pid && block.Popup != null)
+                    {
+                        FocusedPopup = block.Popup;
+                        break;
+                    }
+                    else
+                    {
+                        FocusedPopup = null;
+                    }
+                }
+
             }
             processBlock.Popup = null;
 
@@ -195,26 +205,41 @@ public class ProcessManager
         return ProcessBlocks.FirstOrDefault(p => p.Pid == pid);
     }
 
-    private void EnqueueRunningProcess(int pid)
+    public async Task EnqueueRunningProcessAsync(int pid)
     {
+        var processBlock = GetProcessByPid(pid);
+        if (processBlock == null)
+            return;
+
         lock (operationQueue)
         {
-            operationQueue.Enqueue(GetProcessByPid(pid).Name);
+            operationQueue.Enqueue(processBlock.Name);
         }
-        ProcessQueue();
+
+        await ProcessQueueAsync();
     }
 
-    public void InterruptQueue(int pid)
+    public async Task<bool> InterruptQueueAsync(int pid)
     {
+        var processBlock = GetProcessByPid(pid);
+        if (processBlock == null)
+            return false;
+
+        TaskCompletionSource<bool> tcs = new();
+
         lock (operationQueue)
         {
             isInterruptActive = true;
-            interruptOperation = GetProcessByPid(pid).Name;
+            interruptOperation = processBlock.Name;
         }
-        ProcessQueue();
+
+        await ProcessQueueAsync();
+
+        tcs.SetResult(true);
+        return await tcs.Task;
     }
 
-    private async void ProcessQueue()
+    private async Task ProcessQueueAsync()
     {
         if (isProcessingQueue) return;
 
@@ -223,6 +248,7 @@ public class ProcessManager
         while (true)
         {
             string? processName = null;
+            string queueState = string.Empty;
 
             lock (operationQueue)
             {
@@ -236,16 +262,21 @@ public class ProcessManager
                 {
                     processName = operationQueue.Dequeue();
                 }
+
+                if (operationQueue.Count > 0)
+                {
+                    queueState = $"[{string.Join(", ", operationQueue)}]";
+                }
             }
 
             if (!string.IsNullOrEmpty(processName))
             {
-                HardwarePageViewModel.Instance.SetRunningProcess(processName);
+                HardwarePageViewModel.Instance.SetRunningProcess($"{processName} {queueState}");
                 await RandomDelay(false);
             }
             else
             {
-                HardwarePageViewModel.Instance.SetRunningProcess("Kernel");
+                HardwarePageViewModel.Instance.SetRunningProcess($"Kernel {queueState}");
                 break;
             }
         }
@@ -253,16 +284,18 @@ public class ProcessManager
         isProcessingQueue = false;
     }
 
+
+
     private async Task RandomDelay(bool isSmallOperation)
     {
         int delay;
         if (!isSmallOperation)
         {
-            delay = random.Next(300, 601);
+            delay = random.Next(201, 250);
         }
         else
         {
-            delay = random.Next(250, 301);
+            delay = random.Next(100, 200);
         }
         await Task.Delay(delay);
     }
@@ -279,8 +312,8 @@ public class ProcessManager
         foreach (var service in OSServices)
         {
             ProcessBlocks.Add(service);
+            EnqueueRunningProcessAsync(service.Pid);
             OnProcessCreated(service);
-            EnqueueRunningProcess(service.Pid);
         }
     }
 
@@ -295,8 +328,8 @@ public class ProcessManager
         foreach (var service in LogOnServices)
         {
             ProcessBlocks.Add(service);
+            EnqueueRunningProcessAsync(service.Pid);
             OnProcessCreated(service);
-            EnqueueRunningProcess(service.Pid);
         }
     }
 
@@ -309,7 +342,7 @@ public class ProcessManager
             processBlock.Popup.IsOpen = false;
             processBlock.Popup.IsOpen = true;
 
-            EnqueueRunningProcess(processBlock.Pid);
+            EnqueueRunningProcessAsync(processBlock.Pid);
         }
     }
 
@@ -319,13 +352,13 @@ public class ProcessManager
         if (processBlock.Popup != null)
         {
             FocusedPopup = processBlock.Popup;
-            EnqueueRunningProcess(processBlock.Pid);
+            EnqueueRunningProcessAsync(processBlock.Pid);
         }
     }
 
     private static void OnProcessTerminated(ProcessBlock processBlock, TerminateReasons reason)
     {
-        
+
         string log = $"{processBlock.Name} is terminated, PID: {processBlock.Pid}, Reason: {reason.GetDescription()}";
         LogType logType;
 

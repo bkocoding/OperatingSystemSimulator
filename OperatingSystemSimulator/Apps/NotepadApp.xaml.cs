@@ -32,6 +32,7 @@ public sealed partial class NotepadApp : UserControl
     private bool isFile = false;
     private bool exitMessageExists = false;
     private bool WrappingEnabled = true;
+    private bool isEnqueued = false;
     private int? lastMessageID;
     public NotepadApp(string title)
     {
@@ -90,14 +91,15 @@ public sealed partial class NotepadApp : UserControl
         ActivateTyping();
     }
 
-    private void NotepadTextBox_TextChanged(object sender, TextChangedEventArgs e)
+    private async void NotepadTextBox_TextChanged(object sender, TextChangedEventArgs e)
     {
         if (!isChanged)
         {
             SetTitle("* " + Title);
             isChanged = true;
         }
-        ProcessManager.Instance.InterruptQueue(Pid);
+        await ProcessManager.Instance.InterruptQueueAsync(Pid);
+        await Task.Delay(30);
     }
 
     private void ActivateTyping()
@@ -127,9 +129,9 @@ public sealed partial class NotepadApp : UserControl
             var messageBlock = MessageManager.Instance.CreateMessage(Pid, "Warning - Notepad", "Do you want to save changes?", true);
             lastMessageID = messageBlock.Mid;
             exitMessageExists = true;
-            bool? result = await messageBlock.MessageResult.Task;
+            MessageResults? result = await messageBlock.MessageResult.Task;
 
-            if (result == true)
+            if (result == MessageResults.OK)
             {
                 exitMessageExists = false;
                 if (isFile)
@@ -143,13 +145,13 @@ public sealed partial class NotepadApp : UserControl
                 ProcessManager.Instance.FocusedPopupChanged -= OnFocusedPopupChanged;
                 ProcessManager.Instance.TerminateProcess(Pid, TerminateReasons.Self);
             }
-            else if (result == false)
+            else if (result == MessageResults.Cancelled)
             {
                 exitMessageExists = false;
                 ProcessManager.Instance.FocusedPopupChanged -= OnFocusedPopupChanged;
                 ProcessManager.Instance.TerminateProcess(Pid, TerminateReasons.Self);
             }
-            else
+            else if(result == MessageResults.Closed)
             {
                 exitMessageExists = false;
             }
