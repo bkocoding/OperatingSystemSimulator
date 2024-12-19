@@ -1,6 +1,5 @@
 using Microsoft.UI.Xaml.Controls.Primitives;
 using OperatingSystemSimulator.Apps.Shell;
-using OperatingSystemSimulator.MemoryHelper;
 using OperatingSystemSimulator.ProcessHelper;
 using Windows.Foundation;
 using Windows.UI.Core;
@@ -13,6 +12,7 @@ namespace OperatingSystemSimulator.EventHandlers
         private static readonly object lockObject = new();
 
         private Popup? draggingPopup;
+        private ProcessBlock? draggingProcessBlock;
         private Point initialPointerOffset;
 
         public event Action<Point>? MouseMoved;
@@ -69,7 +69,7 @@ namespace OperatingSystemSimulator.EventHandlers
             var constrainedX = Math.Max(0, Math.Min(pointerPosition.X, windowBounds.Width));
             var constrainedY = Math.Max(0, Math.Min(pointerPosition.Y, windowBounds.Height));
 
-            if (draggingPopup != null)
+            if (draggingPopup != null && draggingProcessBlock != null)
             {
                 var content = draggingPopup.Child as FrameworkElement;
                 if (content != null)
@@ -83,6 +83,8 @@ namespace OperatingSystemSimulator.EventHandlers
                     var newLeft = Math.Max(0, Math.Min(constrainedX - initialPointerOffset.X, windowBounds.Width - popupWidth));
                     var newTop = Math.Max(0, Math.Min(constrainedY - initialPointerOffset.Y, maxHeight - popupHeight));
 
+                    ProcessManager.Instance.InterruptQueueAsync(draggingProcessBlock.Pid);
+
                     draggingPopup.HorizontalOffset = newLeft;
                     draggingPopup.VerticalOffset = newTop;
                 }
@@ -95,7 +97,8 @@ namespace OperatingSystemSimulator.EventHandlers
         private void OnPointerReleased(CoreWindow sender, PointerEventArgs e)
         {
             draggingPopup = null;
-            HardwarePageViewModel.Instance.SetRunningProcess("Kernel");
+            draggingProcessBlock = null;
+            //ProcessManager.Instance.InterruptQueueAsync(1);
         }
 
         public void StartDragging(int pid, Point initialPointerPosition, bool isApp)
@@ -103,13 +106,13 @@ namespace OperatingSystemSimulator.EventHandlers
 
             if (isApp)
             {
-                var process = ProcessManager.Instance.GetProcessByPid(pid);
-                if (process == null)
+                draggingProcessBlock = ProcessManager.Instance.GetProcessByPid(pid);
+                if (draggingProcessBlock == null)
                 {
                     return;
                 }
-            HardwarePageViewModel.Instance.SetRunningProcess(process.Name);
-            draggingPopup = process.Popup;
+                //ProcessManager.Instance.InterruptQueueAsync(draggingProcessBlock.Pid);
+                draggingPopup = draggingProcessBlock.Popup;
             }
             else
             {
@@ -118,7 +121,7 @@ namespace OperatingSystemSimulator.EventHandlers
                 {
                     return;
                 }
-                HardwarePageViewModel.Instance.SetRunningProcess("Kernel");
+                ProcessManager.Instance.InterruptQueueAsync(1);
                 draggingPopup = messageBlock.Popup;
             }
             initialPointerOffset = new Point(

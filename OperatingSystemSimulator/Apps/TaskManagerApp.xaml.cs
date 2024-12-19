@@ -30,28 +30,44 @@ public sealed partial class TaskManagerApp : UserControl
 
     private void BringToFront_Click(object sender, RoutedEventArgs e)
     {
+
         var button = sender as Button;
         if (button != null)
         {
             int pid = (int)button.Tag;
-            if (!ProcessManager.Instance.GetProcessByPid(pid).IsRequired) 
+            if (!ProcessManager.Instance.GetProcessByPid(pid).IsRequired)
             {
+                if (pid != Pid)
+                {
+                    ProcessManager.Instance.InterruptQueueAsync(Pid);
+                }
                 ProcessManager.Instance.BringToFront(pid);
             }
         }
     }
     private void Terminate_Click(object sender, RoutedEventArgs e)
     {
+        ProcessManager.Instance.InterruptQueueAsync(Pid);
         var button = sender as Button;
         if (button != null)
         {
             int pid = (int)button.Tag;
 
-            if (ProcessManager.Instance.GetProcessByPid(pid).App is NotepadApp notepad) {
+            if (pid != Pid)
+            {
+                ProcessManager.Instance.InterruptQueueAsync(Pid);
+            }
+
+            else if (ProcessManager.Instance.GetProcessByPid(pid).App is NotepadApp notepad)
+            {
                 notepad.UnsubscribeToFocusedPopUpChangedEvent();
             }
 
             ProcessManager.Instance.TerminateProcess(pid, TerminateReasons.User);
+            //Weird bug with the gesture recogniser: fail: Microsoft.UI.Input.GestureRecognizer[0]
+            //Microsoft.UI.Xaml.Controls.ScrollContentPresenter Inconsistent state, we already have a pending gesture for a pointer that is going down. Abort the previous gesture.
+            //I added a filter to ignore this error in the app.xaml.cs...
+            //It appears that the gesture recogniser is hanging but it does not affect the app for it has a ignore previous gesture function...
         }
     }
     private void ProcessListView_SelectionChanged(object sender, SelectionChangedEventArgs e)

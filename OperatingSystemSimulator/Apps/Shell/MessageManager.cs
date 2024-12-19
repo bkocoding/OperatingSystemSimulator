@@ -32,9 +32,19 @@ public class MessageManager
         MessageBlocks = [];
     }
 
-    public MessageBlock CreateMessage(int pid, string title, string message, bool hasCancel)
+    /// <summary>
+    /// For creating a message box with all buttons and customized names.
+    /// </summary>
+    /// <param name="pid"></param>
+    /// <param name="title"></param>
+    /// <param name="message"></param>
+    /// <param name="OKButtonText"></param>
+    /// <param name="notOKButtonText"></param>
+    /// <param name="cancelButtonText"></param>
+    /// <returns></returns>
+    public MessageBlock CreateMessage(int pid, string title, string message, string OKButtonText, string notOKButtonText, string cancelButtonText)
     {
-        MessageBlock messageBlock = new(nextMid, pid, title, message, hasCancel);
+        MessageBlock messageBlock = new(nextMid, pid, title, message, OKButtonText, notOKButtonText, cancelButtonText);
         nextMid++;
         MessageBlocks.Add(messageBlock);
         messageBlock.Show();
@@ -43,6 +53,27 @@ public class MessageManager
         return messageBlock;
 
     }
+
+    /// <summary>
+    /// For creating a message box with only OK button and it's default name.
+    /// </summary>
+    /// <param name="pid"></param>
+    /// <param name="title"></param>
+    /// <param name="message"></param>
+    /// <returns></returns>
+    public MessageBlock CreateMessage(int pid, string title, string message)
+    {
+        MessageBlock messageBlock = new(nextMid, pid, title, message);
+        nextMid++;
+        MessageBlocks.Add(messageBlock);
+        messageBlock.Show();
+        BringToFront(messageBlock.Mid);
+        ProcessManager.Instance.FocusedPopup = null;
+        return messageBlock;
+
+    }
+
+
     public void BringToFront(int mid)
     {
         MessageBlock? messageBlock = GetMessageBlock(mid);

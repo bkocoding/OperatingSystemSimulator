@@ -1,6 +1,7 @@
 using OperatingSystemSimulator.EventHandlers;
 using OperatingSystemSimulator.Extras.ConsoleLogger;
 using OperatingSystemSimulator.Services;
+using OperatingSystemSimulator.ViewModels.PageViewModels;
 using Windows.System;
 using Windows.UI.Core;
 using MemoryManager = OperatingSystemSimulator.MemoryHelper.MemoryManager;
@@ -48,8 +49,6 @@ public sealed partial class BootPage : Page
     {
         InitializeComponent();
         MouseEventsHandler.Instance.Initialize();
-        HardwarePageViewModel.Instance.SetRunningProcess("BIOS Firmware");
-        HardwarePageViewModel.Instance.SetHDOperation(HDOperations.NotMounted);
         _biosSettingsService = (Application.Current as App)?.Host?.Services.GetRequiredService<BIOSSettingsService>();
         _firstBootOrder = _biosSettingsService.Settings.FirstBootOption;
 
@@ -76,6 +75,8 @@ public sealed partial class BootPage : Page
 
     private void SetBootPartition()
     {
+        HardwarePageViewModel.SetRunningProcess("BIOS Firmware");
+        HardwarePageViewModel.SetHDOperation(HDOperations.NotMounted);
         switch (_firstBootOrder)
         {
             case "Simulated Operating System":

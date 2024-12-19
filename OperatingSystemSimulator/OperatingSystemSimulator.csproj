@@ -224,6 +224,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CSharpMarkup.WinUI.LiveChartsCore.SkiaSharpView" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Page Update="Apps\Shell\ShellMessageBox.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

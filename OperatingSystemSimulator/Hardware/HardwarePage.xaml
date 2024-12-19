@@ -5,14 +5,10 @@
     xmlns:local="using:OperatingSystemSimulator.Hardware"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:lvc="using:LiveChartsCore.SkiaSharpView.WinUI"
     mc:Ignorable="d"
     Background="#333333"
-  MinHeight="260"
-  MinWidth="750"
-  MaxHeight="260"
-  MaxWidth="750"
-  Width="750"
-  Height="260">
+>
 
   <Grid>
     <Grid.RowDefinitions>
@@ -62,7 +58,13 @@
     </Border>
 
     <Border Background="#8A2BE2" Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="4">
-      <TextBlock Text="RAM" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14"/>
+      <Grid>
+        <lvc:CartesianChart x:Name="RamChart" 
+                        IsHitTestVisible="True"
+                            AutoUpdateEnabled="True"
+                            Height="110"/>
+        <TextBlock Text="RAM" Foreground="White" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="14"/>
+      </Grid>
     </Border>
 
     <Border Background="Transparent" Grid.Row="1" Grid.Column="3">

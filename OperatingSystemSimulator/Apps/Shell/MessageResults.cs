@@ -3,5 +3,5 @@ public enum MessageResults
 {
     OK,
     Cancelled,
-    Closed
+    NotOK
 }

@@ -1,5 +1,7 @@
-using Microsoft.Maui;
-using Windows.UI;
+using System.Collections.ObjectModel;
+using LiveChartsCore.SkiaSharpView;
+using OperatingSystemSimulator.MemoryHelper;
+using OperatingSystemSimulator.ProcessHelper;
 
 namespace OperatingSystemSimulator.Hardware;
 
@@ -13,6 +15,16 @@ public sealed partial class HardwarePage : Page
         ViewModel.hardwarePage = this;
         InitializeComponent();
         ViewModel.ResetStatuses();
+        InitializeRamChart();
+
+        MemoryManager.Instance.PropertyChanged += (sender, e) =>
+        {
+            if (e.PropertyName == nameof(MemoryManager.Pages))
+            {
+                UpdateRamChart();
+            }
+        };
+
     }
 
     public void SetRunningProcess(string processName)
@@ -48,5 +60,63 @@ public sealed partial class HardwarePage : Page
                 NetworkOutput.Foreground = status.GetBrush();
                 break;
         }
+    }
+
+    private void InitializeRamChart()
+    {
+        var processBlocks = ProcessManager.Instance.ProcessBlocks;
+        int memorySize = MemoryManager.pageSize;
+        int pageSize = MemoryManager.pageSize;
+
+        var stackedRowSeries = new StackedRowSeries<int>
+        {
+            Values = new ObservableCollection<int>(),
+        };
+
+        foreach (var processBlock in processBlocks)
+        {
+            var processPages = MemoryManager.Instance.GetProcessPages(processBlock);
+            int processMemory = 0;
+            foreach (var page in processPages)
+            {
+                processMemory += page.UsedSpace;
+            }
+            stackedRowSeries.Values.Append(processMemory);
+        }
+
+
+        int usedMemory = processBlocks.Sum(pb => MemoryManager.Instance.GetProcessPages(pb).Count * pageSize);
+        int emptyMemory = memorySize - usedMemory;
+        stackedRowSeries.Values.Append(emptyMemory);
+
+        RamChart.Series = [stackedRowSeries];
+    }
+
+    private void UpdateRamChart()
+    {
+        var processBlocks = ProcessManager.Instance.ProcessBlocks;
+        int pageSize = MemoryManager.pageSize;
+
+        if (RamChart.Series.Count() != 0)
+        {
+            var oldbarSeries = (ObservableCollection<int>)RamChart.Series.First().Values;
+            oldbarSeries.Clear();
+        }
+
+        var barSeries = (ObservableCollection<int>)RamChart.Series.First().Values;
+        foreach (var processBlock in processBlocks)
+        {
+            var processPages = MemoryManager.Instance.GetProcessPages(processBlock);
+            int processMemory = 0;
+            foreach (var page in processPages)
+            {
+                processMemory += page.UsedSpace;
+            }
+            barSeries.Add(processMemory);
+        }
+
+        int usedMemory = processBlocks.Sum(pb => MemoryManager.Instance.GetProcessPages(pb).Count * pageSize);
+        int emptyMemory = MemoryManager.memorySize - usedMemory;
+        barSeries.Add(emptyMemory);
     }
 }

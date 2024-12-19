@@ -1,6 +1,3 @@
-using System.Drawing;
-using Microsoft.Maui;
-using Microsoft.Maui.Platform;
 using Microsoft.UI.Windowing;
 using OperatingSystemSimulator.Services;
 using Uno.Resizetizer;
@@ -16,11 +13,11 @@ public partial class App : Application
     public App()
     {
         InitializeComponent();
-        ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(1280, 720);
+        ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(1200, 720);
     }
 
     protected Window? MainWindow { get; private set; }
-    public HardwarePage HardwarePage { get; set; } = new HardwarePage();
+    public HardwarePage HardwarePage { get; set; }
     public IHost? Host { get; private set; }
     public Window HardwareWindow { get; set; }
 
@@ -50,7 +47,8 @@ public partial class App : Application
                         .CoreLogLevel(LogLevel.Warning);
                     logBuilder
                         .AddFilter("Windows.UI.Input.Preview.Injection.IInputInjectorTarget", LogLevel.None)
-                        .AddFilter("Microsoft.UI.Xaml.UIElement", LogLevel.None);
+                        .AddFilter("Microsoft.UI.Xaml.UIElement", LogLevel.None)
+                        .AddFilter("Microsoft.UI.Input.GestureRecognizer", LogLevel.None); //I still have no idea why gesture recogniser is hanging...
 
                     // Uno Platform namespace filter groups
                     // Uncomment individual methods to see more detailed logging
@@ -112,20 +110,21 @@ public partial class App : Application
 
         MainWindow.Activate();
 
-        ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(750, 260);
+        ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(750, 312);
         HardwareWindow = new Window
         {
             Title = "Virtual Hardware",
-            Content = HardwarePage,
+            Content = new HardwarePage()
         };
 
         var OPHardwareWindow = (OverlappedPresenter)HardwareWindow.AppWindow.Presenter;
 
         OPHardwareWindow.IsResizable = false;
 
+
         MainWindow.Closed += (s, e) => HardwareWindow.Close();
         HardwareWindow.Activate();
-        ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(1280, 720);
+        ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(1200, 720);
     }
 
 }

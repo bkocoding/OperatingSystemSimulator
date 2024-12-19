@@ -1,7 +1,9 @@
 using System.Collections.ObjectModel;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using OperatingSystemSimulator.Apps;
+using OperatingSystemSimulator.Apps.Shell;
 using OperatingSystemSimulator.Extras.ConsoleLogger;
+using OperatingSystemSimulator.MemoryHelper;
 
 namespace OperatingSystemSimulator.ProcessHelper;
 
@@ -35,7 +37,7 @@ public class ProcessManager
         ProcessBlocks = [];
     }
 
-    public Queue<string> operationQueue = new();
+    public Queue<ProcessBlock> operationQueue = new();
     private bool isProcessingQueue = false;
 
     private bool isInterruptActive = false;
@@ -61,7 +63,7 @@ public class ProcessManager
 
     public bool IsTurnedOn { get; set; } = true;
 
-    public async Task<ProcessBlock> CreateProcess(object app, string name, bool isSingleInstance, bool isUtilizationEnough)
+    public async Task<ProcessBlock?> CreateProcess(object app, string name, bool isSingleInstance, bool isUtilizationEnough)
     {
         HardwarePageViewModel.Instance.SetHDOperation(HDOperations.AppData);
         HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Running);
@@ -80,15 +82,28 @@ public class ProcessManager
             }
         }
 
-        int pid = nextPid++;
-        var processBlock = new ProcessBlock(pid, popup, app, name, isUtilizationEnough);
+        var processBlock = new ProcessBlock(nextPid, popup, app, name, isUtilizationEnough);
+
+        UtilizationResult result = MemoryManager.Instance.AllocateMemory(processBlock);
+
+        if (result == UtilizationResult.OutOfMemory)
+        {
+            await RandomDelay(true);
+            HardwarePageViewModel.Instance.SetHDOperation(HDOperations.Idle);
+            HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Idle);
+            ConsoleLogger.Log($"Couldn't initialize {processBlock.Name}, Reason: {result.GetDescription()}", LogType.Error);
+            MessageManager.Instance.CreateMessage(1, "Out Of Resources",
+                $"You can not start {processBlock.Name} because there are not enough memory space. Try closing some of your apps.\n\nError Code: {result.GetDescription()}");
+            return null;
+        }
+
+        nextPid++;
         ProcessBlocks.Add(processBlock);
 
-        await RandomDelay(true);
+        //await RandomDelay(true);
         HardwarePageViewModel.Instance.SetHDOperation(HDOperations.Idle);
         HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Idle);
-        OnProcessCreated(processBlock);
-        processBlock.InitializePopup();
+        await OnProcessCreated(processBlock);
         return processBlock;
     }
 
@@ -126,6 +141,7 @@ public class ProcessManager
 
             OnProcessTerminated(processBlock, reason);
             GC.Collect();
+            MemoryManager.Instance.DeallocateMemory(processBlock);
             return ProcessBlocks.Remove(processBlock);
         }
         else
@@ -133,6 +149,7 @@ public class ProcessManager
             if (reason == TerminateReasons.System)
             {
                 OnProcessTerminated(processBlock, reason);
+                MemoryManager.Instance.DeallocateMemory(processBlock);
                 return ProcessBlocks.Remove(processBlock);
             }
             else
@@ -140,6 +157,7 @@ public class ProcessManager
                 string[] parameters = { "PID: " + pid + "\nProcess Name: " + processBlock.Name, "CRITICAL_PROCESS_DIED" };
                 Frame currentFrame = (Frame)Window.Current.Content;
                 OnProcessTerminated(processBlock, reason);
+                MemoryManager.Instance.DeallocateMemory(processBlock);
                 ProcessBlocks.Remove(processBlock);
                 currentFrame.Navigate(typeof(BugCheckPage), parameters);
                 return true;
@@ -213,7 +231,7 @@ public class ProcessManager
 
         lock (operationQueue)
         {
-            operationQueue.Enqueue(processBlock.Name);
+            operationQueue.Enqueue(processBlock);
         }
 
         await ProcessQueueAsync();
@@ -247,11 +265,12 @@ public class ProcessManager
 
         while (true)
         {
+            ProcessBlock? processBlock = null;
             string? processName = null;
             string queueState = string.Empty;
 
-            lock (operationQueue)
-            {
+            //lock (operationQueue)
+            //{
                 if (isInterruptActive && interruptOperation != null)
                 {
                     processName = interruptOperation;
@@ -260,18 +279,29 @@ public class ProcessManager
                 }
                 else if (operationQueue.Count > 0)
                 {
-                    processName = operationQueue.Dequeue();
+                    processBlock = operationQueue.Dequeue();
+                    processName = processBlock.Name;
                 }
 
                 if (operationQueue.Count > 0)
                 {
                     queueState = $"[{string.Join(", ", operationQueue)}]";
                 }
-            }
+            //}
 
             if (!string.IsNullOrEmpty(processName))
             {
                 HardwarePageViewModel.Instance.SetRunningProcess($"{processName} {queueState}");
+
+                if (processBlock != null)
+                {
+                    if (!processBlock.IsInitialized)
+                    {
+                        processBlock.InitializePopup();
+                        processBlock.IsInitialized = true;
+                    }
+                }
+
                 await RandomDelay(false);
             }
             else
@@ -309,9 +339,14 @@ public class ProcessManager
             new(3, "Network Service", true)
         };
 
+        OSServices[0].Size = 6171428;
+        OSServices[1].Size = 79588;
+        OSServices[2].Size = 3125425;
+
         foreach (var service in OSServices)
         {
             ProcessBlocks.Add(service);
+            MemoryManager.Instance.AllocateMemory(service);
             EnqueueRunningProcessAsync(service.Pid);
             OnProcessCreated(service);
         }
@@ -325,9 +360,13 @@ public class ProcessManager
             new(5, "Desktop Service", true)
         };
 
+        LogOnServices[0].Size = 1280000;
+        LogOnServices[1].Size = 2280000;
+
         foreach (var service in LogOnServices)
         {
             ProcessBlocks.Add(service);
+            MemoryManager.Instance.AllocateMemory(service);
             EnqueueRunningProcessAsync(service.Pid);
             OnProcessCreated(service);
         }
@@ -342,18 +381,18 @@ public class ProcessManager
             processBlock.Popup.IsOpen = false;
             processBlock.Popup.IsOpen = true;
 
-            EnqueueRunningProcessAsync(processBlock.Pid);
+            InterruptQueueAsync(processBlock.Pid);
         }
     }
 
-    private void OnProcessCreated(ProcessBlock processBlock)
+    private async Task OnProcessCreated(ProcessBlock processBlock)
     {
-        ConsoleLogger.Log($"{processBlock.Name} is initialized, PID: {processBlock.Pid}", LogType.Init);
         if (processBlock.Popup != null)
         {
             FocusedPopup = processBlock.Popup;
-            EnqueueRunningProcessAsync(processBlock.Pid);
+            await EnqueueRunningProcessAsync(processBlock.Pid);
         }
+        ConsoleLogger.Log($"{processBlock.Name} is initialized, PID: {processBlock.Pid}", LogType.Init);
     }
 
     private static void OnProcessTerminated(ProcessBlock processBlock, TerminateReasons reason)

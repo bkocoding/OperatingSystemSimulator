@@ -1,20 +1,38 @@
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using OperatingSystemSimulator.ProcessHelper;
 
 namespace OperatingSystemSimulator.MemoryHelper;
-public class MemoryManager
+public class MemoryManager : INotifyPropertyChanged
 {
     private static MemoryManager? instance;
     private static readonly object lockObject = new();
-    private static readonly int maxPageFileSize = 160000;
-    private static readonly int pageSize = 80000;
+    public static readonly int pageSize = 80000;
     public static readonly int memorySize = 64000000;
+    private readonly System.Timers.Timer cleanupTimer;
 
-    public ObservableCollection<MemoryBlock> MemoryBlocks { get; private set; }
+    public ObservableCollection<PageBlock> Pages { get; private set; }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    private void OnPagesChanged()
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Pages)));
+    }
 
     private MemoryManager()
     {
-        MemoryBlocks = [];
+        Pages = [];
+
+        int totalPages = memorySize / pageSize;
+        for (int i = 0; i < totalPages; i++)
+        {
+            Pages.Add(new PageBlock { PageNumber = i, IsEmpty = true, IsAllocated = false });
+        }
+
+        cleanupTimer = new System.Timers.Timer(120000);
+        cleanupTimer.Elapsed += (sender, e) => CleanupUnusedPages();
+        cleanupTimer.Start();
     }
 
     public static MemoryManager Instance
@@ -25,50 +43,121 @@ public class MemoryManager
             {
                 lock (lockObject)
                 {
-                    instance = new MemoryManager();
+                    instance ??= new MemoryManager();
                 }
             }
             return instance;
         }
     }
 
-public MemoryBlock? AllocateMemory(ProcessBlock processBlock)
+    public UtilizationResult AllocateMemory(ProcessBlock processBlock)
     {
-        int startAddress = 0;
-        int endAddress = 0;
-        foreach (MemoryBlock block in MemoryBlocks)
-        {
-            if (block.ProcessBlock == null)
-            {
-                if (block.Size >= processBlock.Size)
-                {
-                    startAddress = block.StartAddress;
-                    endAddress = block.StartAddress + processBlock.Size;
-                    block.ProcessBlock = processBlock;
-                    block.Size = block.Size - processBlock.Size;
+        int requiredPages = (int)Math.Ceiling((double)processBlock.Size / pageSize);
 
-                    return new MemoryBlock(processBlock, startAddress, endAddress);
+        if (Pages.Count(p => p.IsEmpty) < requiredPages)
+            return UtilizationResult.OutOfMemory;
+
+        int allocatedPages = 0;
+        foreach (var page in Pages.Where(p => p.IsEmpty).Take(requiredPages))
+        {
+            page.ProcessBlock = processBlock;
+            page.IsEmpty = false;
+            page.IsAllocated = true;
+            page.IsAdditional = false;
+
+            if (allocatedPages == requiredPages - 1)
+            {
+                int remainingSize = processBlock.Size - (allocatedPages * pageSize);
+                page.UsedSpace = remainingSize;
+                if (page.UsedSpace != pageSize)
+                {
+                    page.IsAdditional = true;
                 }
             }
+            else
+            {
+                page.UsedSpace = pageSize;
+            }
+
+            allocatedPages++;
         }
-        return null;
+
+        OnPagesChanged();
+        return UtilizationResult.Success;
+    }
+
+    public bool RequestAdditionalPages(ProcessBlock processBlock, int additionalPages)
+    {
+
+        if (Pages.Count(p => p.IsEmpty) < additionalPages)
+            return false;
+
+        foreach (var page in Pages.Where(p => p.IsAllocated).Take(additionalPages))
+        {
+            page.ProcessBlock = processBlock;
+            page.IsEmpty = true;
+            page.IsAllocated = true;
+            page.IsAdditional = true;
+        }
+
+        OnPagesChanged();
+        return true;
+    }
+
+    public void WriteToAdditionalPages(int Pid)
+    {
+
     }
 
     public void DeallocateMemory(ProcessBlock processBlock)
     {
-        foreach (MemoryBlock block in MemoryBlocks)
+        foreach (var page in Pages.Where(p => p.ProcessBlock == processBlock))
         {
-            if (block.ProcessBlock == processBlock)
-            {
-                block.ProcessBlock = null;
-                block.Size = block.EndAddress - block.StartAddress;
-            }
+            page.ProcessBlock = null;
+            page.IsEmpty = true;
+            page.IsAllocated = false;
+            page.IsAdditional = false;
         }
+        OnPagesChanged();
     }
 
-    public void InitializeMemory()
+    public List<PageBlock> GetProcessPages(ProcessBlock processBlock)
     {
-        MemoryBlocks.Add(new MemoryBlock(0, memorySize));
+        return Pages.Where(p => p.ProcessBlock == processBlock).ToList();
     }
+
+    public List<PageBlock> GetAdditionalProcessPages(ProcessBlock processBlock)
+    {
+        return Pages.Where(p => p.ProcessBlock == processBlock && p.IsAdditional).ToList();
+    }
+
+    private void CleanupUnusedPages()
+    {
+        if (Pages.Count(p => !p.IsEmpty) > (int)(Pages.Count * 0.7))
+        {
+            if (!TryCleanup())
+            {
+                return;
+            }
+        }
+
+        TryCleanup();
+    }
+
+    private bool TryCleanup()
+    {
+        var unusedPages = Pages.Where(p => !p.IsEmpty && !p.IsAllocated).ToList();
+        foreach (var page in unusedPages)
+        {
+            page.ProcessBlock = null;
+            page.IsEmpty = true;
+            page.IsAllocated = false;
+            page.IsAdditional = false;
+        }
+
+        OnPagesChanged();
+        return Pages.Count(p => !p.IsEmpty) <= (int)(Pages.Count * 0.7);
+    }
+
 
 }

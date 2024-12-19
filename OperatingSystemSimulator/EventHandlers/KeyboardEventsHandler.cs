@@ -78,17 +78,19 @@ public class KeyboardEventsHandler
 
                     if (_app.HardwareWindow == null || !_app.HardwareWindow.Visible)
                     {
-                        ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(750, 260);
+                        ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(750, 312);
                         _app.HardwareWindow = new Window
                         {
                             Title = "Virtual Hardware",
-                            Content = _app.HardwarePage
+                            Content = new HardwarePage()
                         };
+                        _app.HardwarePage = (HardwarePage)_app.HardwareWindow.Content;
+
                     }
                     _app.HardwareWindow.Activate();
                     var overlappedPresenter = (OverlappedPresenter)_app.HardwareWindow.AppWindow.Presenter;
                     overlappedPresenter.IsResizable = false;
-                    ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(1280, 720);
+                    ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(1200, 720);
                 }
             }
             else if (args?.VirtualKey == VirtualKey.Q)

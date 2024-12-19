@@ -15,17 +15,33 @@ public class MessageBlock
     public string Message { get; }
     public string Title { get; }
     public bool HasCancelButton { get; set; }
+    public bool HasNotOkButton { get; set; }
 
-    public MessageBlock(int mid, int bPid, string title, string message, bool hasCancel)
+
+    public MessageBlock(int mid, int bPid, string title, string message, string OKButtonText, string notOKButtonText, string cancelButtonText)
     {
         Mid = mid;
         BPid = bPid;
         Message = message;
         Title = title;
-        HasCancelButton = hasCancel;
+        HasCancelButton = true;
+        HasNotOkButton = true;
         Popup = new();
-        MessageBox = new(mid, bPid, message, title, hasCancel, this);
+        MessageBox = new(mid, bPid, message, title, OKButtonText, notOKButtonText, cancelButtonText, this);
     }
+
+    public MessageBlock(int mid, int bPid, string title, string message)
+    {
+        Mid = mid;
+        BPid = bPid;
+        Message = message;
+        Title = title;
+        HasCancelButton = false;
+        HasNotOkButton = false;
+        Popup = new();
+        MessageBox = new(mid, bPid, message, title, this);
+    }
+
     public void Show()
     {
 
@@ -56,15 +72,17 @@ public class MessageBlock
         MessageManager.Instance.Close(Mid);
     }
 
+    public void HandleNotOK()
+    {
+        MessageResult.TrySetResult(MessageResults.NotOK);
+        MessageManager.Instance.Close(Mid);
+    }
+
     public void HandleCancel()
     {
         MessageResult.TrySetResult(MessageResults.Cancelled);
         MessageManager.Instance.Close(Mid);
     }
 
-    public void HandleClosed()
-    {
-        MessageResult.TrySetResult(MessageResults.Closed);
-        MessageManager.Instance.Close(Mid);
-    }
+
 }

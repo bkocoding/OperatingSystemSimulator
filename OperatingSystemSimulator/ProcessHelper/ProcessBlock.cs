@@ -18,6 +18,7 @@ public class ProcessBlock
     public bool HasUI { get; set; } = true;
     public bool IsUtilizationEnough { get; set; } = true;
     public int Size { get; set; }
+    public bool IsInitialized { get; set; } = false;
 
     /// <summary>
     /// For creating a new UI application Process Block, User Level and not required for OS
@@ -34,7 +35,7 @@ public class ProcessBlock
         App = app;
         Name = name;
         IsUtilizationEnough = isUtilizationEnough;
-        IntializePID();
+        IntializeApp();
     }
     /// <summary>
     /// For creating a new UI-less application Process Block, Kernel Level and required for OS
@@ -48,28 +49,33 @@ public class ProcessBlock
         IsUtilizationEnough = isUtilizationEnough;
         IsRequired = true;
         HasUI = false;
-        IntializePID();
+        IntializeApp();
     }
     
-    private void IntializePID()
+    private void IntializeApp()
     {
         if (App is TestApp testApp)
         {
             testApp.Pid = Pid;
+            Size = 1280000;
         }
         else if (App is TaskManagerApp taskManagerApp)
         {
             taskManagerApp.Pid = Pid;
+            Size = 3200000;
         }
         else if (App is NotepadApp notepadApp)
         {
             notepadApp.Pid = Pid;
+            Size = 4171428;
         }
 
     }
 
     public void InitializePopup()
     {
+        if (!HasUI)
+            return;
 
         Popup.Child = App as UIElement;
 
@@ -92,5 +98,10 @@ public class ProcessBlock
         Popup.HorizontalOffset = (Window.Current.Bounds.Width - newWidthOffset) / 2;
         Popup.VerticalOffset = (Window.Current.Bounds.Height - newHeightOffset) / 4;
         Popup.IsOpen = true;
+    }
+
+    public override string ToString()
+    {
+        return Name;
     }
 }

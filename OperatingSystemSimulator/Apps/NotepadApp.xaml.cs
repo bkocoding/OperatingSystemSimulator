@@ -112,6 +112,12 @@ public sealed partial class NotepadApp : UserControl
     private void OnFocusedPopupChanged(Popup? focusedPopup)
     {
 
+        if (ProcessManager.Instance.GetProcessByPid(Pid) == null)
+        {
+            UnsubscribeToFocusedPopUpChangedEvent();
+            return;
+        }
+
         if (focusedPopup != ProcessManager.Instance.GetProcessByPid(Pid).Popup)
         {
             NotepadTextBox.IsEnabled = false;
@@ -126,7 +132,7 @@ public sealed partial class NotepadApp : UserControl
     {
         if (isChanged && !exitMessageExists)
         {
-            var messageBlock = MessageManager.Instance.CreateMessage(Pid, "Warning - Notepad", "Do you want to save changes?", true);
+            var messageBlock = MessageManager.Instance.CreateMessage(Pid, "Warning - Notepad", "Do you want to save changes?", "Save", "Don't Save", "Cancel");
             lastMessageID = messageBlock.Mid;
             exitMessageExists = true;
             MessageResults? result = await messageBlock.MessageResult.Task;
@@ -145,13 +151,13 @@ public sealed partial class NotepadApp : UserControl
                 ProcessManager.Instance.FocusedPopupChanged -= OnFocusedPopupChanged;
                 ProcessManager.Instance.TerminateProcess(Pid, TerminateReasons.Self);
             }
-            else if (result == MessageResults.Cancelled)
+            else if (result == MessageResults.NotOK)
             {
                 exitMessageExists = false;
                 ProcessManager.Instance.FocusedPopupChanged -= OnFocusedPopupChanged;
                 ProcessManager.Instance.TerminateProcess(Pid, TerminateReasons.Self);
             }
-            else if(result == MessageResults.Closed)
+            else if (result == MessageResults.Cancelled)
             {
                 exitMessageExists = false;
             }
@@ -216,7 +222,7 @@ public sealed partial class NotepadApp : UserControl
             NotepadTextBox.TextWrapping = TextWrapping.NoWrap;
 
         }
-        else 
+        else
         {
             WrappingEnabled = true;
             WrappingButton.Content = "Wrap";
