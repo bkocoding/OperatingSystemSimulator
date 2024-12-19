@@ -172,7 +172,7 @@ public sealed partial class BootPage : Page
                     {
                         case "Simulated Operating System":
                             HardwarePageViewModel.SetHDOperation(HDOperations.OperatingSystem);
-                            HardwarePageViewModel.SetRunningProcess("Kernel");
+                            HardwarePageViewModel.SetRunningProcess("Boot Manager");
                             Frame.Navigate(typeof(BootAnimationPage));
                             break;
                         case "Network Boot":

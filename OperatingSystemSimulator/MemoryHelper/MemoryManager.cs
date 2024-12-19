@@ -104,9 +104,9 @@ public class MemoryManager : INotifyPropertyChanged
         return true;
     }
 
-    public void WriteToAdditionalPages(int Pid)
+    public void WriteToAdditionalPages(int Pid, int size)
     {
-
+        //TODO: Implement WriteToAdditionalPages method
     }
 
     public void DeallocateMemory(ProcessBlock processBlock)

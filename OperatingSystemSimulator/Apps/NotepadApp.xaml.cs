@@ -55,22 +55,22 @@ public sealed partial class NotepadApp : UserControl
         ShellTitleBar.title = title + " - Notepad";
     }
 
-    private void SaveButton_Click(object sender, RoutedEventArgs e)
+    private async void SaveButton_Click(object sender, RoutedEventArgs e)
     {
         ProcessManager.Instance.BringToFront(Pid);
-        SaveChanges();
-        if (true) //TODO: Check if the file is saved successfully via SelectFileDialog
+        var result = await SaveChanges();
+        if (result)
         {
             SetTitle(Title);
             isChanged = false;
         }
     }
 
-    private void SaveAsButton_Click(object sender, RoutedEventArgs e)
+    private async void SaveAsButton_Click(object sender, RoutedEventArgs e)
     {
         ProcessManager.Instance.BringToFront(Pid);
-        SaveAs();
-        if (true) //TODO: Check if the file is saved successfully via CreateFileDialog
+        var result = await SaveAs();
+        if (result)
         {
             Title = "New File";
             SetTitle(Title);
@@ -142,20 +142,26 @@ public sealed partial class NotepadApp : UserControl
                 exitMessageExists = false;
                 if (isFile)
                 {
-                    SaveChanges();
+                    var saveChangesResult = await SaveChanges();
+                    if (!saveChangesResult)
+                    {
+                        return;
+                    }
                 }
                 else
                 {
-                    SaveAs();
+                    var saveAsResult = await SaveAs();
+                    if (!saveAsResult)
+                    {
+                        return;
+                    }
                 }
-                ProcessManager.Instance.FocusedPopupChanged -= OnFocusedPopupChanged;
-                ProcessManager.Instance.TerminateProcess(Pid, TerminateReasons.Self);
+                OnTermination();
             }
             else if (result == MessageResults.NotOK)
             {
                 exitMessageExists = false;
-                ProcessManager.Instance.FocusedPopupChanged -= OnFocusedPopupChanged;
-                ProcessManager.Instance.TerminateProcess(Pid, TerminateReasons.Self);
+                OnTermination();
             }
             else if (result == MessageResults.Cancelled)
             {
@@ -166,8 +172,7 @@ public sealed partial class NotepadApp : UserControl
         {
             if (!exitMessageExists)
             {
-                ProcessManager.Instance.FocusedPopupChanged -= OnFocusedPopupChanged;
-                ProcessManager.Instance.TerminateProcess(Pid, TerminateReasons.Self);
+                OnTermination();
             }
             else
             {
@@ -176,11 +181,17 @@ public sealed partial class NotepadApp : UserControl
         }
     }
 
-    private async void SaveChanges()
+    private void OnTermination()
+    {
+        ProcessManager.Instance.FocusedPopupChanged -= OnFocusedPopupChanged;
+        ProcessManager.Instance.TerminateProcess(Pid, TerminateReasons.Self);
+    }
+
+    private async Task<bool> SaveChanges()
     {
         if (!isChanged)
         {
-            return;
+            return true;
         }
         //TODO: Change the file to save it
         HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdWrite, HardwareStatuses.Running);
@@ -189,9 +200,10 @@ public sealed partial class NotepadApp : UserControl
         HardwarePageViewModel.Instance.SetHDOperation(HDOperations.Idle);
         HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdWrite, HardwareStatuses.Idle);
 
+        return true; //TODO: Check if the file is saved successfully via SelectFileDialog
     }
 
-    private async void SaveAs()
+    private async Task<bool> SaveAs()
     {
         //TODO: Create a new file and save
         HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdWrite, HardwareStatuses.Running);
@@ -200,6 +212,7 @@ public sealed partial class NotepadApp : UserControl
         HardwarePageViewModel.Instance.SetHDOperation(HDOperations.Idle);
         HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdWrite, HardwareStatuses.Idle);
         SaveButton.IsEnabled = true;
+        return true; //TODO: Check if the file is saved successfully via CreateFileDialog
     }
 
     public void UnsubscribeToFocusedPopUpChangedEvent()
