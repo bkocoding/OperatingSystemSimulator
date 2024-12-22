@@ -18,8 +18,10 @@ public partial class App : Application
 
     protected Window? MainWindow { get; private set; }
     public HardwarePage HardwarePage { get; set; }
-    public IHost? Host { get; private set; }
+    public PageListPage PageListPage { get; set; }
     public Window HardwareWindow { get; set; }
+    public Window PageListWindow { get; set; }
+    public IHost? Host { get; private set; }
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
@@ -117,13 +119,32 @@ public partial class App : Application
             Content = new HardwarePage()
         };
 
+        HardwarePage = (HardwarePage)HardwareWindow.Content;
+
         var OPHardwareWindow = (OverlappedPresenter)HardwareWindow.AppWindow.Presenter;
 
         OPHardwareWindow.IsResizable = false;
 
-
-        MainWindow.Closed += (s, e) => HardwareWindow.Close();
         HardwareWindow.Activate();
+
+        ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(500, 500);
+        PageListWindow = new Window
+        {
+            Title = "Page List",
+            Content = new PageListPage()
+        };
+        PageListPage = (PageListPage)PageListWindow.Content;
+
+        var OPPageListWindow = (OverlappedPresenter)PageListWindow.AppWindow.Presenter;
+
+        //OPPageListWindow.IsResizable = false;
+        PageListWindow.Activate();
+
+        MainWindow.Closed += (s, e) =>
+        {
+            HardwareWindow.Close();
+            PageListWindow.Close();
+        };
         ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(1200, 720);
     }
 

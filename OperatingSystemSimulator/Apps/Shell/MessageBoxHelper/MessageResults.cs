@@ -1,4 +1,4 @@
-namespace OperatingSystemSimulator.Apps.Shell;
+namespace OperatingSystemSimulator.Apps.Shell.MessageBoxHelper;
 public enum MessageResults
 {
     OK,

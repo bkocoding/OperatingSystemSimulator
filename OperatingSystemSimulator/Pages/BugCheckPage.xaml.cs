@@ -10,7 +10,7 @@ public sealed partial class BugCheckPage : Page
         Task.Delay(1000).Wait();
         InitializeComponent();
     }
-
+    //TODO: Don't forget to change Hardware Statuses for BugChecking
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);

@@ -11,6 +11,8 @@
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
       <RowDefinition Height="*"/>
       <RowDefinition Height="Auto"/>
       <RowDefinition Height="*"/>
@@ -18,33 +20,46 @@
       <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
 
-    <Button VerticalAlignment="Top" Width="80" Height="50" HorizontalAlignment="Left" Margin="10" Grid.Row="0" Background="Transparent" BorderBrush="Transparent" Click="APP1_Click">
+    <Button VerticalAlignment="Top" Width="110" Height="80" HorizontalAlignment="Left" Margin="10" Grid.Row="0" Background="Transparent" BorderBrush="Transparent" Click="APP1_Click">
       <Button.Content>
         <Grid>
           <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
           </Grid.RowDefinitions>
-          <TextBlock HorizontalAlignment="Center" Grid.Row="0">😊</TextBlock>
+          <TextBlock HorizontalAlignment="Center" FontSize="20" Grid.Row="0">😊</TextBlock>
           <TextBlock  Grid.Row="1">Test App</TextBlock>
         </Grid>
       </Button.Content>
     </Button>
 
-    <Button VerticalAlignment="Top" Width="80" Height="50"  HorizontalAlignment="Left" Margin="10" Grid.Row="1" Background="Transparent" BorderBrush="Transparent"  Click="Notepad_Click">
+    <Button VerticalAlignment="Top" Width="110" Height="80"  HorizontalAlignment="Left" Margin="10" Grid.Row="1" Background="Transparent" BorderBrush="Transparent"  Click="FileExplorer_Click">
       <Button.Content>
         <Grid>
           <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
           </Grid.RowDefinitions>
-          <TextBlock HorizontalAlignment="Center" Grid.Row="0">📝</TextBlock>
+          <TextBlock HorizontalAlignment="Center" FontSize="20" Grid.Row="0">🗃️</TextBlock>
+          <TextBlock Grid.Row="1">File Explorer</TextBlock>
+        </Grid>
+      </Button.Content>
+    </Button>
+
+    <Button VerticalAlignment="Top" Width="110" Height="80"  HorizontalAlignment="Left" Margin="10" Grid.Row="2" Background="Transparent" BorderBrush="Transparent"  Click="Notepad_Click">
+      <Button.Content>
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+          </Grid.RowDefinitions>
+          <TextBlock HorizontalAlignment="Center" FontSize="20" Grid.Row="0">📝</TextBlock>
           <TextBlock Grid.Row="1">Notepad</TextBlock>
         </Grid>
       </Button.Content>
     </Button>
 
-    <StackPanel VerticalAlignment="Bottom" Grid.Row="5" Background="Gray" Height="55">
+    <StackPanel VerticalAlignment="Bottom" Grid.Row="7" Background="Gray" Height="55">
       <Grid>
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="Auto"/>

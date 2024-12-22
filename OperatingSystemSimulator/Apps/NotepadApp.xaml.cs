@@ -1,5 +1,7 @@
 using Microsoft.UI.Xaml.Controls.Primitives;
-using OperatingSystemSimulator.Apps.Shell;
+using OperatingSystemSimulator.Apps.Shell.FileDialogs;
+using OperatingSystemSimulator.Apps.Shell.MessageBoxHelper;
+using OperatingSystemSimulator.FileHelper;
 using OperatingSystemSimulator.ProcessHelper;
 
 namespace OperatingSystemSimulator.Apps;
@@ -28,17 +30,23 @@ public sealed partial class NotepadApp : UserControl
         }
     }
 
+    private BKOFSFile? currentFile;
+
     private bool isChanged = false;
+    private bool isFirstUtilizationWithFile = false;
     private bool isFile = false;
     private bool exitMessageExists = false;
-    private bool WrappingEnabled = true;
+    private bool wrappingEnabled = true;
     private bool isEnqueued = false;
     private int? lastMessageID;
-    public NotepadApp(string title)
+    public NotepadApp(BKOFSFile file)
     {
         InitializeComponent();
-        Title = title;
+        currentFile = file;
+        Title = file.Name;
         isFile = true;
+        isFirstUtilizationWithFile = true;
+        NotepadTextBox.Text = file.Content;
         SaveButton.IsEnabled = true;
         ProcessManager.Instance.FocusedPopupChanged += OnFocusedPopupChanged;
     }
@@ -52,7 +60,7 @@ public sealed partial class NotepadApp : UserControl
 
     public void SetTitle(string title)
     {
-        ShellTitleBar.title = title + " - Notepad";
+        ShellTitleBar.Title = title + " - Notepad";
     }
 
     private async void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -72,8 +80,6 @@ public sealed partial class NotepadApp : UserControl
         var result = await SaveAs();
         if (result)
         {
-            Title = "New File";
-            SetTitle(Title);
             isChanged = false;
             isFile = true;
         }
@@ -93,6 +99,12 @@ public sealed partial class NotepadApp : UserControl
 
     private async void NotepadTextBox_TextChanged(object sender, TextChangedEventArgs e)
     {
+        if (isFirstUtilizationWithFile)
+        {
+            isFirstUtilizationWithFile = false;
+            return;
+        }
+
         if (!isChanged)
         {
             SetTitle("* " + Title);
@@ -118,7 +130,7 @@ public sealed partial class NotepadApp : UserControl
             return;
         }
 
-        if (focusedPopup != ProcessManager.Instance.GetProcessByPid(Pid).Popup)
+        if (focusedPopup != ProcessManager.Instance.GetProcessByPid(Pid)!.Popup)
         {
             NotepadTextBox.IsEnabled = false;
         }
@@ -133,7 +145,7 @@ public sealed partial class NotepadApp : UserControl
         if (isChanged && !exitMessageExists)
         {
             var messageBlock = MessageManager.Instance.CreateMessage(Pid, "Warning - Notepad", "Do you want to save changes?", "Save", "Don't Save", "Cancel");
-            lastMessageID = messageBlock.Mid;
+            lastMessageID = messageBlock.MId;
             exitMessageExists = true;
             MessageResults? result = await messageBlock.MessageResult.Task;
 
@@ -176,7 +188,7 @@ public sealed partial class NotepadApp : UserControl
             }
             else
             {
-                MessageManager.Instance.BringToFront(lastMessageID.Value);
+                MessageManager.Instance.BringToFront(lastMessageID!.Value);
             }
         }
     }
@@ -193,26 +205,56 @@ public sealed partial class NotepadApp : UserControl
         {
             return true;
         }
-        //TODO: Change the file to save it
-        HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdWrite, HardwareStatuses.Running);
-        HardwarePageViewModel.Instance.SetHDOperation(HDOperations.ChangingFile);
-        await Task.Delay(300);
-        HardwarePageViewModel.Instance.SetHDOperation(HDOperations.Idle);
-        HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdWrite, HardwareStatuses.Idle);
 
-        return true; //TODO: Check if the file is saved successfully via SelectFileDialog
+        var result = await BKOFSManager.ChangeFile(currentFile!.FileID, currentFile!.ParentDirectory, newContent: NotepadTextBox.Text);
+
+        if (!result)
+        {
+            MessageManager.Instance.CreateMessage(Pid, "Couldn't Save", $"The current file {currentFile.Name} does not exists anymore!");
+            Title = "Untitled";
+            SetTitle("* " + Title);
+            isChanged = true;
+            currentFile = null;
+            isFile = false;
+            SaveButton.IsEnabled = false;
+        }
+
+        return result;
     }
 
     private async Task<bool> SaveAs()
     {
-        //TODO: Create a new file and save
-        HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdWrite, HardwareStatuses.Running);
-        HardwarePageViewModel.Instance.SetHDOperation(HDOperations.CreatingFile);
-        await Task.Delay(300);
-        HardwarePageViewModel.Instance.SetHDOperation(HDOperations.Idle);
-        HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdWrite, HardwareStatuses.Idle);
-        SaveButton.IsEnabled = true;
-        return true; //TODO: Check if the file is saved successfully via CreateFileDialog
+        var fileDialogBlock = FileDialogManager.Instance.CreateFileDialog(Pid, false);
+
+        FileDialogResult? fileDialogResult = await fileDialogBlock.DialogResult.Task;
+
+        BKOFSDirectory selectedDir;
+
+        if (fileDialogResult.Result == FileDialogResults.Cancelled)
+        {
+            return false;
+        }
+        else if (fileDialogResult.Result == FileDialogResults.DirectorySelected)
+        {
+            selectedDir = fileDialogResult.SelectedDirectory!;
+            await BKOFSManager.Instance.CreateFile(fileDialogResult.SelectedName!, selectedDir);
+            bool result = await BKOFSManager.ChangeFile(selectedDir.Files.Last().FileID, selectedDir, newContent: NotepadTextBox.Text);
+
+            if (result)
+            {
+                currentFile = selectedDir.Files.Last();
+                Title = currentFile.Name;
+                SetTitle(Title);
+            }
+
+            if (!SaveButton.IsEnabled && result)
+            {
+                SaveButton.IsEnabled = true;
+            }
+
+            return result;
+        }
+        return false;
     }
 
     public void UnsubscribeToFocusedPopUpChangedEvent()
@@ -228,16 +270,16 @@ public sealed partial class NotepadApp : UserControl
 
     private void WrappingButton_Click(object sender, RoutedEventArgs e)
     {
-        if (WrappingEnabled)
+        if (wrappingEnabled)
         {
-            WrappingEnabled = false;
+            wrappingEnabled = false;
             WrappingButton.Content = "No Wrap";
             NotepadTextBox.TextWrapping = TextWrapping.NoWrap;
 
         }
         else
         {
-            WrappingEnabled = true;
+            wrappingEnabled = true;
             WrappingButton.Content = "Wrap";
             NotepadTextBox.TextWrapping = TextWrapping.Wrap;
         }

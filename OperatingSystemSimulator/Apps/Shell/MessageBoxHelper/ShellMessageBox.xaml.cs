@@ -1,4 +1,5 @@
 using System.Xml.XPath;
+using OperatingSystemSimulator.Apps.Shell.MessageBoxHelper;
 
 namespace OperatingSystemSimulator.Apps.Shell;
 
@@ -38,8 +39,8 @@ public sealed partial class ShellMessageBox : Page
     public ShellMessageBox(int mid, int bPid, string message, string title, string OKButtonText, string notOKButtonText, string cancelButtonText, MessageBlock parentBlock)
     {
         InitializeComponent();
-        ShellTitleBar.title = title;
-        ShellTitleBar.IsApp = false;
+        ShellTitleBar.Title = title;
+        ShellTitleBar.CurrentShellType = ShellType.Message;
         Message.Text = message;
         Mid = mid;
         BPid = bPid;
@@ -68,8 +69,8 @@ public sealed partial class ShellMessageBox : Page
     public ShellMessageBox(int mid, int bPid, string message, string title, MessageBlock parentBlock) 
     {
         InitializeComponent();
-        ShellTitleBar.title = title;
-        ShellTitleBar.IsApp = false;
+        ShellTitleBar.Title = title;
+        ShellTitleBar.CurrentShellType = ShellType.Message;
         Message.Text = message;
         Mid = mid;
         BPid = bPid;

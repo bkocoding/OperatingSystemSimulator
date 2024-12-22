@@ -8,7 +8,7 @@ public class BIOSBootViewModel : INotifyPropertyChanged
 {
     private readonly BIOSSettingsService? _biosSettingsService;
 
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     public BIOSBootViewModel()
     {
@@ -22,8 +22,8 @@ public class BIOSBootViewModel : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 
-    private string _fbo;
-    public string FBO
+    private string? _fbo;
+    public string? FBO
     {
         get { return _fbo; }
         set
@@ -33,8 +33,8 @@ public class BIOSBootViewModel : INotifyPropertyChanged
         }
     }
 
-    private string sbo;
-    public string SBO
+    private string? sbo;
+    public string? SBO
     {
         get { return sbo; }
         set
@@ -46,7 +46,7 @@ public class BIOSBootViewModel : INotifyPropertyChanged
 
     private void LoadSettings()
     {
-        FBO = _biosSettingsService.Settings.FirstBootOption;
+        FBO = _biosSettingsService!.Settings!.FirstBootOption;
         SBO = _biosSettingsService.Settings.SecondBootOption;
     }
 

@@ -3,8 +3,8 @@ using OperatingSystemSimulator.Extras.ConsoleLogger;
 namespace OperatingSystemSimulator.Pages;
 public sealed partial class WelcomePage : Page
 {
-    private DispatcherTimer timer;
-    private DispatcherTimer delayTimer;
+    private DispatcherTimer? timer;
+    private DispatcherTimer? delayTimer;
     private int dotCount = 0;
     private int iterationCount = 0;
     private const int maxIterations = 3;
@@ -26,9 +26,11 @@ public sealed partial class WelcomePage : Page
         Background = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 9, 95, 161));
         wctext.Visibility = Visibility.Visible;
 
-        timer = new DispatcherTimer();
-        timer.Interval = TimeSpan.FromMilliseconds(250);
-        timer.Tick += Timer_Tick;
+        timer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromMilliseconds(250)
+        };
+        timer.Tick += Timer_Tick!;
         ConsoleLogger.Log("Desktop is loading", LogType.Info);
         timer.Start();
     }
@@ -38,7 +40,7 @@ public sealed partial class WelcomePage : Page
 
         if (iterationCount == maxIterations)
         {
-            timer.Stop();
+            timer!.Stop();
             ConsoleLogger.Log("Desktop is loaded", LogType.Info);
             HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Idle);
             HardwarePageViewModel.Instance.SetHDOperation(HDOperations.Idle);
@@ -63,14 +65,14 @@ public sealed partial class WelcomePage : Page
     {
         delayTimer = new DispatcherTimer();
         delayTimer.Interval = TimeSpan.FromSeconds(1);
-        delayTimer.Tick += DelayTimer_Tick;
+        delayTimer.Tick += DelayTimer_Tick!;
         delayTimer.Start();
     }
 
     private void DelayTimer_Tick(object sender, object e)
     {
         Frame.Navigate(typeof(DesktopPage));
-        delayTimer.Stop();
+        delayTimer!.Stop();
 
     }
 }

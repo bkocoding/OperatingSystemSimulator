@@ -10,7 +10,11 @@ public enum HDOperations
     AppData,
     CreatingFile,
     ChangingFile,
-    DeletingFile
+    DeletingFile,
+    CreatingDirectory,
+    DeletingDirectory,
+    ChangingDirectory,
+    ExploringDirectory
 }
 
 public static class HDOperationsExtensions
@@ -28,6 +32,10 @@ public static class HDOperationsExtensions
             HDOperations.CreatingFile => "Creating File",
             HDOperations.ChangingFile => "Changing File",
             HDOperations.DeletingFile => "Deleting File",
+            HDOperations.CreatingDirectory => "Creating Directory",
+            HDOperations.DeletingDirectory => "Deleting Directory",
+            HDOperations.ChangingDirectory => "Changing Directory",
+            HDOperations.ExploringDirectory => "Exploring Directory",
             _ => "Standard Operation"
         };
     }

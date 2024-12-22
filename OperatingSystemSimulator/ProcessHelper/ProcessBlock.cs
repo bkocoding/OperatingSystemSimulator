@@ -69,6 +69,11 @@ public class ProcessBlock
             notepadApp.Pid = Pid;
             Size = 4171428;
         }
+        else if (App is FileExplorerApp explorerApp) 
+        {
+            explorerApp.Pid = Pid;
+            Size = 7171428;
+        }
 
     }
 
@@ -77,14 +82,14 @@ public class ProcessBlock
         if (!HasUI)
             return;
 
-        Popup.Child = App as UIElement;
+        Popup!.Child = App as UIElement;
 
         double newWidthOffset;
         double newHeightOffset;
 
         do
         {
-            newWidthOffset = random.Next(50, (int)(Window.Current.Bounds.Width)/2);
+            newWidthOffset = random.Next(50, (int)(Window.Current!.Bounds.Width)/2);
         } while (newWidthOffset == previousWidthOffset);
         
         do
@@ -95,8 +100,19 @@ public class ProcessBlock
         previousWidthOffset = newWidthOffset;
         previousHeightOffset = newHeightOffset;
 
-        Popup.HorizontalOffset = (Window.Current.Bounds.Width - newWidthOffset) / 2;
-        Popup.VerticalOffset = (Window.Current.Bounds.Height - newHeightOffset) / 4;
+        int verticalOne = 2;
+        int horizontalOne = 4;
+
+        if (App is FileExplorerApp)
+        {
+            verticalOne = 4;
+            horizontalOne = 8;
+        }
+
+     
+
+        Popup.HorizontalOffset = (Window.Current.Bounds.Width - newWidthOffset) / verticalOne;
+        Popup.VerticalOffset = (Window.Current.Bounds.Height - newHeightOffset) / horizontalOne;
         Popup.IsOpen = true;
     }
 

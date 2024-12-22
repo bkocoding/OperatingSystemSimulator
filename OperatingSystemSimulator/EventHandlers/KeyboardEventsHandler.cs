@@ -52,14 +52,14 @@ public class KeyboardEventsHandler
             }
             HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.KeyStroke, HardwareStatuses.Running);
             ProcessManager.Instance.InterruptQueueAsync(1);
-            Frame currentFrame = (Frame)Window.Current.Content;
+            Frame currentFrame = (Frame)Window.Current!.Content!;
 
             if (args.VirtualKey == VirtualKey.F11)
             {
                 switch (currentFrame?.Content)
                 {
                     case DesktopPage:
-                        if (Window.Current.CoreWindow.GetKeyState(VirtualKey.Control).HasFlag(CoreVirtualKeyStates.Down) && Window.Current.CoreWindow.GetKeyState(VirtualKey.Menu).HasFlag(CoreVirtualKeyStates.Down))
+                        if (Window.Current.CoreWindow!.GetKeyState(VirtualKey.Control).HasFlag(CoreVirtualKeyStates.Down) && Window.Current.CoreWindow.GetKeyState(VirtualKey.Menu).HasFlag(CoreVirtualKeyStates.Down))
                         {
                             string[] parameters = { "PID: 1\nProcess Name: OS", "MANUALY_TRIGGERED" };
                             ConsoleLogger.Log("Manual BughCheck Triggered", LogType.Info);
@@ -72,7 +72,7 @@ public class KeyboardEventsHandler
             }
             else if (args?.VirtualKey == VirtualKey.F6)
             {
-                if (Window.Current.CoreWindow.GetKeyState(VirtualKey.Control).HasFlag(CoreVirtualKeyStates.Down) && Window.Current.CoreWindow.GetKeyState(VirtualKey.Menu).HasFlag(CoreVirtualKeyStates.Down))
+                if (Window.Current.CoreWindow!.GetKeyState(VirtualKey.Control).HasFlag(CoreVirtualKeyStates.Down) && Window.Current.CoreWindow.GetKeyState(VirtualKey.Menu).HasFlag(CoreVirtualKeyStates.Down))
                 {
                     _app = (App)Application.Current;
 
@@ -93,11 +93,34 @@ public class KeyboardEventsHandler
                     ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(1200, 720);
                 }
             }
+            else if (args?.VirtualKey == VirtualKey.F7)
+            {
+                if (Window.Current.CoreWindow!.GetKeyState(VirtualKey.Control).HasFlag(CoreVirtualKeyStates.Down) && Window.Current.CoreWindow.GetKeyState(VirtualKey.Menu).HasFlag(CoreVirtualKeyStates.Down))
+                {
+                    _app = (App)Application.Current;
+
+                    if (_app.PageListWindow == null || !_app.PageListWindow.Visible)
+                    {
+                        ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(500, 500);
+                        _app.PageListWindow = new Window
+                        {
+                            Title = "Page List",
+                            Content = new PageListPage()
+                        };
+                        _app.PageListPage = (PageListPage)_app.PageListWindow.Content;
+
+                    }
+                    _app.PageListWindow.Activate();
+                    var overlappedPresenter = (OverlappedPresenter)_app.PageListWindow.AppWindow.Presenter;
+                    //overlappedPresenter.IsResizable = false;
+                    ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(1200, 720);
+                }
+            }
             else if (args?.VirtualKey == VirtualKey.Q)
             {
                 if (currentFrame?.Content is DesktopPage)
                 {
-                    if (Window.Current.CoreWindow.GetKeyState(VirtualKey.Control).HasFlag(CoreVirtualKeyStates.Down))
+                    if (Window.Current!.CoreWindow!.GetKeyState(VirtualKey.Control).HasFlag(CoreVirtualKeyStates.Down))
                     {
                         ProcessManager.Instance.TerminateFocusedProcess();
                     }

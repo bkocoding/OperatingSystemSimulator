@@ -49,15 +49,15 @@ public sealed partial class BootPage : Page
     {
         InitializeComponent();
         MouseEventsHandler.Instance.Initialize();
-        _biosSettingsService = (Application.Current as App)?.Host?.Services.GetRequiredService<BIOSSettingsService>();
+        _biosSettingsService = (Application.Current as App)?.Host?.Services.GetRequiredService<BIOSSettingsService>()!;
         _firstBootOrder = _biosSettingsService.Settings.FirstBootOption;
 
-        Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
+        Window.Current!.CoreWindow!.KeyDown += CoreWindow_KeyDown;
 
         SetBootPartition();
         _timer = new DispatcherTimer();
         _timer.Interval = TimeSpan.FromMilliseconds(new Random().Next(200, 800));
-        _timer.Tick += OnTimerTick;
+        _timer.Tick += OnTimerTick!;
         _currentMessages = _postMessages;
         _timer.Start();
     }
@@ -70,7 +70,7 @@ public sealed partial class BootPage : Page
     protected override void OnNavigatedFrom(NavigationEventArgs e)
     {
         base.OnNavigatedFrom(e);
-        Window.Current.CoreWindow.KeyDown -= CoreWindow_KeyDown;
+        Window.Current!.CoreWindow!.KeyDown -= CoreWindow_KeyDown;
     }
 
     private void SetBootPartition()
@@ -199,7 +199,7 @@ public sealed partial class BootPage : Page
 
     private async void CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
     {
-        Frame currentFrame = (Frame)Window.Current.Content;
+        Frame currentFrame = (Frame)Window.Current!.Content!;
 
         if (args.VirtualKey == VirtualKey.F2)
         {

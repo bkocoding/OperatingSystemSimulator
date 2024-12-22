@@ -30,7 +30,7 @@ namespace OperatingSystemSimulator.Pages.BIOSSettings
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
-            Window.Current.CoreWindow.KeyDown -= CoreWindow_KeyDown;
+            Window.Current!.CoreWindow!.KeyDown -= CoreWindow_KeyDown;
         }
 
         private void HighlightUp()
@@ -72,7 +72,7 @@ namespace OperatingSystemSimulator.Pages.BIOSSettings
 
         private void CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
         {
-            Frame currentFrame = (Frame)Window.Current.Content;
+            Frame currentFrame = (Frame)Window.Current!.Content!;
 
             if (args.VirtualKey == VirtualKey.Left)
             {
@@ -101,7 +101,7 @@ namespace OperatingSystemSimulator.Pages.BIOSSettings
 
             if (args.VirtualKey == VirtualKey.F8)
             {
-                currentFrame?.Navigate(typeof(BootPage));
+                currentFrame.Navigate(typeof(BootPage));
                 currentFrame.BackStack.Clear();
 
                 ConsoleLogger.Log("Discarding changes, rebooting...", LogType.Info);
@@ -110,7 +110,7 @@ namespace OperatingSystemSimulator.Pages.BIOSSettings
             if (args.VirtualKey == VirtualKey.F9)
             {
                 SaveValues();
-                currentFrame?.Navigate(typeof(BootPage));
+                currentFrame.Navigate(typeof(BootPage));
                 currentFrame.BackStack.Clear();
                 ConsoleLogger.Log("Saving changes, rebooting...", LogType.Info);
             }

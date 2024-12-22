@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
 using OperatingSystemSimulator.ProcessHelper;
 
-namespace OperatingSystemSimulator.Apps.Shell;
+namespace OperatingSystemSimulator.Apps.Shell.MessageBoxHelper;
 public class MessageManager
 {
     private static MessageManager? instance;
@@ -48,7 +48,7 @@ public class MessageManager
         nextMid++;
         MessageBlocks.Add(messageBlock);
         messageBlock.Show();
-        BringToFront(messageBlock.Mid);
+        BringToFront(messageBlock.MId);
         ProcessManager.Instance.FocusedPopup = null;
         return messageBlock;
 
@@ -67,7 +67,7 @@ public class MessageManager
         nextMid++;
         MessageBlocks.Add(messageBlock);
         messageBlock.Show();
-        BringToFront(messageBlock.Mid);
+        BringToFront(messageBlock.MId);
         ProcessManager.Instance.FocusedPopup = null;
         return messageBlock;
 
@@ -89,7 +89,7 @@ public class MessageManager
         MessageBlock? messageBlock = GetMessageBlock(mid);
         if (messageBlock != null)
         {
-            messageBlock.Popup.IsOpen = false;
+            messageBlock.Popup!.IsOpen = false;
             messageBlock.Popup.Child = null;
             messageBlock.Popup = null;
             messageBlock.MessageBox = null;
@@ -99,6 +99,15 @@ public class MessageManager
     }
     public MessageBlock? GetMessageBlock(int mid)
     {
-        return MessageBlocks.FirstOrDefault(p => p.Mid == mid);
+        return MessageBlocks.FirstOrDefault(p => p.MId == mid);
+    }
+
+    public void TerminateAllMessages()
+    {
+        var messageBlocksCopy = MessageBlocks.ToList();
+        foreach (var messageBlock in messageBlocksCopy)
+        {
+            Close(messageBlock.MId);
+        }
     }
 }

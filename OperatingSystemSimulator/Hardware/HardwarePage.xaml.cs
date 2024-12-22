@@ -16,6 +16,7 @@ public sealed partial class HardwarePage : Page
         InitializeComponent();
         ViewModel.ResetStatuses();
         InitializeRamChart();
+        UpdateRamChart();
 
         MemoryManager.Instance.PropertyChanged += (sender, e) =>
         {
@@ -99,11 +100,11 @@ public sealed partial class HardwarePage : Page
 
         if (RamChart.Series.Count() != 0)
         {
-            var oldbarSeries = (ObservableCollection<int>)RamChart.Series.First().Values;
+            var oldbarSeries = (ObservableCollection<int>)RamChart.Series.First().Values!;
             oldbarSeries.Clear();
         }
 
-        var barSeries = (ObservableCollection<int>)RamChart.Series.First().Values;
+        var barSeries = (ObservableCollection<int>)RamChart.Series.First().Values!;
         foreach (var processBlock in processBlocks)
         {
             var processPages = MemoryManager.Instance.GetProcessPages(processBlock);

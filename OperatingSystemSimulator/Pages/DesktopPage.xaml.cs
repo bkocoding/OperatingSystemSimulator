@@ -1,5 +1,6 @@
-using Microsoft.UI.Xaml.Controls.Primitives;
 using OperatingSystemSimulator.Apps;
+using OperatingSystemSimulator.Apps.Shell.FileDialogs;
+using OperatingSystemSimulator.Apps.Shell.MessageBoxHelper;
 using OperatingSystemSimulator.Extras.ConsoleLogger;
 using OperatingSystemSimulator.ProcessHelper;
 
@@ -18,6 +19,8 @@ public sealed partial class DesktopPage : Page
     {
         ConsoleLogger.Log("Shutdown initiated...",LogType.Info);
         ProcessManager.Instance.TerminateAllProcesses(TerminateReasons.System);
+        MessageManager.Instance.TerminateAllMessages();
+        FileDialogManager.Instance.TerminateAllFileDialogs();
         Frame.Navigate(typeof(ShutdownPage));
     }
 
@@ -38,5 +41,11 @@ public sealed partial class DesktopPage : Page
     {
         string title = "Notepad";
        await ProcessManager.Instance.CreateProcess(new NotepadApp(), title, false, false);
+    }
+
+    private async void FileExplorer_Click(object sender, RoutedEventArgs e)
+    {
+        string title = "File Explorer";
+        await ProcessManager.Instance.CreateProcess(new FileExplorerApp(), title, false, false);
     }
 }

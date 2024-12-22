@@ -1,15 +1,14 @@
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Windows.ApplicationModel.Background;
 
-namespace OperatingSystemSimulator.Apps.Shell;
+namespace OperatingSystemSimulator.Apps.Shell.MessageBoxHelper;
 public class MessageBlock
 {
     private double previousWidthOffset = 200;
     private double previousHeightOffset = 200;
     public TaskCompletionSource<MessageResults> MessageResult { get; } = new();
 
-    public int Mid { get; }
-    public int BPid { get; set; }
+    public int MId { get; }
+    public int BPId { get; set; }
     public Popup? Popup { get; set; }
     public ShellMessageBox? MessageBox { get; set; }
     public string Message { get; }
@@ -17,11 +16,10 @@ public class MessageBlock
     public bool HasCancelButton { get; set; }
     public bool HasNotOkButton { get; set; }
 
-
     public MessageBlock(int mid, int bPid, string title, string message, string OKButtonText, string notOKButtonText, string cancelButtonText)
     {
-        Mid = mid;
-        BPid = bPid;
+        MId = mid;
+        BPId = bPid;
         Message = message;
         Title = title;
         HasCancelButton = true;
@@ -32,8 +30,8 @@ public class MessageBlock
 
     public MessageBlock(int mid, int bPid, string title, string message)
     {
-        Mid = mid;
-        BPid = bPid;
+        MId = mid;
+        BPId = bPid;
         Message = message;
         Title = title;
         HasCancelButton = false;
@@ -45,7 +43,7 @@ public class MessageBlock
     public void Show()
     {
 
-        Popup.Child = MessageBox;
+        Popup!.Child = MessageBox;
         double newWidthOffset;
         double newHeightOffset;
 
@@ -69,19 +67,19 @@ public class MessageBlock
     public void HandleOk()
     {
         MessageResult.TrySetResult(MessageResults.OK);
-        MessageManager.Instance.Close(Mid);
+        MessageManager.Instance.Close(MId);
     }
 
     public void HandleNotOK()
     {
         MessageResult.TrySetResult(MessageResults.NotOK);
-        MessageManager.Instance.Close(Mid);
+        MessageManager.Instance.Close(MId);
     }
 
     public void HandleCancel()
     {
         MessageResult.TrySetResult(MessageResults.Cancelled);
-        MessageManager.Instance.Close(Mid);
+        MessageManager.Instance.Close(MId);
     }
 
 

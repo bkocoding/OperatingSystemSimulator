@@ -18,7 +18,7 @@ public sealed partial class TestApp : UserControl
     public TestApp()
     {
         InitializeComponent();
-        ShellTitleBar.title = "Test App";
+        ShellTitleBar.Title = "Test App";
         
     }
 

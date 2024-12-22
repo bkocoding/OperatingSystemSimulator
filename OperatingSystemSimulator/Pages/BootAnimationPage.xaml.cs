@@ -1,4 +1,5 @@
 using Microsoft.UI.Xaml.Media.Animation;
+using OperatingSystemSimulator.FileHelper;
 using OperatingSystemSimulator.ProcessHelper;
 using Windows.Foundation;
 
@@ -27,6 +28,7 @@ public sealed partial class BootAnimationPage : Page
 
         await Task.Delay(3000);
         ProcessManager.Instance.StartLogOnUser();
+        BKOFSManager.Instance.Initialize();
         NavigateToLogOn();
     }
 
@@ -54,7 +56,7 @@ public sealed partial class BootAnimationPage : Page
 
     private static void NavigateToLogOn() 
     {
-        Frame currentFrame = (Frame)Window.Current.Content;
+        Frame currentFrame = (Frame)Window.Current!.Content!;
         currentFrame?.Navigate(typeof(WelcomePage));
     }
 }

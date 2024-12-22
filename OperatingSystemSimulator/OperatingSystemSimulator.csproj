@@ -45,13 +45,16 @@
     </UnoFeatures>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Apps\FileExplorerApp.xaml" />
     <None Remove="Apps\NotepadApp.xaml" />
+    <None Remove="Apps\Shell\FileDialogs\SelectFileDialog.xaml" />
     <None Remove="Apps\Shell\ShellMessageBox.xaml" />
     <None Remove="Apps\Shell\ShellWindow.xaml" />
     <None Remove="Apps\TaskManagerApp.xaml" />
     <None Remove="Apps\TestApp.xaml" />
     <None Remove="biossettings.json" />
     <None Remove="Hardware\HardwarePage.xaml" />
+    <None Remove="Hardware\PageListPage.xaml" />
     <None Remove="Pages\BIOSSettingsPage.xaml" />
     <None Remove="Pages\BIOSSettings\BIOSBootPage.xaml" />
     <None Remove="Pages\BIOSSettings\BIOSInfoPage.xaml" />
@@ -228,7 +231,43 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Page Update="Apps\Shell\ShellMessageBox.xaml">
+    <Page Update="Apps\Shell\MessageBoxHelper\ShellMessageBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Apps\Shell\MessageBoxHelper\ShellMessageBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Apps\FileExplorerApp.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Apps\FileExplorerApp.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Apps\Shell\FileDialogs\SelectFileDialog.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Apps\Shell\FileDialogs\SelectFileDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Hardware\PageListPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Hardware\PageListPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

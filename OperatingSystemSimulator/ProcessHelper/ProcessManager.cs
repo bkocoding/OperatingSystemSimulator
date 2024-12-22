@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using OperatingSystemSimulator.Apps;
-using OperatingSystemSimulator.Apps.Shell;
+using OperatingSystemSimulator.Apps.Shell.MessageBoxHelper;
 using OperatingSystemSimulator.Extras.ConsoleLogger;
 using OperatingSystemSimulator.MemoryHelper;
 
@@ -67,7 +67,7 @@ public class ProcessManager
     {
         HardwarePageViewModel.Instance.SetHDOperation(HDOperations.AppData);
         HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Running);
-
+        await Task.Delay(100);
         Popup popup = new();
 
         if (isSingleInstance)
@@ -119,7 +119,7 @@ public class ProcessManager
         if (!processBlock.IsRequired)
         {
             InterruptQueueAsync(pid);
-            processBlock.Popup.IsOpen = false;
+            processBlock.Popup!.IsOpen = false;
             processBlock.Popup.Child = null;
             if (FocusedPopup == processBlock.Popup)
             {
@@ -155,11 +155,11 @@ public class ProcessManager
             else
             {
                 string[] parameters = { "PID: " + pid + "\nProcess Name: " + processBlock.Name, "CRITICAL_PROCESS_DIED" };
-                Frame currentFrame = (Frame)Window.Current.Content;
+                Frame currentFrame = (Frame)Window.Current!.Content!;
                 OnProcessTerminated(processBlock, reason);
                 MemoryManager.Instance.DeallocateMemory(processBlock);
                 ProcessBlocks.Remove(processBlock);
-                currentFrame.Navigate(typeof(BugCheckPage), parameters);
+                currentFrame!.Navigate(typeof(BugCheckPage), parameters);
                 return true;
             }
 
@@ -201,7 +201,7 @@ public class ProcessManager
             {
                 continue;
             }
-            else if (reason != TerminateReasons.Unexpected && processBlock.App is NotepadApp notepad)
+            else if (reason != TerminateReasons.Unexpected && reason != TerminateReasons.System && processBlock.App is NotepadApp notepad)
             {
                 notepad.TryTerminate();
             }

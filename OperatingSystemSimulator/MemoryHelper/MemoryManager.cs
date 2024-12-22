@@ -104,9 +104,38 @@ public class MemoryManager : INotifyPropertyChanged
         return true;
     }
 
-    public void WriteToAdditionalPages(int Pid, int size)
+    public void WriteToAdditionalPages(int pid, int size)
     {
-        //TODO: Implement WriteToAdditionalPages method
+        int currentSize = size;
+
+        foreach (var page in Pages.Where(p => p.ProcessBlock != null && p.ProcessBlock.Pid == pid && p.IsAdditional))
+        {
+            if (page.UsedSpace == pageSize)
+            {
+                continue;
+            }
+
+            int freeSpace = pageSize - page.UsedSpace;
+            if (currentSize <= freeSpace)
+            {
+                page.UsedSpace += currentSize;
+                break;
+            }
+            else
+            {
+                page.UsedSpace = pageSize;
+                currentSize -= freeSpace;
+                continue;
+            }
+        }
+
+        if (currentSize > 0)
+        {
+            RequestAdditionalPages(ProcessManager.Instance.GetProcessByPid(pid)!, (int)Math.Ceiling((double)currentSize / pageSize));
+            WriteToAdditionalPages(pid, currentSize);
+        }
+
+        OnPagesChanged();
     }
 
     public void DeallocateMemory(ProcessBlock processBlock)

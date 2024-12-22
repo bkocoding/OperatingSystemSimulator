@@ -4,8 +4,9 @@ using OperatingSystemSimulator.ViewModels.AppViewModels;
 namespace OperatingSystemSimulator.Apps;
 public sealed partial class TaskManagerApp : UserControl
 {
-    private int _pid;
     public TaskManagerViewModel ViewModel { get; set; }
+    
+    private int _pid;
     public int Pid
     {
         get => _pid;
@@ -20,7 +21,7 @@ public sealed partial class TaskManagerApp : UserControl
         InitializeComponent();
         ViewModel = new TaskManagerViewModel();
         DataContext = ViewModel;
-        ShellTitleBar.title = "Task Manager";
+        ShellTitleBar.Title = "Task Manager";
     }
 
     private void UserControl_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
@@ -35,7 +36,7 @@ public sealed partial class TaskManagerApp : UserControl
         if (button != null)
         {
             int pid = (int)button.Tag;
-            if (!ProcessManager.Instance.GetProcessByPid(pid).IsRequired)
+            if (!ProcessManager.Instance.GetProcessByPid(pid)!.IsRequired)
             {
                 if (pid != Pid)
                 {
@@ -58,7 +59,7 @@ public sealed partial class TaskManagerApp : UserControl
                 ProcessManager.Instance.InterruptQueueAsync(Pid);
             }
 
-            else if (ProcessManager.Instance.GetProcessByPid(pid).App is NotepadApp notepad)
+            else if (ProcessManager.Instance.GetProcessByPid(pid)!.App is NotepadApp notepad)
             {
                 notepad.UnsubscribeToFocusedPopUpChangedEvent();
             }
