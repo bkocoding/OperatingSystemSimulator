@@ -21,7 +21,6 @@ public sealed partial class BootPage : Page
 
     private readonly string[] _postMessages =
     {
-            "*** Testing RAM...",
             $"RAM OK! Size: {MemoryManager.memorySize} Byte(s)",
     };
 
@@ -59,6 +58,12 @@ public sealed partial class BootPage : Page
         _timer.Interval = TimeSpan.FromMilliseconds(new Random().Next(200, 800));
         _timer.Tick += OnTimerTick!;
         _currentMessages = _postMessages;
+        StartPOST();
+    }
+
+    private async void StartPOST() {
+
+       await MemoryManager.Instance.TestMemory();
         _timer.Start();
     }
 
@@ -135,7 +140,7 @@ public sealed partial class BootPage : Page
 
 
                 }
-                else if (message == "Scanning disks for bootable parts...") 
+                else if (message == "Scanning disks for bootable parts...")
                 {
                     HardwarePageViewModel.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Running);
                     HardwarePageViewModel.SetHDOperation(HDOperations.MBR);
@@ -153,7 +158,7 @@ public sealed partial class BootPage : Page
                 _currentMessages = _beforeBootMessages;
                 isBusy = false;
                 SettingsInfoText.Visibility = Visibility.Visible;
-                _firstBootOrder = _biosSettingsService.Settings.FirstBootOption;
+                _firstBootOrder = _biosSettingsService.Settings!.FirstBootOption;
                 SetBootPartition();
             }
             else if (_currentMessages == _beforeBootMessages)

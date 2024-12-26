@@ -1,6 +1,5 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Security.Cryptography;
 using OperatingSystemSimulator.Apps.Shell.MessageBoxHelper;
 using OperatingSystemSimulator.FileHelper;
 using OperatingSystemSimulator.ProcessHelper;
@@ -57,17 +56,19 @@ public sealed partial class SelectFileDialog : UserControl, INotifyPropertyChang
         }
     }
 
-    private bool IsSelectingFile;
+    private bool isSelectingFile;
+    private bool isNameNeeded;
     private FileDialogBlock _parentBlock;
 
-    public SelectFileDialog(int did, int bPid, bool isSelectingFile, FileDialogBlock parentBlock)
+    public SelectFileDialog(int did, int bPid, bool isSelectingFile, bool isNameNeeded, FileDialogBlock parentBlock)
     {
         InitializeComponent();
         DataContext = this;
-
         Did = did;
         BPid = bPid;
-        IsSelectingFile = isSelectingFile;
+        this.isSelectingFile = isSelectingFile;
+        this.isNameNeeded = isNameNeeded;
+        FileNameTextBox.MaxLength = BKOFSManager.MaxNameSize;
         _parentBlock = parentBlock;
         ShellTitleBar.Title = (isSelectingFile ? "Select a File" : "Select a Folder");
         ShellTitleBar.CurrentShellType = ShellType.FileDialog;
@@ -77,6 +78,11 @@ public sealed partial class SelectFileDialog : UserControl, INotifyPropertyChang
         if (!isSelectingFile)
         {
             OkButton.IsEnabled = true;
+            if (isNameNeeded) 
+            {
+                FileNameTextBox.IsReadOnly = false;
+                FileNameTextBox.PlaceholderText = "Type a name";
+            }
         }
 
 
@@ -85,7 +91,7 @@ public sealed partial class SelectFileDialog : UserControl, INotifyPropertyChang
     private void FileDialogList_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         bool isItemSelected = FileDialogList.SelectedItem != null;
-        if (IsSelectingFile && isItemSelected)
+        if (isSelectingFile && isItemSelected)
         {
             var selectedFileSystemItem = (FileSystemItemModel)FileDialogList.SelectedItem!;
             if (selectedFileSystemItem.Type == "File")
@@ -96,21 +102,21 @@ public sealed partial class SelectFileDialog : UserControl, INotifyPropertyChang
             }
             else
             {
+                OkButton.Content = "Enter";
                 selectedFile = null;
-                selectedDir = (BKOFSDirectory)selectedFileSystemItem.Content;
-                OkButton.Content = "Open";
+                selectedDir = null;
             }
             OkButton.IsEnabled = true;
         }
-        else if (!IsSelectingFile && isItemSelected)
+        else if (!isSelectingFile && isItemSelected)
         {
             var selectedFileSystemItem = (FileSystemItemModel)FileDialogList.SelectedItem!;
             if (selectedFileSystemItem.Type == "File")
             {
-                selectedDir = null;
+                selectedDir = CurrentDirectory;
                 selectedFile = null;
                 OkButton.Content = "Select";
-                OkButton.IsEnabled = false;
+                OkButton.IsEnabled = true;
             }
             else
             {
@@ -120,7 +126,7 @@ public sealed partial class SelectFileDialog : UserControl, INotifyPropertyChang
                 OkButton.IsEnabled = true;
             }
         }
-        else if (!IsSelectingFile && !isItemSelected)
+        else if (!isSelectingFile)
         {
             selectedDir = CurrentDirectory;
             selectedFile = null;
@@ -157,19 +163,30 @@ public sealed partial class SelectFileDialog : UserControl, INotifyPropertyChang
     private void OkButton_Click(object sender, RoutedEventArgs e)
     {
 
-        if (IsSelectingFile)
+        if (isSelectingFile)
         {
+            if ((string)OkButton.Content == "Enter")
+            {
+                var selectedFileSystemItem = (FileSystemItemModel)FileDialogList.SelectedItem!;
+                ChangeDirectory((BKOFSDirectory)selectedFileSystemItem.Content, false);
+                return;
+            }
+
             _parentBlock.HandleSelect(selectedFile!);
         }
         else
         {
-            if (FileNameTextBox.Text.Length <= 0)
+            if (FileNameTextBox.Text.Length <= 0 && isNameNeeded)
             {
-                MessageManager.Instance.CreateMessage(BPid, "Error", "File name can't be empty!");
+                MessageManager.Instance.CreateMessage(Did, "Error", "File name can't be empty!", ShellType.FileDialog);
             }
             else
             {
-                _parentBlock.HandleSelect(selectedDir!, FileNameTextBox.Text);
+                if (selectedDir == null)
+                {
+                    selectedDir = CurrentDirectory;
+                }
+                _parentBlock.HandleSelect(selectedDir, FileNameTextBox.Text);
             }
 
         }
@@ -191,13 +208,30 @@ public sealed partial class SelectFileDialog : UserControl, INotifyPropertyChang
                 HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Running);
                 HardwarePageViewModel.Instance.SetHDOperation(HDOperations.ExploringDirectory);
                 await Task.Delay(100);
-                MessageManager.Instance.CreateMessage(BPid, "Access Denied", $"You don't have access to directory {directory.Name}!");
+                MessageManager.Instance.CreateMessage(Did, "Access Denied", $"You don't have access to directory {directory.Name}!", ShellType.FileDialog);
                 HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Idle);
                 HardwarePageViewModel.Instance.SetHDOperation(HDOperations.Idle);
             }
             else
             {
                 ChangeDirectory(directory, false);
+            }
+        }
+        if(selectedItem != null && selectedItem.Type == "File" && isSelectingFile)
+        {
+            var file = (BKOFSFile)selectedItem.Content;
+            if (file.IsRestricted)
+            {
+                HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Running);
+                HardwarePageViewModel.Instance.SetHDOperation(HDOperations.ExploringDirectory);
+                await Task.Delay(100);
+                MessageManager.Instance.CreateMessage(Did, "Access Denied", $"You don't have access to file {file.Name}!", ShellType.FileDialog);
+                HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Idle);
+                HardwarePageViewModel.Instance.SetHDOperation(HDOperations.Idle);
+            }
+            else 
+            {
+                OkButton_Click(sender, e);
             }
         }
     }
@@ -211,7 +245,7 @@ public sealed partial class SelectFileDialog : UserControl, INotifyPropertyChang
             Name = dir.Name,
             CreatedAt = dir.CreatedAt,
             LastChanged = dir.LastChanged,
-            Size = CalculateDirectorySize(dir),
+            Size = BKOFSManager.FormatSize(dir.GetTotalSize()),
             Id = dir.DirID,
             Content = dir
         });
@@ -222,7 +256,7 @@ public sealed partial class SelectFileDialog : UserControl, INotifyPropertyChang
             Name = file.Name,
             CreatedAt = file.CreatedAt,
             LastChanged = file.LastChanged,
-            Size = file.Size,
+            Size = BKOFSManager.FormatSize(file.Size),
             Id = file.FileID,
             Content = file
         });
@@ -235,18 +269,14 @@ public sealed partial class SelectFileDialog : UserControl, INotifyPropertyChang
         HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Running);
         HardwarePageViewModel.Instance.SetHDOperation(HDOperations.ExploringDirectory);
         await Task.Delay(100);
+        PathTextBox.Text = CurrentDirectory.GetPath();
         BackButton.IsEnabled = directoryHistory.Count > 0;
-        UpButton.IsEnabled = CurrentDirectory.ParentDirectory != null;
+        UpButton.IsEnabled = CurrentDirectory.ParentDirectoryID != null;
         UpdateFileSystemItems();
         HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Idle);
         HardwarePageViewModel.Instance.SetHDOperation(HDOperations.Idle);
     }
 
-    private static int CalculateDirectorySize(BKOFSDirectory directory)
-    {
-        return directory.Files.Sum(file => file.Size) +
-               directory.ChildDirectories.Sum(subDir => CalculateDirectorySize(subDir));
-    }
 
     private void OnPropertyChanged(string propertyName)
     {
@@ -263,9 +293,9 @@ public sealed partial class SelectFileDialog : UserControl, INotifyPropertyChang
 
     public void GoUp()
     {
-        if (CurrentDirectory.ParentDirectory != null)
+        if (CurrentDirectory.ParentDirectoryID != null)
         {
-            ChangeDirectory(CurrentDirectory.ParentDirectory, false);
+            ChangeDirectory(BKOFSManager.Instance.GetDirectoryById(CurrentDirectory.ParentDirectoryID ?? BKOFSManager.Instance.RootDirectory.DirID), false);
         }
     }
 

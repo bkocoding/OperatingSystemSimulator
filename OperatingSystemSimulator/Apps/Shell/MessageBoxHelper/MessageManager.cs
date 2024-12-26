@@ -42,9 +42,9 @@ public class MessageManager
     /// <param name="notOKButtonText"></param>
     /// <param name="cancelButtonText"></param>
     /// <returns></returns>
-    public MessageBlock CreateMessage(int pid, string title, string message, string OKButtonText, string notOKButtonText, string cancelButtonText)
+    public MessageBlock CreateMessage(int pid, string title, string message, string OKButtonText, string notOKButtonText, string cancelButtonText, ShellType shellType)
     {
-        MessageBlock messageBlock = new(nextMid, pid, title, message, OKButtonText, notOKButtonText, cancelButtonText);
+        MessageBlock messageBlock = new(nextMid, pid, title, message, OKButtonText, notOKButtonText, cancelButtonText, shellType);
         nextMid++;
         MessageBlocks.Add(messageBlock);
         messageBlock.Show();
@@ -61,9 +61,9 @@ public class MessageManager
     /// <param name="title"></param>
     /// <param name="message"></param>
     /// <returns></returns>
-    public MessageBlock CreateMessage(int pid, string title, string message)
+    public MessageBlock CreateMessage(int pid, string title, string message, ShellType shellType)
     {
-        MessageBlock messageBlock = new(nextMid, pid, title, message);
+        MessageBlock messageBlock = new(nextMid, pid, title, message ,shellType);
         nextMid++;
         MessageBlocks.Add(messageBlock);
         messageBlock.Show();

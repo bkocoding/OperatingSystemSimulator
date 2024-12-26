@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using OperatingSystemSimulator.Extras.ConsoleLogger;
 
 namespace OperatingSystemSimulator.ViewModels.PageViewModels;
 
@@ -193,6 +194,7 @@ public class HardwarePageViewModel : INotifyPropertyChanged
         if (hardwarePage != null)
         {
             hardwarePage.SetHDOperation(operation);
+
         }
     }
 

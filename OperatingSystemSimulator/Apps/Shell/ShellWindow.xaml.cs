@@ -14,10 +14,6 @@ public sealed partial class ShellWindow : UserControl
     public ShellType CurrentShellType { get; set; } = ShellType.App;
 
     private string? _title;
-    private Popup? popupInstance;
-
-    private Point initialPopupPosition;
-
     public string? Title
     {
         get => _title;
@@ -40,7 +36,7 @@ public sealed partial class ShellWindow : UserControl
     {
         if (CurrentShellType == ShellType.App)
         {
-            if (ProcessManager.Instance.GetProcessByPid(EId).App is NotepadApp notepadApp)
+            if (ProcessManager.Instance.GetProcessByPid(EId)!.App is NotepadApp notepadApp)
             {
                 notepadApp.TryTerminate();
             }
@@ -51,12 +47,12 @@ public sealed partial class ShellWindow : UserControl
         }
         else if (CurrentShellType == ShellType.Message)
         {
-            MessageManager.Instance.GetMessageBlock(EId).HandleCancel();
+            MessageManager.Instance.GetMessageBlock(EId)!.HandleCancel();
             MessageManager.Instance.Close(EId);
         }
-        else if (CurrentShellType == ShellType.FileDialog) 
+        else if (CurrentShellType == ShellType.FileDialog)
         {
-            FileDialogManager.Instance.GetFileDialogBlock(EId).HandleCancel();
+            FileDialogManager.Instance.GetFileDialogBlock(EId)!.HandleCancel();
             FileDialogManager.Instance.Close(EId);
         }
     }
@@ -78,7 +74,7 @@ public sealed partial class ShellWindow : UserControl
         {
             MessageManager.Instance.BringToFront(EId);
         }
-        else if (CurrentShellType == ShellType.FileDialog) 
+        else if (CurrentShellType == ShellType.FileDialog)
         {
             FileDialogManager.Instance.BringToFront(EId);
         }

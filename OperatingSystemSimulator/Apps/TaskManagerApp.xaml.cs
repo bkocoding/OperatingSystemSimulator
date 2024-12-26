@@ -58,10 +58,13 @@ public sealed partial class TaskManagerApp : UserControl
             {
                 ProcessManager.Instance.InterruptQueueAsync(Pid);
             }
-
             else if (ProcessManager.Instance.GetProcessByPid(pid)!.App is NotepadApp notepad)
             {
                 notepad.UnsubscribeToFocusedPopUpChangedEvent();
+            }
+            else if (ProcessManager.Instance.GetProcessByPid(pid)!.App is FileExplorerApp fileExplorer) 
+            {
+                fileExplorer.UnsubscribeToFocusedPopUpChangedEvent();
             }
 
             ProcessManager.Instance.TerminateProcess(pid, TerminateReasons.User);

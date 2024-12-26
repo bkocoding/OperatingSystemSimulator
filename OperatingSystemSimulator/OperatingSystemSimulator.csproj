@@ -47,7 +47,7 @@
   <ItemGroup>
     <None Remove="Apps\FileExplorerApp.xaml" />
     <None Remove="Apps\NotepadApp.xaml" />
-    <None Remove="Apps\Shell\FileDialogs\SelectFileDialog.xaml" />
+    <None Remove="Apps\Shell\FileDialogHelper\SelectFileDialog.xaml" />
     <None Remove="Apps\Shell\ShellMessageBox.xaml" />
     <None Remove="Apps\Shell\ShellWindow.xaml" />
     <None Remove="Apps\TaskManagerApp.xaml" />
@@ -253,17 +253,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <UpToDateCheckInput Remove="Apps\Shell\FileDialogs\SelectFileDialog.xaml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Page Update="Apps\Shell\FileDialogs\SelectFileDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    <UpToDateCheckInput Remove="Apps\Shell\FileDialogHelper\SelectFileDialog.xaml" />
   </ItemGroup>
 
   <ItemGroup>
     <UpToDateCheckInput Remove="Hardware\PageListPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Include="Apps\Shell\FileDialogHelper\SelectFileDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

@@ -4,7 +4,7 @@ using OperatingSystemSimulator.ProcessHelper;
 namespace OperatingSystemSimulator.Apps.Shell.FileDialogs;
 public class FileDialogManager
 {
-    private static FileDialogManager instance;
+    private static FileDialogManager? instance;
     private static readonly object lockObject = new();
 
     public ObservableCollection<FileDialogBlock> FileDialogBlocks = new();
@@ -28,9 +28,9 @@ public class FileDialogManager
         }
     }
 
-    public FileDialogBlock CreateFileDialog(int pid, bool isSelectingFile)
+    public FileDialogBlock CreateFileDialog(int pid, bool isSelectingFile, bool isNameNeeded)
     {
-        FileDialogBlock fileDialogBlock = new(nextDId, pid, isSelectingFile);
+        FileDialogBlock fileDialogBlock = new(nextDId, pid, isSelectingFile, isNameNeeded);
         nextDId++;
         FileDialogBlocks.Add(fileDialogBlock);
         fileDialogBlock.Show();
@@ -59,7 +59,7 @@ public class FileDialogManager
         if (fileDialogBlock != null)
         {
             ProcessManager.Instance.FocusedPopup = null;
-            fileDialogBlock.Popup.IsOpen = false;
+            fileDialogBlock.Popup!.IsOpen = false;
             fileDialogBlock.Popup.IsOpen = true;
         }
     }

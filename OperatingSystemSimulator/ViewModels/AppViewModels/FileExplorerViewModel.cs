@@ -1,5 +1,8 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using OperatingSystemSimulator.Apps.Shell;
+using OperatingSystemSimulator.Apps.Shell.MessageBoxHelper;
+using OperatingSystemSimulator.Extras.ConsoleLogger;
 using OperatingSystemSimulator.FileHelper;
 
 namespace OperatingSystemSimulator.ViewModels.AppViewModels;
@@ -61,9 +64,19 @@ public class FileExplorerViewModel : INotifyPropertyChanged
 
     public void ChangeDirectory(BKOFSDirectory newDirectory)
     {
-        directoryHistory.Push(CurrentDirectory);
-        CurrentDirectory = newDirectory;
-        OnCurrentDirectoryChanged();
+        if (BKOFSManager.Instance.GetDirectoryById(newDirectory.DirID) != null)
+        {
+            directoryHistory.Push(CurrentDirectory);
+            CurrentDirectory = newDirectory;
+            OnCurrentDirectoryChanged();
+        }
+        else
+        {
+            ConsoleLogger.Log($"Couldn't load the directory {newDirectory.Name}, Reason: Directory does not exist.", LogType.Error);
+            MessageManager.Instance.CreateMessage(1, "Error", $"Couldn't load the directory {newDirectory.Name}. Directory does not exists.", ShellType.None);
+            UpdateFileSystemItems();
+        }
+
     }
 
     public void GoBack()
@@ -76,16 +89,16 @@ public class FileExplorerViewModel : INotifyPropertyChanged
 
     public void GoUp()
     {
-        if (CurrentDirectory.ParentDirectory != null)
+        if (CurrentDirectory.ParentDirectoryID != null)
         {
-            ChangeDirectory(CurrentDirectory.ParentDirectory);
+            BKOFSManager.Instance.GetDirectoryById(CurrentDirectory.ParentDirectoryID ?? BKOFSManager.Instance.RootDirectory.DirID);
         }
     }
 
     private void OnCurrentDirectoryChanged()
     {
         BackButtonEnabled = directoryHistory.Count > 0;
-        UpButtonEnabled = CurrentDirectory.ParentDirectory != null;
+        UpButtonEnabled = CurrentDirectory.ParentDirectoryID != null;
 
         SetTitle(CurrentDirectory.Name);
 
@@ -110,7 +123,7 @@ public class FileExplorerViewModel : INotifyPropertyChanged
             Name = dir.Name,
             CreatedAt = dir.CreatedAt,
             LastChanged = dir.LastChanged,
-            Size = CalculateDirectorySize(dir),
+            Size = BKOFSManager.FormatSize(dir.GetTotalSize()),
             Content = dir
         });
 
@@ -120,16 +133,11 @@ public class FileExplorerViewModel : INotifyPropertyChanged
             Name = file.Name,
             CreatedAt = file.CreatedAt,
             LastChanged = file.LastChanged,
-            Size = file.Size,
+            Size = BKOFSManager.FormatSize(file.Size),
             Content = file
         });
 
         FileSystemItems = new ObservableCollection<FileSystemItemModel>(directories.Concat(files));
     }
 
-    private int CalculateDirectorySize(BKOFSDirectory directory)
-    {
-        return directory.Files.Sum(file => file.Size) +
-               directory.ChildDirectories.Sum(subDir => CalculateDirectorySize(subDir));
-    }
 }

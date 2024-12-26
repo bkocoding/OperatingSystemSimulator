@@ -58,12 +58,12 @@
     </Border>
 
     <Border Background="#8A2BE2" Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="4">
-      <Grid>
+      <Grid BorderThickness="1">
         <lvc:CartesianChart x:Name="RamChart" 
                         IsHitTestVisible="True"
                             AutoUpdateEnabled="True"
-                            Height="110"/>
-        <TextBlock Text="RAM" Foreground="White" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="14"/>
+                            Height="110" Width="383" HorizontalAlignment="Left"/>
+        <TextBlock Text="RAM" Foreground="White" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="14" Margin="0,0,0,5"/>
       </Grid>
     </Border>
 
@@ -76,14 +76,14 @@
     </Border>
 
     <Border Background="#696969" Visibility="Visible" Grid.Row="1" Grid.Column="4" Grid.RowSpan="2">
-      <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0">
+      <!--<StackPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0">
         <TextBlock Text="PID: " Foreground="White" FontSize="12" />
         <TextBlock Text="NAME: " Foreground="White" FontSize="12" />
         <TextBlock Text="MEMORY SIZE: " Foreground="White" FontSize="12" />
         <TextBlock Text="IDLE STATUS: " Foreground="White" FontSize="12" />
         <TextBlock Text="ASSIGNED PAGES: " Foreground="White" FontSize="12" />
         <TextBlock Text="PAGES_LIST" Foreground="White" FontSize="12" />
-      </StackPanel>
+      </StackPanel>-->
     </Border>
 
     <Border Background="Transparent" Grid.Row="1" Grid.Column="5">

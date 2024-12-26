@@ -21,6 +21,7 @@
     <shell:ShellWindow x:Name="ShellTitleBar" Grid.Row="0" MaxWidth="400"/>
 
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" Margin="5">
+      <Button x:Name="OpenButton" Content="Open" Height="28" Margin="0,0,10,0" Click="OpenButton_Click" Foreground="Black" Background="#D2D7DF"/>
       <Button x:Name="SaveButton" Content="Save" Height="28" Margin="0,0,10,0" Click="SaveButton_Click" Foreground="Black" Background="#D2D7DF" IsEnabled="False"/>
       <Button x:Name="SaveAsButton" Content="Save As" Height="28" Margin="0,0,10,0" Click="SaveAsButton_Click" Foreground="Black" Background="#D2D7DF"/>
       <Button x:Name="WrappingButton" Content="Wrap" Height="28" Click="WrappingButton_Click" Foreground="Black" Background="#D2D7DF"/>

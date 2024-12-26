@@ -61,7 +61,7 @@
           </ListView.ItemTemplate>
         </ListView>
 
-        <TextBox x:Name="FileNameTextBox" Foreground="White" Background="#383838" Margin="10" Height="30" Grid.Row="2"/>
+        <TextBox x:Name="FileNameTextBox" Foreground="White" Background="#383838" Margin="10" Height="30" Grid.Row="2" IsReadOnly="True"/>
         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,30,0,0">
           <Button x:Name="OkButton" Content="Select" Width="Auto" Margin="0,0,10,0" IsEnabled="false" Click="OkButton_Click"/>
           <Button x:Name="CancelButton" Content="Cancel" Width="Auto" Click="CancelButton_Click"/>

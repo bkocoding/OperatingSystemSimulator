@@ -28,7 +28,6 @@ public sealed partial class BootAnimationPage : Page
 
         await Task.Delay(3000);
         ProcessManager.Instance.StartLogOnUser();
-        BKOFSManager.Instance.Initialize();
         NavigateToLogOn();
     }
 

@@ -1,4 +1,3 @@
-using System.Xml.XPath;
 using OperatingSystemSimulator.Apps.Shell.MessageBoxHelper;
 
 namespace OperatingSystemSimulator.Apps.Shell;
@@ -13,7 +12,7 @@ public sealed partial class ShellMessageBox : Page
     }
 
     private int _mid;
-    public int Mid
+    public int MID
     {
         get => _mid;
         set
@@ -42,7 +41,7 @@ public sealed partial class ShellMessageBox : Page
         ShellTitleBar.Title = title;
         ShellTitleBar.CurrentShellType = ShellType.Message;
         Message.Text = message;
-        Mid = mid;
+        MID = mid;
         BPid = bPid;
         _parentBlock = parentBlock;
 
@@ -72,11 +71,15 @@ public sealed partial class ShellMessageBox : Page
         ShellTitleBar.Title = title;
         ShellTitleBar.CurrentShellType = ShellType.Message;
         Message.Text = message;
-        Mid = mid;
+        MID = mid;
         BPid = bPid;
         _parentBlock = parentBlock;
 
         OkButton.Click += (s, e) => parentBlock.HandleOk();
     }
 
+    private void Page_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+    {
+        MessageManager.Instance.BringToFront(MID);
+    }
 }

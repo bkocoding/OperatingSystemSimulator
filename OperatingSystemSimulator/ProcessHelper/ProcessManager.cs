@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using OperatingSystemSimulator.Apps;
+using OperatingSystemSimulator.Apps.Shell;
 using OperatingSystemSimulator.Apps.Shell.MessageBoxHelper;
 using OperatingSystemSimulator.Extras.ConsoleLogger;
 using OperatingSystemSimulator.MemoryHelper;
@@ -61,7 +62,9 @@ public class ProcessManager
         }
     }
 
-    public bool IsTurnedOn { get; set; } = true;
+    public bool IsTurnedOn = true;
+    public bool WasLastBootSuccessful = true;
+
 
     public async Task<ProcessBlock?> CreateProcess(object app, string name, bool isSingleInstance, bool isUtilizationEnough)
     {
@@ -93,7 +96,7 @@ public class ProcessManager
             HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Idle);
             ConsoleLogger.Log($"Couldn't initialize {processBlock.Name}, Reason: {result.GetDescription()}", LogType.Error);
             MessageManager.Instance.CreateMessage(1, "Out Of Resources",
-                $"You can not start {processBlock.Name} because there are not enough memory space. Try closing some of your apps.\n\nError Code: {result.GetDescription()}");
+                $"You can not start {processBlock.Name} because there are not enough memory space. Try closing some of your apps.\n\nError Code: {result.GetDescription()}", ShellType.None);
             return null;
         }
 
@@ -107,7 +110,7 @@ public class ProcessManager
         return processBlock;
     }
 
-    public bool TerminateProcess(int pid, TerminateReasons reason)
+    public async Task<bool> TerminateProcess(int pid, TerminateReasons reason)
     {
         var processBlock = GetProcessByPid(pid);
 
@@ -118,7 +121,7 @@ public class ProcessManager
 
         if (!processBlock.IsRequired)
         {
-            InterruptQueueAsync(pid);
+           await InterruptQueueAsync(pid);
             processBlock.Popup!.IsOpen = false;
             processBlock.Popup.Child = null;
             if (FocusedPopup == processBlock.Popup)
@@ -140,8 +143,8 @@ public class ProcessManager
             processBlock.Popup = null;
 
             OnProcessTerminated(processBlock, reason);
-            GC.Collect();
             MemoryManager.Instance.DeallocateMemory(processBlock);
+            GC.Collect();
             return ProcessBlocks.Remove(processBlock);
         }
         else
@@ -195,6 +198,7 @@ public class ProcessManager
 
     public void TerminateAllProcesses(TerminateReasons reason)
     {
+        ProcessManagerScheduler.StopRunServiceScheduler();
         foreach (var processBlock in ProcessBlocks.ToList().OrderByDescending(p => p.Pid))
         {
             if (processBlock.Pid == 1)
@@ -208,6 +212,11 @@ public class ProcessManager
             else if (processBlock.App is NotepadApp notepadApp)
             {
                 notepadApp.UnsubscribeToFocusedPopUpChangedEvent();
+                TerminateProcess(processBlock.Pid, reason);
+            } 
+            else if (processBlock.App is FileExplorerApp fileExplorerApp) 
+            {
+                fileExplorerApp.UnsubscribeToFocusedPopUpChangedEvent();
                 TerminateProcess(processBlock.Pid, reason);
             }
             else
@@ -233,7 +242,7 @@ public class ProcessManager
         {
             operationQueue.Enqueue(processBlock);
         }
-
+        ConsoleLogger.Log($"{processBlock.Name} is enqueued, PID: {processBlock.Pid}", LogType.Queue);
         await ProcessQueueAsync();
     }
 
@@ -251,6 +260,7 @@ public class ProcessManager
             interruptOperation = processBlock.Name;
         }
 
+        ConsoleLogger.Log($"New interrupt request by process {processBlock.Name}, PID: {pid}", LogType.Interrupt);
         await ProcessQueueAsync();
 
         tcs.SetResult(true);
@@ -292,6 +302,12 @@ public class ProcessManager
             if (!string.IsNullOrEmpty(processName))
             {
                 HardwarePageViewModel.Instance.SetRunningProcess($"{processName} {queueState}");
+
+                ConsoleLogger.Log($"{processName} is processing" +
+                $"{(processBlock != null ? $", PID: {processBlock.Pid}" : "")}" +
+                $"{(!string.IsNullOrEmpty(queueState) ? $". Current Queue: {queueState}" : "")}",
+                LogType.Queue);
+
 
                 if (processBlock != null)
                 {
@@ -350,6 +366,7 @@ public class ProcessManager
             EnqueueRunningProcessAsync(service.Pid);
             OnProcessCreated(service);
         }
+        ProcessManagerScheduler.StartRunServiceScheduler();
     }
 
     public void StartLogOnUser()
@@ -395,7 +412,7 @@ public class ProcessManager
         ConsoleLogger.Log($"{processBlock.Name} is initialized, PID: {processBlock.Pid}", LogType.Init);
     }
 
-    private static void OnProcessTerminated(ProcessBlock processBlock, TerminateReasons reason)
+    private static async void OnProcessTerminated(ProcessBlock processBlock, TerminateReasons reason)
     {
 
         string log = $"{processBlock.Name} is terminated, PID: {processBlock.Pid}, Reason: {reason.GetDescription()}";
@@ -419,7 +436,13 @@ public class ProcessManager
                 logType = LogType.Error;
                 break;
         }
-
+        await Task.Delay(300);
         ConsoleLogger.Log(log, logType);
     }
+
+    public void RunService(int pId) 
+    {
+        EnqueueRunningProcessAsync(pId);
+    }
+
 }

@@ -1,4 +1,5 @@
 using OperatingSystemSimulator.Extras.ConsoleLogger;
+using OperatingSystemSimulator.ProcessHelper;
 
 namespace OperatingSystemSimulator.Pages;
 public sealed partial class WelcomePage : Page
@@ -32,6 +33,7 @@ public sealed partial class WelcomePage : Page
         };
         timer.Tick += Timer_Tick!;
         ConsoleLogger.Log("Desktop is loading", LogType.Info);
+        ProcessManager.Instance.EnqueueRunningProcessAsync(5);
         timer.Start();
     }
 

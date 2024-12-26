@@ -4,6 +4,11 @@ public enum LogType
     Info,
     Error,
     Warning,
-    Init
+    Init,
+    FileDialog,
+    MessageBox,
+    Result,
+    Interrupt,
+    Queue,
 }
 

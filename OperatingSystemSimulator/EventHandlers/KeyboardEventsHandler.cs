@@ -17,7 +17,6 @@ public class KeyboardEventsHandler
 
         private App _app = (App)Application.Current;
 
-        private bool isEnteringFirmwareSettings = false;
         public static KeyboardEventHandler Instance
         {
             get

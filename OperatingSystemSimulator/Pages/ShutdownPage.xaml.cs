@@ -1,3 +1,4 @@
+using OperatingSystemSimulator.MemoryHelper;
 using OperatingSystemSimulator.ProcessHelper;
 
 namespace OperatingSystemSimulator.Pages;
@@ -56,6 +57,7 @@ public sealed partial class ShutdownPage : Page
     {
         _delayTimer!.Dispose();
         ProcessManager.Instance.TerminateProcess(1, TerminateReasons.System);
+        MemoryManager.Instance.DeallocateBios();
         UpdateUIAfterDelay();
     }
 

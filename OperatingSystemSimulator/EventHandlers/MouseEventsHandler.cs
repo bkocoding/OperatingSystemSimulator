@@ -124,7 +124,7 @@ public class MouseEventsHandler
                 return;
             }
             ProcessManager.Instance.InterruptQueueAsync(1);
-            draggingProcessBlock = ProcessManager.Instance.GetProcessByPid(messageBlock.BPId);
+            draggingProcessBlock = ProcessManager.Instance.GetProcessByPid(messageBlock.BSId);
             draggingPopup = messageBlock.Popup;
         }
         else if (shellType == ShellType.FileDialog) 

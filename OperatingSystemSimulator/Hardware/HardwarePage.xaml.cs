@@ -1,7 +1,11 @@
 using System.Collections.ObjectModel;
+using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
 using OperatingSystemSimulator.MemoryHelper;
 using OperatingSystemSimulator.ProcessHelper;
+using SkiaSharp;
+using Uno.Extensions.Specialized;
 
 namespace OperatingSystemSimulator.Hardware;
 
@@ -15,6 +19,7 @@ public sealed partial class HardwarePage : Page
         ViewModel.hardwarePage = this;
         InitializeComponent();
         ViewModel.ResetStatuses();
+        RunningProcess.Text = "BIOS Firmware";
         InitializeRamChart();
         UpdateRamChart();
 
@@ -65,59 +70,85 @@ public sealed partial class HardwarePage : Page
 
     private void InitializeRamChart()
     {
-        var processBlocks = ProcessManager.Instance.ProcessBlocks;
-        int memorySize = MemoryManager.pageSize;
-        int pageSize = MemoryManager.pageSize;
-
-        var stackedRowSeries = new StackedRowSeries<int>
+        RamChart.Series = new List<ISeries>();
+        RamChart.XAxes =
+    [
+        new Axis
         {
-            Values = new ObservableCollection<int>(),
-        };
-
-        foreach (var processBlock in processBlocks)
-        {
-            var processPages = MemoryManager.Instance.GetProcessPages(processBlock);
-            int processMemory = 0;
-            foreach (var page in processPages)
-            {
-                processMemory += page.UsedSpace;
-            }
-            stackedRowSeries.Values.Append(processMemory);
+            MaxLimit = 68000000,
+            IsVisible = false,
         }
-
-
-        int usedMemory = processBlocks.Sum(pb => MemoryManager.Instance.GetProcessPages(pb).Count * pageSize);
-        int emptyMemory = memorySize - usedMemory;
-        stackedRowSeries.Values.Append(emptyMemory);
-
-        RamChart.Series = [stackedRowSeries];
+    ];
+        RamChart.YAxes =
+        [
+        new Axis
+        {
+            IsVisible = false,
+        }
+        ];
     }
 
+    [Obsolete]
     private void UpdateRamChart()
     {
-        var processBlocks = ProcessManager.Instance.ProcessBlocks;
+        var newSeries = new List<ISeries>();
+
+        var processBlocks = MemoryManager.Instance.GetAllProcesses();
         int pageSize = MemoryManager.pageSize;
 
-        if (RamChart.Series.Count() != 0)
+        int biosSize = 0;
+        for (int i = 0; i <= 14; i++)
         {
-            var oldbarSeries = (ObservableCollection<int>)RamChart.Series.First().Values!;
-            oldbarSeries.Clear();
+            var page = MemoryManager.Instance.Pages.First(p => p.PageNumber == i);
+            biosSize += page.UsedSpace;
         }
 
-        var barSeries = (ObservableCollection<int>)RamChart.Series.First().Values!;
+        newSeries.Add(new StackedRowSeries<int>
+        {
+            Values = new List<int> { biosSize },
+            Stroke = new SolidColorPaint(SKColors.Black, 1),
+            Fill = new SolidColorPaint(SKColors.Blue),
+            //StackGroup = 0,
+            AnimationsSpeed = TimeSpan.FromMilliseconds(0),
+            IsHoverable = false,
+        });
         foreach (var processBlock in processBlocks)
         {
             var processPages = MemoryManager.Instance.GetProcessPages(processBlock);
-            int processMemory = 0;
-            foreach (var page in processPages)
+            int processMemory = processPages.Sum(page => page.UsedSpace);
+
+
+            var processSeries = new StackedRowSeries<int>
             {
-                processMemory += page.UsedSpace;
-            }
-            barSeries.Add(processMemory);
+                Values = new List<int> { processMemory },
+                Stroke = new SolidColorPaint(SKColors.Black, 1),
+                Fill = new SolidColorPaint(SKColors.Green),
+                //StackGroup = 0,
+                AnimationsSpeed = TimeSpan.FromMilliseconds(0),
+                IsHoverable = false,
+                TooltipLabelFormatter = point =>
+                {
+                    return $"Process: {processBlock.Name}, Memory: {point.PrimaryValue}";
+                }
+            };
+
+
+            newSeries.Add(processSeries);
         }
 
         int usedMemory = processBlocks.Sum(pb => MemoryManager.Instance.GetProcessPages(pb).Count * pageSize);
-        int emptyMemory = MemoryManager.memorySize - usedMemory;
-        barSeries.Add(emptyMemory);
+        int emptyMemory = MemoryManager.memorySize - usedMemory - biosSize;
+
+        newSeries.Add(new StackedRowSeries<int>
+        {
+            Values = new List<int> { emptyMemory },
+            Stroke = new SolidColorPaint(SKColors.Black, 1),
+            Fill = new SolidColorPaint(SKColors.Gray),
+            //StackGroup = 0,
+            AnimationsSpeed = TimeSpan.FromMilliseconds(0),
+            IsHoverable = false
+        });
+
+        RamChart.Series = newSeries;
     }
 }

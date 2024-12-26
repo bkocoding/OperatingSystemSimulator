@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using OperatingSystemSimulator.Extras.ConsoleLogger;
 using OperatingSystemSimulator.ProcessHelper;
 
 namespace OperatingSystemSimulator.MemoryHelper;
@@ -30,8 +31,8 @@ public class MemoryManager : INotifyPropertyChanged
             Pages.Add(new PageBlock { PageNumber = i, IsEmpty = true, IsAllocated = false });
         }
 
-        cleanupTimer = new System.Timers.Timer(120000);
-        cleanupTimer.Elapsed += (sender, e) => CleanupUnusedPages();
+        cleanupTimer = new System.Timers.Timer(12000);
+        cleanupTimer.Elapsed += (sender, e) => CleanUnusedPages();
         cleanupTimer.Start();
     }
 
@@ -86,13 +87,13 @@ public class MemoryManager : INotifyPropertyChanged
         return UtilizationResult.Success;
     }
 
-    public bool RequestAdditionalPages(ProcessBlock processBlock, int additionalPages)
+    public UtilizationResult RequestAdditionalPages(ProcessBlock processBlock, int additionalPages)
     {
 
         if (Pages.Count(p => p.IsEmpty) < additionalPages)
-            return false;
+            return UtilizationResult.OutOfMemory;
 
-        foreach (var page in Pages.Where(p => p.IsAllocated).Take(additionalPages))
+        foreach (var page in Pages.Where(p => !p.IsAllocated).Take(additionalPages))
         {
             page.ProcessBlock = processBlock;
             page.IsEmpty = true;
@@ -101,14 +102,16 @@ public class MemoryManager : INotifyPropertyChanged
         }
 
         OnPagesChanged();
-        return true;
+        return UtilizationResult.Success;
     }
 
-    public void WriteToAdditionalPages(int pid, int size)
+    public async Task<bool> WriteToAdditionalPages(int pid, int size)
     {
         int currentSize = size;
 
-        foreach (var page in Pages.Where(p => p.ProcessBlock != null && p.ProcessBlock.Pid == pid && p.IsAdditional))
+        var PagesList = Pages.Where(p => p.ProcessBlock != null && p.ProcessBlock.Pid == pid && p.IsAdditional);
+
+        foreach (var page in PagesList)
         {
             if (page.UsedSpace == pageSize)
             {
@@ -119,23 +122,62 @@ public class MemoryManager : INotifyPropertyChanged
             if (currentSize <= freeSpace)
             {
                 page.UsedSpace += currentSize;
+                currentSize = 0;
+                page.IsEmpty = false;
                 break;
             }
             else
             {
+                int otherFreeSpace = pageSize - page.UsedSpace;
+                currentSize -= otherFreeSpace;
                 page.UsedSpace = pageSize;
-                currentSize -= freeSpace;
+                page.IsEmpty = false;
                 continue;
             }
         }
 
+
         if (currentSize > 0)
         {
-            RequestAdditionalPages(ProcessManager.Instance.GetProcessByPid(pid)!, (int)Math.Ceiling((double)currentSize / pageSize));
-            WriteToAdditionalPages(pid, currentSize);
+            var result = RequestAdditionalPages(ProcessManager.Instance.GetProcessByPid(pid)!, (int)Math.Ceiling((double)currentSize / pageSize));
+            if (result == UtilizationResult.OutOfMemory) 
+            {
+                return false;
+            }
+                 WriteToAdditionalPages(pid, currentSize);
         }
 
         OnPagesChanged();
+        return true;
+    }
+
+    public void DeleteFromAdditionalPages(int pid, int size) 
+    {
+        int currentSize = size;
+        foreach (var page in Pages.Where(p => p.ProcessBlock != null && p.ProcessBlock.Pid == pid && p.IsAdditional).Reverse()) 
+        {
+            if(page.IsEmpty)
+            {
+                continue;
+            }
+
+            if(currentSize <= page.UsedSpace)
+            {
+                page.UsedSpace -= currentSize;
+                if (page.UsedSpace == 0)
+                {
+                    page.IsEmpty = true;
+                }
+                break;
+            }
+            else
+            {
+                currentSize -= page.UsedSpace;
+                page.UsedSpace = 0;
+                page.IsEmpty = true;
+                continue;
+            }
+        }
     }
 
     public void DeallocateMemory(ProcessBlock processBlock)
@@ -146,8 +188,28 @@ public class MemoryManager : INotifyPropertyChanged
             page.IsEmpty = true;
             page.IsAllocated = false;
             page.IsAdditional = false;
+            page.UsedSpace = 0;
         }
         OnPagesChanged();
+    }
+
+    public void DeallocateBios() 
+    {
+        for (int i = 0; i <= 14; i++)
+        {
+            var page = Pages.Where(p => p.PageNumber == i).First();
+            page.ProcessBlock = null;
+            page.IsEmpty = true;
+            page.IsAllocated = false;
+            page.IsAdditional = false;
+            page.UsedSpace = 0;
+        }
+        OnPagesChanged();
+    }
+
+    public List<ProcessBlock> GetAllProcesses()
+    {
+        return Pages.Where(p => p.ProcessBlock != null).Select(p => p.ProcessBlock!).Distinct().ToList();
     }
 
     public List<PageBlock> GetProcessPages(ProcessBlock processBlock)
@@ -160,22 +222,22 @@ public class MemoryManager : INotifyPropertyChanged
         return Pages.Where(p => p.ProcessBlock == processBlock && p.IsAdditional).ToList();
     }
 
-    private void CleanupUnusedPages()
-    {
-        if (Pages.Count(p => !p.IsEmpty) > (int)(Pages.Count * 0.7))
-        {
-            if (!TryCleanup())
-            {
-                return;
-            }
-        }
+    //private void CleanupUnusedPages()
+    //{
+    //    if (Pages.Count(p => !p.IsEmpty) > (int)(Pages.Count * 0.7))
+    //    {
+    //        if (!TryCleanup())
+    //        {
+    //            return;
+    //        }
+    //    }
 
-        TryCleanup();
-    }
+    //    TryCleanup();
+    //}
 
-    private bool TryCleanup()
+    private bool CleanUnusedPages()
     {
-        var unusedPages = Pages.Where(p => !p.IsEmpty && !p.IsAllocated).ToList();
+        var unusedPages = Pages.Where(p => p.IsEmpty && p.IsAllocated).ToList();
         foreach (var page in unusedPages)
         {
             page.ProcessBlock = null;
@@ -188,5 +250,69 @@ public class MemoryManager : INotifyPropertyChanged
         return Pages.Count(p => !p.IsEmpty) <= (int)(Pages.Count * 0.7);
     }
 
+    public async Task TestMemory()
+    {
+        AllocateForBIOS();
+        ConsoleLogger.Log("Testing Ram...", LogType.Info);
+        var oddPages = Pages.Where(p => p.PageNumber % 2 != 0 && p.PageNumber > 14).ToList();
+        var evenPages = Pages.Where(p => p.PageNumber % 2 == 0 && p.PageNumber > 14).ToList();
+        var processBlock = new ProcessBlock(0, "RAM TEST DATA", true);
+        processBlock.Size = pageSize;
+        foreach (var page in oddPages)
+        {
+            page.UsedSpace = pageSize;
+            page.IsEmpty = false;
+            page.IsAllocated = true;
+            page.ProcessBlock = processBlock;
+            OnPagesChanged();
+        }
+        await Task.Delay(4000);
+
+        foreach (var page in oddPages)
+        {
+            page.UsedSpace = 0;
+            page.IsEmpty = true;
+            page.IsAllocated = false;
+            page.ProcessBlock = null;
+            OnPagesChanged();
+        }
+        await Task.Delay(250);
+
+        foreach (var page in evenPages)
+        {
+            page.UsedSpace = pageSize;
+            page.IsEmpty = false;
+            page.IsAllocated = true;
+            page.ProcessBlock = processBlock;
+            OnPagesChanged();
+        }
+
+        await Task.Delay(2000);
+
+        foreach (var page in evenPages)
+        {
+            page.UsedSpace = 0;
+            page.IsEmpty = true;
+            page.IsAllocated = false;
+            page.ProcessBlock = null;
+            OnPagesChanged();
+        }
+    }
+
+    public void AllocateForBIOS()
+    {
+        for (int i = 0; i <= 13; i++)
+        {
+            var page = Pages.Where(p => p.PageNumber == i).First();
+            page.UsedSpace = pageSize;
+            page.IsEmpty = false;
+            page.IsAllocated = true;
+            OnPagesChanged();
+        }
+        var lastPage = Pages.Where(p => p.PageNumber == 14).First();
+        lastPage.UsedSpace = 68000;
+        lastPage.IsEmpty = false;
+        lastPage.IsAllocated = true;
+    }
 
 }

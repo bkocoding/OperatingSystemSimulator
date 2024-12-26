@@ -3,5 +3,6 @@ public enum ShellType
 {
     App,
     Message,
-    FileDialog
+    FileDialog,
+    None
 }
