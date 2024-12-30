@@ -1,12 +1,15 @@
 using Microsoft.UI.Xaml.Media.Animation;
 using OperatingSystemSimulator.FileHelper;
 using OperatingSystemSimulator.ProcessHelper;
+using OperatingSystemSimulator.Services;
 using Windows.Foundation;
 
 namespace OperatingSystemSimulator.Pages;
 
 public sealed partial class BootAnimationPage : Page
 {
+    private BIOSSettingsService _biosSettingsService = (Application.Current as App)!.Host!.Services.GetRequiredService<BIOSSettingsService>()!;
+
     public BootAnimationPage()
     {
         InitializeComponent();
@@ -27,8 +30,23 @@ public sealed partial class BootAnimationPage : Page
         StartSpinnerAnimation();
 
         await Task.Delay(3000);
-        ProcessManager.Instance.StartLogOnUser();
-        NavigateToLogOn();
+
+        if (!BKOFSManager.Instance.ValidateOS())
+        {
+            BootAnimationText.Visibility = Visibility.Visible;
+            _biosSettingsService.SaveLastBootState(false);
+            await Task.Delay(3000);
+        }
+        else if (!_biosSettingsService.Settings!.WasLastBootSuccesful) 
+        {
+            BootAnimationText.Visibility = Visibility.Visible;
+            await Task.Delay(3000);
+        }
+        else
+        {
+            ProcessManager.Instance.StartLogOnUser();
+        }
+        NavigateToNext();
     }
 
     private void StartSpinnerAnimation()
@@ -53,9 +71,19 @@ public sealed partial class BootAnimationPage : Page
         storyboard.Begin();
     }
 
-    private static void NavigateToLogOn() 
+    private void NavigateToNext()
     {
-        Frame currentFrame = (Frame)Window.Current!.Content!;
-        currentFrame?.Navigate(typeof(WelcomePage));
+        if (!_biosSettingsService.Settings!.WasLastBootSuccesful)
+        {
+            HardwarePageViewModel.Instance.SetHDOperation(HDOperations.Recovery);
+            HardwarePageViewModel.Instance.SetRunningProcess("Recovery");
+            Frame.Navigate(typeof(RecoveryPage));
+        }
+        else
+        {
+            Frame currentFrame = (Frame)Window.Current!.Content!;
+            currentFrame?.Navigate(typeof(WelcomePage));
+        }
+
     }
 }

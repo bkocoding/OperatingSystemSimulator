@@ -60,7 +60,7 @@ public class KeyboardEventsHandler
                     case DesktopPage:
                         if (Window.Current.CoreWindow!.GetKeyState(VirtualKey.Control).HasFlag(CoreVirtualKeyStates.Down) && Window.Current.CoreWindow.GetKeyState(VirtualKey.Menu).HasFlag(CoreVirtualKeyStates.Down))
                         {
-                            string[] parameters = { "PID: 1\nProcess Name: OS", "MANUALY_TRIGGERED" };
+                            string[] parameters = { "PID: 1", "Process Name: Kernel", "MANUALY_TRIGGERED" };
                             ConsoleLogger.Log("Manual BughCheck Triggered", LogType.Info);
                             currentFrame.Navigate(typeof(BugCheckPage), parameters);
                             await Task.Delay(50);

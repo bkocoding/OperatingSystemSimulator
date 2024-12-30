@@ -23,6 +23,20 @@ public class BIOSSettingsService
     {
         try
         {
+            if (!File.Exists(_biossettingsFilePath))
+            {
+                ConsoleLogger.Log("BIOS settings were corrupt. Ressetting CMOS...", LogType.Warning);
+                Settings = new BIOSSettings
+                {
+                    CMOSReset = false,
+                    FirstBootOption = "Simulated Operating System",
+                    SecondBootOption = "Network Boot",
+                    WasLastBootSuccesful = true
+                };
+                SaveSettings();
+                return;
+            }
+
             var json = File.ReadAllText(_biossettingsFilePath);
             Settings = JsonSerializer.Deserialize<BIOSSettings>(json);
 
@@ -30,7 +44,6 @@ public class BIOSSettingsService
             {
                 CMOSReset();
             }
-
         }
         catch (Exception ex)
         {
@@ -52,8 +65,19 @@ public class BIOSSettingsService
         catch (Exception ex)
         {
             ConsoleLogger.Log($"Failed to save BIOS settings: {ex.Message}", LogType.Error);
-            ConsoleLogger.Log("Trying to reset CMOS...",LogType.Warning);
+            ConsoleLogger.Log("Trying to reset CMOS...", LogType.Warning);
             CMOSReset();
+        }
+    }
+
+    public void SaveLastBootState(bool lastState)
+    {
+        Settings!.WasLastBootSuccesful = lastState;
+        var json = JsonSerializer.Serialize(Settings);
+        File.WriteAllText(_biossettingsFilePath, json);
+        if (!lastState)
+        {
+            ConsoleLogger.Log("Boot Manager reported that the operating system has critical failure.", LogType.Warning);
         }
     }
 
@@ -64,6 +88,7 @@ public class BIOSSettingsService
         Settings!.CMOSReset = false;
         Settings.FirstBootOption = "Simulated Operating System";
         Settings.SecondBootOption = "Network Boot";
+        Settings.WasLastBootSuccesful = true;
         SaveSettings();
 
     }

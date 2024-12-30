@@ -52,7 +52,12 @@
     <None Remove="Apps\Shell\ShellWindow.xaml" />
     <None Remove="Apps\TaskManagerApp.xaml" />
     <None Remove="Apps\TestApp.xaml" />
-    <None Remove="biossettings.json" />
+    <None Remove="Apps\WebBrowserApp.xaml" />
+    <None Remove="Apps\WebBrowser\Pages\ErrorPage.xaml" />
+    <None Remove="Apps\WebBrowser\Pages\HomePage.xaml" />
+    <None Remove="Apps\WebBrowser\Pages\HorizonMusicPage.xaml" />
+    <None Remove="Apps\WebBrowser\Pages\LoadingPage.xaml" />
+    <None Remove="Apps\WebBrowser\WebBrowserApp.xaml" />
     <None Remove="Hardware\HardwarePage.xaml" />
     <None Remove="Hardware\PageListPage.xaml" />
     <None Remove="Pages\BIOSSettingsPage.xaml" />
@@ -63,6 +68,7 @@
     <None Remove="Pages\BugCheckPage.xaml" />
     <None Remove="Pages\DesktopPage.xaml" />
     <None Remove="Pages\NetworkBootPage.xaml" />
+    <None Remove="Pages\RecoveryPage.xaml" />
     <None Remove="Pages\ShutdownPage.xaml" />
     <None Remove="Pages\WelcomePage.xaml" />
   </ItemGroup>
@@ -155,12 +161,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="biossettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
     <Page Update="Pages\BugCheckPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -228,6 +228,7 @@
 
   <ItemGroup>
     <PackageReference Include="CSharpMarkup.WinUI.LiveChartsCore.SkiaSharpView" />
+    <PackageReference Include="NAudio" />
   </ItemGroup>
 
   <ItemGroup>
@@ -270,6 +271,76 @@
     <Page Update="Hardware\PageListPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\RecoveryPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Pages\RecoveryPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Apps\WebBrowserApp.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Apps\WebBrowser\WebBrowserApp.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Apps\WebBrowser\WebBrowserApp.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Apps\WebBrowser\Pages\HomePage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Apps\WebBrowser\Pages\HomePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Apps\WebBrowser\Pages\ErrorPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Apps\WebBrowser\Pages\ErrorPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Apps\WebBrowser\Pages\HorizonMusicPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Apps\WebBrowser\Pages\HorizonMusicPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Apps\WebBrowser\Pages\LoadingPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Apps\WebBrowser\Pages\LoadingPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Assets\Musics\music.mp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

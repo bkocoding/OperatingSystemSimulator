@@ -1,5 +1,7 @@
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Newtonsoft.Json;
 using OperatingSystemSimulator.Apps;
+using OperatingSystemSimulator.Apps.WebBrowser;
 
 namespace OperatingSystemSimulator.ProcessHelper;
 
@@ -10,14 +12,20 @@ public class ProcessBlock
     private double previousHeightOffset = 200;
 
     public int Pid { get; }
+    [JsonIgnore]
     public Popup? Popup { get; set; }
+    [JsonIgnore]
     public object? App { get; }
     public string Name { get; }
     public bool IsIdle { get; set; } = false;
+    [JsonIgnore]
     public bool IsRequired { get; set; } = false;
+    [JsonIgnore]
     public bool HasUI { get; set; } = true;
+    [JsonIgnore]
     public bool IsUtilizationEnough { get; set; } = true;
     public int Size { get; set; }
+    [JsonIgnore]
     public bool IsInitialized { get; set; } = false;
 
     /// <summary>
@@ -62,17 +70,22 @@ public class ProcessBlock
         else if (App is TaskManagerApp taskManagerApp)
         {
             taskManagerApp.Pid = Pid;
-            Size = 3200000;
+            Size = 3200465;
         }
         else if (App is NotepadApp notepadApp)
         {
             notepadApp.Pid = Pid;
             Size = 4171428;
         }
-        else if (App is FileExplorerApp explorerApp) 
+        else if (App is FileExplorerApp explorerApp)
         {
             explorerApp.Pid = Pid;
             Size = 7171428;
+        }
+        else if (App is WebBrowserApp webBrowserApp) 
+        {
+            webBrowserApp.Pid = Pid;
+            Size = 9171429;
         }
 
     }
@@ -103,7 +116,7 @@ public class ProcessBlock
         int verticalOne = 2;
         int horizontalOne = 4;
 
-        if (App is FileExplorerApp)
+        if (App is FileExplorerApp || App is WebBrowserApp)
         {
             verticalOne = 4;
             horizontalOne = 8;

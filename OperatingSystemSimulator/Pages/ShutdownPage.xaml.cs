@@ -1,4 +1,6 @@
+using OperatingSystemSimulator.FileHelper;
 using OperatingSystemSimulator.MemoryHelper;
+using OperatingSystemSimulator.NetworkHelper;
 using OperatingSystemSimulator.ProcessHelper;
 
 namespace OperatingSystemSimulator.Pages;
@@ -58,6 +60,7 @@ public sealed partial class ShutdownPage : Page
         _delayTimer!.Dispose();
         ProcessManager.Instance.TerminateProcess(1, TerminateReasons.System);
         MemoryManager.Instance.DeallocateBios();
+        NetworkManager.Instance.DisconnectForcefully();
         UpdateUIAfterDelay();
     }
 
@@ -82,6 +85,7 @@ public sealed partial class ShutdownPage : Page
     private void restartbtn_click(object sender, RoutedEventArgs e)
     {
         ProcessManager.Instance.IsTurnedOn = true;
+        BKOFSManager.Instance.LoadFromJson();
         Frame.Navigate(typeof(BootPage));
     }
 }

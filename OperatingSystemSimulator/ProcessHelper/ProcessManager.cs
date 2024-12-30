@@ -3,8 +3,11 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using OperatingSystemSimulator.Apps;
 using OperatingSystemSimulator.Apps.Shell;
 using OperatingSystemSimulator.Apps.Shell.MessageBoxHelper;
+using OperatingSystemSimulator.Apps.WebBrowser;
 using OperatingSystemSimulator.Extras.ConsoleLogger;
 using OperatingSystemSimulator.MemoryHelper;
+using OperatingSystemSimulator.Services;
+using Uno.Disposables;
 
 namespace OperatingSystemSimulator.ProcessHelper;
 
@@ -13,7 +16,7 @@ public class ProcessManager
     private static ProcessManager? instance;
     private static readonly object lockObject = new();
 
-    private Random random = new Random();
+    private readonly Random random = new();
     public ObservableCollection<ProcessBlock> ProcessBlocks { get; private set; }
     private int nextPid = 100;
 
@@ -44,6 +47,8 @@ public class ProcessManager
     private bool isInterruptActive = false;
     private string? interruptOperation;
 
+    private readonly BIOSSettingsService _biosSettingsService = (Application.Current as App)?.Host?.Services.GetRequiredService<BIOSSettingsService>()!;
+
     public static ProcessManager Instance
     {
         get
@@ -63,7 +68,6 @@ public class ProcessManager
     }
 
     public bool IsTurnedOn = true;
-    public bool WasLastBootSuccessful = true;
 
 
     public async Task<ProcessBlock?> CreateProcess(object app, string name, bool isSingleInstance, bool isUtilizationEnough)
@@ -110,7 +114,7 @@ public class ProcessManager
         return processBlock;
     }
 
-    public async Task<bool> TerminateProcess(int pid, TerminateReasons reason)
+    public async Task<bool> TerminateProcess(int pid, TerminateReasons reason, bool? needsPrinting = true)
     {
         var processBlock = GetProcessByPid(pid);
 
@@ -121,7 +125,11 @@ public class ProcessManager
 
         if (!processBlock.IsRequired)
         {
-           await InterruptQueueAsync(pid);
+            if (reason != TerminateReasons.Unexpected)
+            {
+                await InterruptQueueAsync(pid);
+            }
+
             processBlock.Popup!.IsOpen = false;
             processBlock.Popup.Child = null;
             if (FocusedPopup == processBlock.Popup)
@@ -142,7 +150,16 @@ public class ProcessManager
             }
             processBlock.Popup = null;
 
-            OnProcessTerminated(processBlock, reason);
+            if (needsPrinting == true)
+            {
+                OnProcessTerminated(processBlock, reason);
+            }
+
+            if(processBlock.App is WebBrowserApp webBrowserApp)
+            {
+                webBrowserApp.BrowserViewModel.TryDispose();
+            }
+
             MemoryManager.Instance.DeallocateMemory(processBlock);
             GC.Collect();
             return ProcessBlocks.Remove(processBlock);
@@ -151,13 +168,17 @@ public class ProcessManager
         {
             if (reason == TerminateReasons.System)
             {
-                OnProcessTerminated(processBlock, reason);
+                if (needsPrinting == true)
+                {
+                    OnProcessTerminated(processBlock, reason);
+                }
+
                 MemoryManager.Instance.DeallocateMemory(processBlock);
                 return ProcessBlocks.Remove(processBlock);
             }
             else
             {
-                string[] parameters = { "PID: " + pid + "\nProcess Name: " + processBlock.Name, "CRITICAL_PROCESS_DIED" };
+                string[] parameters = { "PID: " + pid, "Process Name: " + processBlock.Name, "CRITICAL_PROCESS_DIED" };
                 Frame currentFrame = (Frame)Window.Current!.Content!;
                 OnProcessTerminated(processBlock, reason);
                 MemoryManager.Instance.DeallocateMemory(processBlock);
@@ -213,8 +234,8 @@ public class ProcessManager
             {
                 notepadApp.UnsubscribeToFocusedPopUpChangedEvent();
                 TerminateProcess(processBlock.Pid, reason);
-            } 
-            else if (processBlock.App is FileExplorerApp fileExplorerApp) 
+            }
+            else if (processBlock.App is FileExplorerApp fileExplorerApp)
             {
                 fileExplorerApp.UnsubscribeToFocusedPopUpChangedEvent();
                 TerminateProcess(processBlock.Pid, reason);
@@ -281,22 +302,22 @@ public class ProcessManager
 
             //lock (operationQueue)
             //{
-                if (isInterruptActive && interruptOperation != null)
-                {
-                    processName = interruptOperation;
-                    isInterruptActive = false;
-                    interruptOperation = null;
-                }
-                else if (operationQueue.Count > 0)
-                {
-                    processBlock = operationQueue.Dequeue();
-                    processName = processBlock.Name;
-                }
+            if (isInterruptActive && interruptOperation != null)
+            {
+                processName = interruptOperation;
+                isInterruptActive = false;
+                interruptOperation = null;
+            }
+            else if (operationQueue.Count > 0)
+            {
+                processBlock = operationQueue.Dequeue();
+                processName = processBlock.Name;
+            }
 
-                if (operationQueue.Count > 0)
-                {
-                    queueState = $"[{string.Join(", ", operationQueue)}]";
-                }
+            if (operationQueue.Count > 0)
+            {
+                queueState = $"[{string.Join(", ", operationQueue)}]";
+            }
             //}
 
             if (!string.IsNullOrEmpty(processName))
@@ -363,8 +384,8 @@ public class ProcessManager
         {
             ProcessBlocks.Add(service);
             MemoryManager.Instance.AllocateMemory(service);
-            EnqueueRunningProcessAsync(service.Pid);
             OnProcessCreated(service);
+            EnqueueRunningProcessAsync(service.Pid);
         }
         ProcessManagerScheduler.StartRunServiceScheduler();
     }
@@ -384,8 +405,8 @@ public class ProcessManager
         {
             ProcessBlocks.Add(service);
             MemoryManager.Instance.AllocateMemory(service);
-            EnqueueRunningProcessAsync(service.Pid);
             OnProcessCreated(service);
+            EnqueueRunningProcessAsync(service.Pid);
         }
     }
 
@@ -440,7 +461,7 @@ public class ProcessManager
         ConsoleLogger.Log(log, logType);
     }
 
-    public void RunService(int pId) 
+    public void RunService(int pId)
     {
         EnqueueRunningProcessAsync(pId);
     }

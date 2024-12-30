@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using OperatingSystemSimulator.Extras.ConsoleLogger;
+using OperatingSystemSimulator.ProcessHelper;
 
 namespace OperatingSystemSimulator.ViewModels.PageViewModels;
 
@@ -124,7 +125,7 @@ public class HardwarePageViewModel : INotifyPropertyChanged
     //    }
     //}
 
-    public void ResetStatuses()
+    public void ShutDownStatusesChange()
     {
         //KeyStroke = HardwareStatuses.Idle.GetBrush();
         //NetworkOutput = HardwareStatuses.Idle.GetBrush();
@@ -145,6 +146,22 @@ public class HardwarePageViewModel : INotifyPropertyChanged
             hardwarePage.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Idle);
             hardwarePage.SetHDOperation(HDOperations.NotMounted);
             hardwarePage.SetRunningProcess("");
+        }
+    }
+
+    public void BugCheckStatusesChange() 
+    {
+        if (hardwarePage != null)
+        {
+            ProcessManager.Instance.IsTurnedOn = false;
+            hardwarePage.SetHardwareStatus(HardwareProperties.KeyStroke, HardwareStatuses.Idle);
+            hardwarePage.SetHardwareStatus(HardwareProperties.NetworkOutput, HardwareStatuses.Idle);
+            hardwarePage.SetHardwareStatus(HardwareProperties.NetworkInput, HardwareStatuses.Idle);
+            hardwarePage.SetHardwareStatus(HardwareProperties.AudioOutput, HardwareStatuses.Idle);
+            hardwarePage.SetHardwareStatus(HardwareProperties.HdWrite, HardwareStatuses.Running);
+            hardwarePage.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Idle);
+            hardwarePage.SetHDOperation(HDOperations.OperatingSystem);
+            hardwarePage.SetRunningProcess("Kernel");
         }
     }
 

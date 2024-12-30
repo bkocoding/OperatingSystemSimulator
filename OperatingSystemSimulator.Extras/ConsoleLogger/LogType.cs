@@ -10,5 +10,7 @@ public enum LogType
     Result,
     Interrupt,
     Queue,
+    NetworkInput,
+    NetworkOutput
 }
 

@@ -509,9 +509,10 @@ public partial class FileExplorerApp : UserControl, INotifyPropertyChanged
         HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Running);
         HardwarePageViewModel.Instance.SetHDOperation(HDOperations.ExploringDirectory);
         await Task.Delay(100);
-        FileSystemItems = new ObservableCollection<FileSystemItemModel>(directories.Concat(files));
         HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Idle);
         HardwarePageViewModel.Instance.SetHDOperation(HDOperations.Idle);
+        BKOFSManager.ValidateDirectoryAndFiles(CurrentDirectory);
+        FileSystemItems = new ObservableCollection<FileSystemItemModel>(directories.Concat(files));
     }
 
 

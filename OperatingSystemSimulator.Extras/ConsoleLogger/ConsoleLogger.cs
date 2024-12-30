@@ -61,8 +61,19 @@ public static class ConsoleLogger
                 Console.ForegroundColor = oldColor;
                 break;
 
-            default:
+            case LogType.NetworkInput:
                 Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine($"[NETWORK IN] {message}");
+                Console.ForegroundColor = oldColor;
+                break;
+
+            case LogType.NetworkOutput:
+                Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                Console.WriteLine($"[NETWORK OUT] {message}");
+                Console.ForegroundColor = oldColor;
+                break;
+            default:
+                Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine($"[UNKNOWN]: {message}");
                 Console.ForegroundColor = oldColor;
                 break;

@@ -1,7 +1,7 @@
 using OperatingSystemSimulator.EventHandlers;
 using OperatingSystemSimulator.Extras.ConsoleLogger;
+using OperatingSystemSimulator.ProcessHelper;
 using OperatingSystemSimulator.Services;
-using OperatingSystemSimulator.ViewModels.PageViewModels;
 using Windows.System;
 using Windows.UI.Core;
 using MemoryManager = OperatingSystemSimulator.MemoryHelper.MemoryManager;
@@ -12,6 +12,7 @@ public sealed partial class BootPage : Page
     private DispatcherTimer _timer;
     public bool isBusy = true;
     private bool isEnteringBIOS = false;
+    private bool isOSReady = true;
     private int _messageIndex = 0;
     private string[] _currentMessages;
     private string _firstBootOrder;
@@ -48,11 +49,11 @@ public sealed partial class BootPage : Page
     {
         InitializeComponent();
         MouseEventsHandler.Instance.Initialize();
-        _biosSettingsService = (Application.Current as App)?.Host?.Services.GetRequiredService<BIOSSettingsService>()!;
-        _firstBootOrder = _biosSettingsService.Settings.FirstBootOption;
+        _biosSettingsService = (Application.Current as App)!.Host!.Services.GetRequiredService<BIOSSettingsService>()!;
+        _firstBootOrder = _biosSettingsService.Settings!.FirstBootOption;
 
         Window.Current!.CoreWindow!.KeyDown += CoreWindow_KeyDown;
-
+        ProcessManager.Instance.IsTurnedOn = true;
         SetBootPartition();
         _timer = new DispatcherTimer();
         _timer.Interval = TimeSpan.FromMilliseconds(new Random().Next(200, 800));
@@ -61,9 +62,9 @@ public sealed partial class BootPage : Page
         StartPOST();
     }
 
-    private async void StartPOST() {
-
-       await MemoryManager.Instance.TestMemory();
+    private async void StartPOST()
+    {
+        await MemoryManager.Instance.TestMemory();
         _timer.Start();
     }
 
@@ -93,7 +94,7 @@ public sealed partial class BootPage : Page
         }
     }
 
-    private void OnTimerTick(object sender, object e)
+    private async void OnTimerTick(object sender, object e)
     {
         if (_currentMessages == _afterBootMessages && isEnteringBIOS)
         {
@@ -129,14 +130,8 @@ public sealed partial class BootPage : Page
                     HardwarePageViewModel.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Idle);
 
                     HardwarePageViewModel.SetHardwareStatus(HardwareProperties.NetworkOutput, HardwareStatuses.Running);
-                    Task.Delay(100).Wait();
+                    await Task.Delay(100);
                     HardwarePageViewModel.SetHardwareStatus(HardwareProperties.NetworkOutput, HardwareStatuses.Idle);
-
-
-                    HardwarePageViewModel.SetHardwareStatus(HardwareProperties.NetworkInput, HardwareStatuses.Running);
-                    Task.Delay(100).Wait();
-                    HardwarePageViewModel.SetHardwareStatus(HardwareProperties.NetworkInput, HardwareStatuses.Idle);
-
 
 
                 }
@@ -173,12 +168,15 @@ public sealed partial class BootPage : Page
                 if (!isEnteringBIOS)
                 {
                     HardwarePageViewModel.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Idle);
+
                     switch (_firstBootOrder)
                     {
                         case "Simulated Operating System":
+
                             HardwarePageViewModel.SetHDOperation(HDOperations.OperatingSystem);
                             HardwarePageViewModel.SetRunningProcess("Boot Manager");
                             Frame.Navigate(typeof(BootAnimationPage));
+
                             break;
                         case "Network Boot":
                             HardwarePageViewModel.SetHDOperation(HDOperations.NotMounted);
@@ -189,6 +187,7 @@ public sealed partial class BootPage : Page
                             break;
 
                     }
+
                 }
             }
             _messageIndex = 0;

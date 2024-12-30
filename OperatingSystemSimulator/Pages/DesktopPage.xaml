@@ -13,6 +13,7 @@
       <RowDefinition Height="Auto"/>
       <RowDefinition Height="Auto"/>
       <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
       <RowDefinition Height="*"/>
       <RowDefinition Height="Auto"/>
       <RowDefinition Height="*"/>
@@ -58,8 +59,20 @@
         </Grid>
       </Button.Content>
     </Button>
-
-    <StackPanel VerticalAlignment="Bottom" Grid.Row="7" Background="Gray" Height="55">
+    
+    <Button VerticalAlignment="Top" Width="110" Height="80"  HorizontalAlignment="Left" Margin="10" Grid.Row="3" Background="Transparent" BorderBrush="Transparent"  Click="WebBrowser_Click">
+      <Button.Content>
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+          </Grid.RowDefinitions>
+          <TextBlock HorizontalAlignment="Center" FontSize="20" Grid.Row="0">🌎</TextBlock>
+          <TextBlock Grid.Row="1">Web Browser</TextBlock>
+        </Grid>
+      </Button.Content>
+    </Button>
+    <StackPanel VerticalAlignment="Bottom" Grid.Row="8" Background="Gray" Height="55">
       <Grid>
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="Auto"/>
@@ -96,15 +109,15 @@
           </Button.Content>
         </Button>
 
-        <Button Grid.Column="3" x:Name="WifiButton" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="Black" Width="Auto" Background="Transparent" BorderBrush="Transparent" IsEnabled="False">
+        <Button Grid.Column="3" x:Name="WifiButton" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="Black" Width="115" Background="Transparent" BorderBrush="Transparent" Click="WifiButton_Click">
           <Button.Content>
             <Grid>
               <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
               </Grid.RowDefinitions>
-              <TextBlock HorizontalAlignment="Center" Grid.Row="0">🛜</TextBlock>
-              <TextBlock Foreground="Black" Grid.Row="1">No Connection</TextBlock>
+              <TextBlock x:Name="WifiIconTB" HorizontalAlignment="Center" Grid.Row="0">🌐</TextBlock>
+              <TextBlock x:Name="WİfiStatusTB" Foreground="Black" Grid.Row="1">Disconnected</TextBlock>
             </Grid>
           </Button.Content>
         </Button>

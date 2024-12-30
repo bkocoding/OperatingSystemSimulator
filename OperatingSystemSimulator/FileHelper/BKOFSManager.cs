@@ -35,8 +35,10 @@ public class BKOFSManager
 
     private int currentDirID;
     private int currentFileID;
+    private int fileSystemDirErrors = 0;
+    private int fileSystemFileErrors = 0;
     public const int MaxFileSize = 1000000 - 1;
-    public const  int MaxNameSize = 11;
+    public const int MaxNameSize = 11;
     public const int CharSize = 32;
 
     public void LoadFromJson()
@@ -44,15 +46,22 @@ public class BKOFSManager
         if (File.Exists(JsonFilePath))
         {
             string json = File.ReadAllText(JsonFilePath);
-            var data = JsonConvert.DeserializeObject<BKOFSData>(json);
+            BKOFSData? data = null;
+            try
+            {
+                data = JsonConvert.DeserializeObject<BKOFSData>(json);
+            }
+            catch (Exception)
+            {
+                Initialize();
+                SaveToJson();
+            }
 
             if (data != null)
             {
                 RootDirectory = data.RootDirectory ?? new BKOFSDirectory("Root", 0);
                 currentDirID = data.CurrentDirID;
                 currentFileID = data.CurrentFileID;
-
-                ValidateDirectoryAndFiles(RootDirectory);
             }
             else
             {
@@ -67,30 +76,119 @@ public class BKOFSManager
         }
     }
 
-    private static void ValidateDirectoryAndFiles(BKOFSDirectory directory)
+    private void ResetSystemFolder()
     {
+        var systemDirectory = RootDirectory.ChildDirectories.FirstOrDefault(d => d.Name == "System");
+        if (systemDirectory != null)
+        {
+            RootDirectory.ChildDirectories.Remove(systemDirectory);
+        }
+
+        BKOFSDirectory newSystemDirectory = new("System", 1)
+        {
+            ParentDirectoryID = RootDirectory.DirID,
+            IsRestricted = true
+        };
+
+        var systemFile = new BKOFSFile("System", newSystemDirectory.DirID, 1, true)
+        {
+            Size = MaxFileSize - 20
+        };
+        newSystemDirectory.Files.Add(systemFile);
+        RootDirectory.ChildDirectories.Add(newSystemDirectory);
+
+        SaveToJson();
+        ConsoleLogger.Log("System reset completed.", LogType.Info);
+    }
+
+    public void Recover()
+    {
+        if (!ValidateOS())
+        {
+            ConsoleLogger.Log("System files are corrupted, resetting system files...", LogType.Warning);
+            ResetSystemFolder();
+            return;
+        }
+        RemoveBrokenDirectoriesAndFiles(RootDirectory);
+        SaveToJson();
+        if (fileSystemFileErrors != 0 || fileSystemDirErrors != 0)
+        {
+            ConsoleLogger.Log($"File system fixed, {fileSystemDirErrors} directories and {fileSystemFileErrors} files has been marked as broken and deleted.", LogType.Info);
+        }
+        fileSystemDirErrors = 0;
+        fileSystemFileErrors = 0;
+    }
+
+    private void RemoveBrokenDirectoriesAndFiles(BKOFSDirectory directory)
+    {
+        fileSystemFileErrors += directory.Files.RemoveAll(file => file.Name.Length > MaxNameSize || file.Size > MaxFileSize);
+
+        fileSystemDirErrors += directory.ChildDirectories.RemoveAll(childDir => childDir.Name.Length > MaxNameSize);
+
+        foreach (var childDir in directory.ChildDirectories)
+        {
+            RemoveBrokenDirectoriesAndFiles(childDir);
+        }
+    }
+
+    public static void ValidateDirectoryAndFiles(BKOFSDirectory directory)
+    {
+        bool hasFoundErrors = false;
+
         if (directory.Name.Length > MaxNameSize)
         {
-            ConsoleLogger.Log($"Directory name '{directory.Name}' exceeds maximum length of {MaxNameSize} characters.", LogType.Error);
+            hasFoundErrors = true;
         }
 
-        foreach (var file in directory.Files)
+        if (!hasFoundErrors)
         {
-            if (file.Name.Length > MaxNameSize)
+            foreach (var file in directory.Files)
             {
-                ConsoleLogger.Log($"File name '{file.Name}' in directory '{directory.Name}' exceeds maximum length of {MaxNameSize} characters.", LogType.Error);
-            }
+                if (file.Name.Length > MaxNameSize)
+                {
+                    hasFoundErrors = true;
+                    break;
+                }
 
-            if (file.Size > MaxFileSize)
-            {
-                ConsoleLogger.Log($"File '{file.Name}' in directory '{directory.Name}' exceeds maximum size of {FormatSize(MaxFileSize)}.", LogType.Error);
+                if (file.Size > MaxFileSize)
+                {
+                    hasFoundErrors = true;
+                    break;
+                }
             }
         }
 
-        foreach (var childDirectory in directory.ChildDirectories)
+        if (hasFoundErrors)
         {
-            ValidateDirectoryAndFiles(childDirectory);
+            string[] parameters = { "PID: 1", "Process Name: Kernel", "FILE_SYSTEM_ERROR" };
+            Frame currentFrame = (Frame)Window.Current!.Content!;
+            currentFrame.Navigate(typeof(BugCheckPage), parameters);
+            return;
         }
+
+        foreach (var dir in directory.ChildDirectories)
+        {
+            ValidateDirectoryAndFiles(dir);
+        }
+
+    }
+
+    public bool ValidateOS()
+    {
+        var systemDirectory = RootDirectory.ChildDirectories.FirstOrDefault(d => d.Name == "System");
+        if (systemDirectory == null)
+        {
+            return false;
+        }
+
+        var systemFile = systemDirectory.Files.FirstOrDefault(f => f.Name == "System");
+
+        if (systemFile == null || systemFile.Size != MaxFileSize - 20)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     public void SaveToJson()
@@ -112,7 +210,7 @@ public class BKOFSManager
         File.WriteAllText(JsonFilePath, json);
     }
 
-    private async Task<bool> CreateDirectoryInternal(string name, BKOFSDirectory parentDirectory, bool isRestricted)
+    private async Task<bool> CreateDirectoryInternal(string name, BKOFSDirectory parentDirectory, bool isRestricted, bool? needsPrinting = true)
     {
 
         WritoToHDDOperation(HDOperations.CreatingDirectory);
@@ -120,7 +218,10 @@ public class BKOFSManager
         if (parentDirectory.ChildDirectories.Any(d => d.Name == name))
         {
             await ResetHDStatus(50);
-            ConsoleLogger.Log($"Couldn't create directory {name}, Reason: Directory already exists.", LogType.Error);
+            if (needsPrinting == true)
+            {
+                ConsoleLogger.Log($"Couldn't create directory {name}, Reason: Directory already exists.", LogType.Error);
+            }
             return false;
         }
 
@@ -131,12 +232,15 @@ public class BKOFSManager
         };
         parentDirectory.ChildDirectories.Add(newDirectory);
         await ResetHDStatus(50);
-        ConsoleLogger.Log($"Directory {name} created successfully.", LogType.Info);
+        if (needsPrinting == true)
+        {
+            ConsoleLogger.Log($"Directory {name} created successfully.", LogType.Info);
+        }
         return true;
 
     }
 
-    private async Task<bool> RenameDirectoryInternal(string newName, BKOFSDirectory directoryToChange)
+    private static async Task<bool> RenameDirectoryInternal(string newName, BKOFSDirectory directoryToChange)
     {
 
         WritoToHDDOperation(HDOperations.ChangingDirectory);
@@ -211,14 +315,18 @@ public class BKOFSManager
 
     }
 
-    private async Task<bool> CreateFileInternal(string name, BKOFSDirectory parentDirectory, bool? isRestricted)
+    private async Task<bool> CreateFileInternal(string name, BKOFSDirectory parentDirectory, bool? isRestricted, bool? needsPrinting = true)
     {
         WritoToHDDOperation(HDOperations.CreatingFile);
 
         if (parentDirectory.Files.Any(f => f.Name == name))
         {
             await ResetHDStatus(50);
-            ConsoleLogger.Log($"Couldn't create the file {name}, Reason: A file with the same name already exists.", LogType.Error);
+
+            if (needsPrinting == true)
+            {
+                ConsoleLogger.Log($"Couldn't create the file {name}, Reason: A file with the same name already exists.", LogType.Error);
+            }
 
             return false;
         }
@@ -226,11 +334,15 @@ public class BKOFSManager
         BKOFSFile newFile = new(name, parentDirectory.DirID, currentFileID++, isRestricted);
         parentDirectory.Files.Add(newFile);
         await ResetHDStatus(200);
-        ConsoleLogger.Log($"File {name} created successfully.", LogType.Info);
+
+        if (needsPrinting == true)
+        {
+            ConsoleLogger.Log($"File {name} created successfully.", LogType.Info);
+        }
         return true;
     }
 
-    private static async Task<bool> ChangeFileInternal(int fileID, BKOFSDirectory parentDirectory, string? newName, bool? isRestricted, string? newContent)
+    private static async Task<bool> ChangeFileInternal(int fileID, BKOFSDirectory parentDirectory, string? newName, bool? isRestricted, string? newContent, bool? needsPrinting = true)
     {
         WritoToHDDOperation(HDOperations.ChangingFile);
 
@@ -238,7 +350,10 @@ public class BKOFSManager
         if (file == null)
         {
             await ResetHDStatus(50);
-            ConsoleLogger.Log($"Couldn't change the file with ID {fileID}, Reason: File not found.", LogType.Error);
+            if (needsPrinting == true)
+            {
+                ConsoleLogger.Log($"Couldn't change the file with ID {fileID}, Reason: File not found.", LogType.Error);
+            }
             return false;
         }
 
@@ -252,8 +367,11 @@ public class BKOFSManager
             if (newName.Length > MaxNameSize)
             {
                 await ResetHDStatus(50);
-                ConsoleLogger.Log($"Couldn't update the file {file.Name}, Reason: File name is too long!", LogType.Error);
-                MessageManager.Instance.CreateMessage(1, "Couldn't Change File", $"File name is too long! Maximum file name length is {MaxNameSize} characters.", ShellType.None);
+                if (needsPrinting == true)
+                {
+                    ConsoleLogger.Log($"Couldn't update the file {file.Name}, Reason: File name is too long!", LogType.Error);
+                    MessageManager.Instance.CreateMessage(1, "Couldn't Change File", $"File name is too long! Maximum file name length is {MaxNameSize} characters.", ShellType.None);
+                }
                 return false;
             }
 
@@ -275,8 +393,11 @@ public class BKOFSManager
             if (newContent.Length * CharSize > MaxFileSize)
             {
                 await ResetHDStatus(50);
-                ConsoleLogger.Log($"Couldn't update the file {file.Name}, Reason: File size limit exceeded.", LogType.Error);
-                MessageManager.Instance.CreateMessage(1, "File Size Limit Exceeded", $"Couldn't change the file {file.Name}, file size limit exceeded! Maximum file size is {FormatSize(MaxFileSize)}.", ShellType.None);
+                if (needsPrinting == true)
+                {
+                    ConsoleLogger.Log($"Couldn't update the file {file.Name}, Reason: File size limit exceeded.", LogType.Error);
+                    MessageManager.Instance.CreateMessage(1, "File Size Limit Exceeded", $"Couldn't change the file {file.Name}, file size limit exceeded! Maximum file size is {FormatSize(MaxFileSize)}.", ShellType.None);
+                }
                 return false;
             }
             file.Content = newContent;
@@ -285,7 +406,10 @@ public class BKOFSManager
 
         file.LastChanged = DateTime.Now;
         await ResetHDStatus(50);
-        ConsoleLogger.Log($"File {file.Name} updated successfully.", LogType.Info);
+        if (needsPrinting == true)
+        {
+            ConsoleLogger.Log($"File {file.Name} updated successfully.", LogType.Info);
+        }
         return true;
     }
 
@@ -316,9 +440,9 @@ public class BKOFSManager
 
     }
 
-    public async Task<bool> CreateDirectory(string name, BKOFSDirectory parentDirectory, bool isRestricted)
+    public async Task<bool> CreateDirectory(string name, BKOFSDirectory parentDirectory, bool isRestricted, bool? isVerbose = true)
     {
-        if (await CreateDirectoryInternal(name, parentDirectory, isRestricted))
+        if (await CreateDirectoryInternal(name, parentDirectory, isRestricted, isVerbose))
         {
             SaveToJson();
             return true;
@@ -346,9 +470,9 @@ public class BKOFSManager
         return false;
     }
 
-    public async Task<bool> CreateFile(string name, BKOFSDirectory parentDirectory, bool? isRestricted = false)
+    public async Task<bool> CreateFile(string name, BKOFSDirectory parentDirectory, bool? isRestricted = false, bool? needsPrinting = true)
     {
-        if (await CreateFileInternal(name, parentDirectory, isRestricted))
+        if (await CreateFileInternal(name, parentDirectory, isRestricted, needsPrinting))
         {
             SaveToJson();
             return true;
@@ -356,9 +480,9 @@ public class BKOFSManager
         return false;
     }
 
-    public static async Task<bool> ChangeFile(int fileID, BKOFSDirectory parentDirectory, string? newName = null, bool? isRestricted = null, string? newContent = null)
+    public static async Task<bool> ChangeFile(int fileID, BKOFSDirectory parentDirectory, string? newName = null, bool? isRestricted = null, string? newContent = null, bool? needsPrinting = true)
     {
-        if (await ChangeFileInternal(fileID, parentDirectory, newName, isRestricted, newContent))
+        if (await ChangeFileInternal(fileID, parentDirectory, newName, isRestricted, newContent, needsPrinting))
         {
             Instance.SaveToJson();
             return true;
@@ -411,7 +535,7 @@ public class BKOFSManager
             if (name == "System")
             {
                 var file = new BKOFSFile("System", newDirectory.DirID, currentFileID++, true);
-                file.Size = MaxFileSize-20;
+                file.Size = MaxFileSize - 20;
                 newDirectory.Files.Add(file);
             }
 

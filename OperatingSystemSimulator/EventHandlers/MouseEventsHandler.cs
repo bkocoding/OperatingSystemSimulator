@@ -42,6 +42,30 @@ public class MouseEventsHandler
         Window.Current!.CoreWindow!.PointerMoved += OnPointerMoved;
         Window.Current!.CoreWindow!.PointerReleased += OnPointerReleased;
         Window.Current!.CoreWindow!.PointerPressed += OnPointerPressed;
+        Window.Current!.SizeChanged += OnWindowSizeChanged;
+    }
+
+    private void OnWindowSizeChanged(object sender, Microsoft.UI.Xaml.WindowSizeChangedEventArgs e)
+    {
+        var windowBounds = Window.Current!.Bounds;
+
+        foreach (var processBlock in ProcessManager.Instance.ProcessBlocks.Where(pb => pb.Popup != null))
+        {
+            var popup = processBlock.Popup;
+            if (popup != null && popup.Child is FrameworkElement content)
+            {
+                var popupWidth = content.ActualWidth > 0 ? content.ActualWidth : 100;
+                var popupHeight = content.ActualHeight > 0 ? content.ActualHeight : 100;
+
+                var maxHeight = windowBounds.Height - 55;
+
+                var newLeft = Math.Max(0, Math.Min(popup.HorizontalOffset, windowBounds.Width - popupWidth));
+                var newTop = Math.Max(0, Math.Min(popup.VerticalOffset, maxHeight - popupHeight));
+
+                popup.HorizontalOffset = newLeft;
+                popup.VerticalOffset = newTop;
+            }
+        }
     }
 
     private async void OnPointerPressed(CoreWindow sender, PointerEventArgs args)
@@ -105,6 +129,11 @@ public class MouseEventsHandler
 
     public void StartDragging(int eid, Point initialPointerPosition, ShellType shellType)
     {
+
+        foreach(var pb in ProcessManager.Instance.ProcessBlocks.Where(p => p.Popup != null)) 
+        {
+        
+        }
 
         if (shellType == ShellType.App)
         {

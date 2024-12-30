@@ -42,7 +42,7 @@
     </Border>
 
     <Border Background="Transparent" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
-      <TextBlock x:Name="NetworkInput" Text="→" Foreground="{Binding NetworkInput}" FontSize="40" VerticalAlignment="Center" HorizontalAlignment="Center" />
+      <TextBlock x:Name="NetworkOutput" Text="→" Foreground="{Binding NetworkOutput}" FontSize="40" VerticalAlignment="Center" HorizontalAlignment="Center" />
     </Border>
 
     <Border Background="#32CD32" Grid.Row="0" Grid.Column="2">
@@ -68,7 +68,7 @@
     </Border>
 
     <Border Background="Transparent" Grid.Row="1" Grid.Column="3">
-      <TextBlock x:Name="NetworkOutput" Text="⬏" Foreground="{Binding NetworkOutput}" FontSize="40" VerticalAlignment="Center" HorizontalAlignment="Center" />
+      <TextBlock x:Name="NetworkInput" Text="⬏" Foreground="{Binding NetworkInput}" FontSize="40" VerticalAlignment="Center" HorizontalAlignment="Center" />
     </Border>
 
     <Border Background="Transparent" Grid.Row="2" Grid.Column="3">

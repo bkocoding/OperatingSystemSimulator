@@ -179,8 +179,8 @@ public sealed partial class NotepadApp : UserControl
         {
             int sizeDifference = NotepadTextBox.Text.Length - size;
             size = NotepadTextBox.Text.Length;
-            var result = await MemoryManager.Instance.WriteToAdditionalPages(Pid, sizeDifference);
-            if (result == false)
+            var result = MemoryManager.Instance.WriteToAdditionalPages(Pid, sizeDifference);
+            if (result > 0)
             {
                 NotepadTextBox.Text = NotepadTextBox.Text.Substring(0, NotepadTextBox.Text.Length - sizeDifference);
                 size = NotepadTextBox.Text.Length;

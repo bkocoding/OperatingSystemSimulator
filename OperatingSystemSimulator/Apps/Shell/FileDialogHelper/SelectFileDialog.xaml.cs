@@ -237,7 +237,7 @@ public sealed partial class SelectFileDialog : UserControl, INotifyPropertyChang
     }
 
 
-    private void UpdateFileSystemItems()
+    private async void UpdateFileSystemItems()
     {
         var directories = CurrentDirectory.ChildDirectories.Select(dir => new FileSystemItemModel
         {
@@ -260,21 +260,27 @@ public sealed partial class SelectFileDialog : UserControl, INotifyPropertyChang
             Id = file.FileID,
             Content = file
         });
-
-        FileSystemItems = new ObservableCollection<FileSystemItemModel>(directories.Concat(files));
-    }
-
-    private async void OnCurrentDirectoryChanged()
-    {
+        await Task.Delay(200);
         HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Running);
         HardwarePageViewModel.Instance.SetHDOperation(HDOperations.ExploringDirectory);
         await Task.Delay(100);
+        HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Idle);
+        HardwarePageViewModel.Instance.SetHDOperation(HDOperations.Idle);
+        BKOFSManager.ValidateDirectoryAndFiles(CurrentDirectory);
+        FileSystemItems = new ObservableCollection<FileSystemItemModel>(directories.Concat(files));
+    }
+
+    private void OnCurrentDirectoryChanged()
+    {
+        //HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Running);
+        //HardwarePageViewModel.Instance.SetHDOperation(HDOperations.ExploringDirectory);
+        //await Task.Delay(100);
         PathTextBox.Text = CurrentDirectory.GetPath();
         BackButton.IsEnabled = directoryHistory.Count > 0;
         UpButton.IsEnabled = CurrentDirectory.ParentDirectoryID != null;
         UpdateFileSystemItems();
-        HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Idle);
-        HardwarePageViewModel.Instance.SetHDOperation(HDOperations.Idle);
+        //HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Idle);
+        //HardwarePageViewModel.Instance.SetHDOperation(HDOperations.Idle);
     }
 
 

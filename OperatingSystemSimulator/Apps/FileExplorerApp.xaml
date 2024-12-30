@@ -35,23 +35,23 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Column="0" Orientation="Horizontal">
-              <Button x:Name="BackButton" Content="⬅" Margin="4,4,0,0" Foreground="#69beff" Height="33" Width="40" FontSize="20" Click="BackButton_Click" Background="Transparent" BorderBrush="#69beff"/>
+              <Button x:Name="BackButton" Content="⬅" VerticalAlignment="Center" Margin="4,4,0,0" Foreground="#69beff" Height="33" Width="40" FontSize="20" Click="BackButton_Click" Background="Transparent" BorderBrush="#69beff"/>
               <Button x:Name="UpButton" Content="⬆" Margin="4,4,0,0" Foreground="#69beff" Height="33" Width="40" FontSize="20" Click="UpButton_Click" Background="Transparent" BorderBrush="#69beff"/>
               <Button x:Name="RefreshButton" Content="↻" Margin="4,4,0,0" Foreground="#69beff" Height="33" Width="40" FontSize="20" Click="RefreshButton_Click" Background="Transparent" BorderBrush="#69beff"/>
 
             </StackPanel>
             <StackPanel Grid.Column="1" Orientation="Horizontal">
-              <TextBox x:Name="NameTextBox" Background="#383838" Margin="0,4,4,0" Width="220" Height="30" Foreground="White" Visibility="Collapsed" PlaceholderText="Type a name"/>
-              <Button x:Name="RenameButton" Content="Rename" Margin="0,4,4,0" Foreground="#69beff" Height="33" Click="RenameButton_Click" Background="Transparent" BorderBrush="#69beff" IsEnabled="False"/>
-              <Button x:Name="DeleteButton" Content="Delete" Margin="0,4,4,0" Foreground="#69beff" Height="33" Click="DeleteButton_Click" Background="Transparent" BorderBrush="#69beff" IsEnabled="False"/>
-              <Button x:Name="NewFileButton" Content="New File" Margin="0,4,4,0" Foreground="#69beff" Height="33" Click="NewFileButton_Click" Background="Transparent" BorderBrush="#69beff"/>
-              <Button x:Name="NewFolderButton" Content="New Folder" Margin="0,4,4,0" Foreground="#69beff" Height="33" Click="NewFolderButton_Click" Background="Transparent" BorderBrush="#69beff"/>
+              <TextBox x:Name="NameTextBox" Background="#383838" VerticalAlignment="Center" Margin="0,4,4,0" Width="220" Height="30" Foreground="White" Visibility="Collapsed" PlaceholderText="Type a name"/>
+              <Button x:Name="RenameButton" Content="Rename" Margin="0,4,4,0" VerticalAlignment="Center" Foreground="#69beff" Height="33" Click="RenameButton_Click" Background="Transparent" BorderBrush="#69beff" IsEnabled="False"/>
+              <Button x:Name="DeleteButton" Content="Delete" Margin="0,4,4,0" VerticalAlignment="Center" Foreground="#69beff" Height="33" Click="DeleteButton_Click" Background="Transparent" BorderBrush="#69beff" IsEnabled="False"/>
+              <Button x:Name="NewFileButton" Content="New File" Margin="0,4,4,0" VerticalAlignment="Center" Foreground="#69beff" Height="33" Click="NewFileButton_Click" Background="Transparent" BorderBrush="#69beff"/>
+              <Button x:Name="NewFolderButton" Content="New Folder" Margin="0,4,4,0" VerticalAlignment="Center" Foreground="#69beff" Height="33" Click="NewFolderButton_Click" Background="Transparent" BorderBrush="#69beff"/>
             </StackPanel>
           </Grid>
         </StackPanel>
 
         <StackPanel Grid.Row="1" Background="#3a3a3a">
-          <TextBox x:Name="PathTextBox" IsReadOnly="True" Width="690" Height="20" Background="#383838" Foreground="White" Margin="4,0,4,4"/>
+          <TextBox x:Name="PathTextBox" IsReadOnly="True" Width="690" Height="20" VerticalAlignment="Center" Background="#383838" Foreground="White" Margin="4,0,4,4"/>
         </StackPanel>
         
         <Grid Grid.Row="2" Background="#3a3a3a" Height="30" BorderBrush="Black" BorderThickness="1">

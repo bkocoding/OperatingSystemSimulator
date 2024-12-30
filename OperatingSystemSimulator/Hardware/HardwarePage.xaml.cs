@@ -1,11 +1,8 @@
-using System.Collections.ObjectModel;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using OperatingSystemSimulator.MemoryHelper;
-using OperatingSystemSimulator.ProcessHelper;
 using SkiaSharp;
-using Uno.Extensions.Specialized;
 
 namespace OperatingSystemSimulator.Hardware;
 
@@ -18,7 +15,7 @@ public sealed partial class HardwarePage : Page
         //DataContext = ViewModel;
         ViewModel.hardwarePage = this;
         InitializeComponent();
-        ViewModel.ResetStatuses();
+        ViewModel.ShutDownStatusesChange();
         RunningProcess.Text = "BIOS Firmware";
         InitializeRamChart();
         UpdateRamChart();
