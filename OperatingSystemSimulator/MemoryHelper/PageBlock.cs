@@ -6,11 +6,24 @@ public class PageBlock : INotifyPropertyChanged
 {
     private bool isEmpty;
     private bool isAllocated;
+    private bool isSelected = false;
     private int usedSpace;
-
+    public PageBlock Instance { get; private set; }
     public int PageNumber { get; set; }
     public ProcessBlock? ProcessBlock { get; set; }
-
+    public bool IsSelected
+    {
+        get => isSelected;
+        set
+        {
+            if (isSelected != value)
+            {
+                isSelected = value;
+                OnPropertyChanged(nameof(IsSelected));
+                OnPropertyChanged(nameof(Instance));
+            }
+        }
+    }
     public int UsedSpace
     {
         get => usedSpace;
@@ -20,6 +33,7 @@ public class PageBlock : INotifyPropertyChanged
             {
                 usedSpace = value;
                 OnPropertyChanged(nameof(UsedSpace));
+                OnPropertyChanged(nameof(Instance));
             }
         }
     }
@@ -33,6 +47,7 @@ public class PageBlock : INotifyPropertyChanged
             {
                 isEmpty = value;
                 OnPropertyChanged(nameof(IsEmpty));
+                OnPropertyChanged(nameof(Instance));
             }
         }
     }
@@ -46,6 +61,7 @@ public class PageBlock : INotifyPropertyChanged
             {
                 isAllocated = value;
                 OnPropertyChanged(nameof(IsAllocated));
+                OnPropertyChanged(nameof(Instance));
             }
         }
     }
@@ -54,8 +70,14 @@ public class PageBlock : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
+    public PageBlock()
+    {
+        Instance = this;
+    }
+
     protected void OnPropertyChanged(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
+
 }

@@ -1,10 +1,8 @@
-using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
-using OperatingSystemSimulator.ProcessHelper;
-using Windows.Foundation;
-using OperatingSystemSimulator.EventHandlers;
-using OperatingSystemSimulator.Apps.Shell.MessageBoxHelper;
 using OperatingSystemSimulator.Apps.Shell.FileDialogs;
+using OperatingSystemSimulator.Apps.Shell.MessageBoxHelper;
+using OperatingSystemSimulator.EventHandlers;
+using OperatingSystemSimulator.ProcessHelper;
 
 namespace OperatingSystemSimulator.Apps.Shell;
 
@@ -32,7 +30,7 @@ public sealed partial class ShellWindow : UserControl
         InitializeComponent();
     }
 
-    private void Button_Click(object sender, RoutedEventArgs e)
+    private async void Button_Click(object sender, RoutedEventArgs e)
     {
         if (CurrentShellType == ShellType.App)
         {
@@ -42,7 +40,7 @@ public sealed partial class ShellWindow : UserControl
             }
             else
             {
-                ProcessManager.Instance.TerminateProcess(EId, TerminateReasons.Self);
+                await ProcessManager.Instance.TerminateProcess(EId, TerminateReasons.Self);
             }
         }
         else if (CurrentShellType == ShellType.Message)
@@ -59,7 +57,7 @@ public sealed partial class ShellWindow : UserControl
 
     private void Pointer_Pressed(object sender, PointerRoutedEventArgs e)
     {
-        var pointerPosition = e.GetCurrentPoint(Window.Current.Content as UIElement).Position;
+        var pointerPosition = e.GetCurrentPoint(Window.Current!.Content as UIElement).Position;
 
         MouseEventsHandler.Instance.StartDragging(EId, pointerPosition, CurrentShellType);
     }

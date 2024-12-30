@@ -224,4 +224,28 @@ public class HardwarePageViewModel : INotifyPropertyChanged
         }
     }
 
+    public void ShowInfo(ProcessBlock processBlock) 
+    {
+        if (hardwarePage != null) 
+        {
+            hardwarePage.ShowInfo(processBlock);
+        }
+    }
+
+    public void DismissInfo() 
+    {
+        if (hardwarePage != null)
+        {
+            hardwarePage.DismissInfo();
+        }
+    }
+
+    public void ShowBiosInfo() 
+    {
+        if (hardwarePage != null)
+        {
+            hardwarePage.ShowBiosInfo();
+        }
+    }
+
 }

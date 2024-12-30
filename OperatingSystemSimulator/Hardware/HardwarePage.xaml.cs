@@ -1,7 +1,10 @@
+using System.Security.Cryptography.X509Certificates;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
+using OperatingSystemSimulator.FileHelper;
 using OperatingSystemSimulator.MemoryHelper;
+using OperatingSystemSimulator.ProcessHelper;
 using SkiaSharp;
 
 namespace OperatingSystemSimulator.Hardware;
@@ -147,5 +150,33 @@ public sealed partial class HardwarePage : Page
         });
 
         RamChart.Series = newSeries;
+    }
+
+    public void ShowInfo(ProcessBlock processBlock)
+    {
+        InfoActiveText.Visibility = Visibility.Collapsed;
+        InfoPID.Text = "PID: " + processBlock.Pid.ToString();
+        InfoName.Text = "NAME: " + processBlock.Name;
+        InfoSize.Text = "MEMORY USAGE: " + BKOFSManager.FormatSize(MemoryManager.Instance.GetTotalMemoryUsage(processBlock)).ToString();
+        InfoIdle.Text = "IDLE STATUS: " + (processBlock.IsIdle ? "Yes" : "No");
+        InfoIdle.Visibility = Visibility.Visible;
+        InfoPID.Visibility = Visibility.Visible;
+        InfoStack.Visibility = Visibility.Visible;
+    }
+
+    public void DismissInfo()
+    {
+        InfoStack.Visibility = Visibility.Collapsed;
+        InfoActiveText.Visibility = Visibility.Visible;
+    }
+
+    public void ShowBiosInfo()
+    {
+        InfoActiveText.Visibility = Visibility.Collapsed;
+        InfoPID.Visibility = Visibility.Collapsed;
+        InfoIdle.Visibility = Visibility.Collapsed;
+        InfoStack.Visibility = Visibility.Visible;
+        InfoName.Text = "NAME: BIOS";
+        InfoSize.Text = $"MEMORY USAGE: {BKOFSManager.FormatSize(1108000)}";
     }
 }

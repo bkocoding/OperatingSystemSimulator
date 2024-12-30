@@ -18,6 +18,11 @@ public class MemoryManager : INotifyPropertyChanged
 
     private void OnPagesChanged()
     {
+        foreach (var page in Pages)
+        {
+            page.IsSelected = false;
+        }
+        HardwarePageViewModel.Instance.DismissInfo();
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Pages)));
     }
 
@@ -79,7 +84,7 @@ public class MemoryManager : INotifyPropertyChanged
             {
                 page.UsedSpace = pageSize;
             }
-
+            processBlock.PageBlocks.Add(page);
             allocatedPages++;
         }
 
@@ -99,6 +104,7 @@ public class MemoryManager : INotifyPropertyChanged
             page.IsEmpty = true;
             page.IsAllocated = true;
             page.IsAdditional = true;
+            processBlock.PageBlocks.Add(page);
         }
 
         OnPagesChanged();
@@ -146,7 +152,7 @@ public class MemoryManager : INotifyPropertyChanged
                 return currentSize;
             }
             currentSize = WriteToAdditionalPages(pid, currentSize);
- 
+
         }
 
         OnPagesChanged();
@@ -191,6 +197,7 @@ public class MemoryManager : INotifyPropertyChanged
             page.IsAllocated = false;
             page.IsAdditional = false;
             page.UsedSpace = 0;
+            processBlock.PageBlocks.Clear();
         }
         OnPagesChanged();
     }
@@ -224,34 +231,32 @@ public class MemoryManager : INotifyPropertyChanged
         return Pages.Where(p => p.ProcessBlock == processBlock && p.IsAdditional).ToList();
     }
 
-    //private void CleanupUnusedPages()
-    //{
-    //    if (Pages.Count(p => !p.IsEmpty) > (int)(Pages.Count * 0.7))
-    //    {
-    //        if (!TryCleanup())
-    //        {
-    //            return;
-    //        }
-    //    }
-
-    //    TryCleanup();
-    //}
+    public int GetTotalMemoryUsage(ProcessBlock processBlock)
+    {
+        int totalSize = 0;
+        foreach (var page in Pages.Where(p => p.ProcessBlock == processBlock).ToList())
+        {
+            totalSize += page.UsedSpace;
+        }
+        return totalSize;
+    }
 
     private bool CleanUnusedPages()
     {
         var unusedPages = Pages.Where(p => p.IsEmpty && p.IsAllocated && p.IsAdditional).ToList();
         foreach (var page in unusedPages)
         {
+            page.ProcessBlock!.PageBlocks.Remove(page);
             page.ProcessBlock = null;
             page.IsEmpty = true;
             page.IsAllocated = false;
             page.IsAdditional = false;
         }
 
-        OnPagesChanged();
 
         if (unusedPages.Count > 0)
         {
+            OnPagesChanged();
             ConsoleLogger.Log($"A memory cleaning event has been occured, {unusedPages.Count} page(s) have been freed.", LogType.Info);
         }
 

@@ -5,17 +5,16 @@ using OperatingSystemSimulator.Apps.WebBrowser.Pages;
 using OperatingSystemSimulator.Extras.ConsoleLogger;
 using OperatingSystemSimulator.MemoryHelper;
 using OperatingSystemSimulator.NetworkHelper;
-using OperatingSystemSimulator.ProcessHelper;
 
 namespace OperatingSystemSimulator.ViewModels.AppViewModels;
 public class BrowserViewModel : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    private UserControl _currentPage = new HomePage();
+    private UserControl? _currentPage;
     public UserControl CurrentPage
     {
-        get => _currentPage;
+        get => _currentPage!;
         set
         {
             _currentPage = value;
@@ -74,7 +73,7 @@ public class BrowserViewModel : INotifyPropertyChanged
 
     public BrowserViewModel(int pID)
     {
-        CurrentPage = new HomePage();
+        CurrentPage = new HomePage(this);
         SetTitle("Home");
         SetAddress("browser://home");
         PID = pID;
@@ -175,7 +174,7 @@ public class BrowserViewModel : INotifyPropertyChanged
             MemoryManager.Instance.DeleteFromAdditionalPages(PID, 143049);
         }
 
-        CurrentPage = new HomePage();
+        CurrentPage = new HomePage(this);
         SetTitle("Home");
         SetAddress("browser://home");
 

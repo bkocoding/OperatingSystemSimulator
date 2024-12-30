@@ -2,6 +2,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Newtonsoft.Json;
 using OperatingSystemSimulator.Apps;
 using OperatingSystemSimulator.Apps.WebBrowser;
+using OperatingSystemSimulator.MemoryHelper;
 
 namespace OperatingSystemSimulator.ProcessHelper;
 
@@ -12,21 +13,29 @@ public class ProcessBlock
     private double previousHeightOffset = 200;
 
     public int Pid { get; }
+
     [JsonIgnore]
     public Popup? Popup { get; set; }
+
     [JsonIgnore]
     public object? App { get; }
     public string Name { get; }
     public bool IsIdle { get; set; } = false;
+
     [JsonIgnore]
     public bool IsRequired { get; set; } = false;
+
     [JsonIgnore]
     public bool HasUI { get; set; } = true;
+
     [JsonIgnore]
     public bool IsUtilizationEnough { get; set; } = true;
     public int Size { get; set; }
+
     [JsonIgnore]
     public bool IsInitialized { get; set; } = false;
+
+    public List<PageBlock> PageBlocks { get; set; } = [];
 
     /// <summary>
     /// For creating a new UI application Process Block, User Level and not required for OS

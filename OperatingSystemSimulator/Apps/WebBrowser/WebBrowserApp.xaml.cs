@@ -68,8 +68,9 @@ public sealed partial class WebBrowserApp : UserControl
 
     }
 
-    private void AddressBarTextBox_KeyDown(object sender, KeyRoutedEventArgs e)
+    private async void AddressBarTextBox_KeyDown(object sender, KeyRoutedEventArgs e)
     {
+        await ProcessManager.Instance.InterruptQueueAsync(Pid);
         if (e.Key == VirtualKey.Enter)
         {
             GoButton_Click(sender, e);

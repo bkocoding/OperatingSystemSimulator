@@ -7,7 +7,6 @@ using OperatingSystemSimulator.Apps.WebBrowser;
 using OperatingSystemSimulator.Extras.ConsoleLogger;
 using OperatingSystemSimulator.MemoryHelper;
 using OperatingSystemSimulator.Services;
-using Uno.Disposables;
 
 namespace OperatingSystemSimulator.ProcessHelper;
 
@@ -155,7 +154,7 @@ public class ProcessManager
                 OnProcessTerminated(processBlock, reason);
             }
 
-            if(processBlock.App is WebBrowserApp webBrowserApp)
+            if (processBlock.App is WebBrowserApp webBrowserApp)
             {
                 webBrowserApp.BrowserViewModel.TryDispose();
             }
@@ -191,7 +190,7 @@ public class ProcessManager
 
     }
 
-    public bool TerminateFocusedProcess()
+    public async Task<bool> TerminateFocusedProcess()
     {
         if (FocusedPopup == null)
         {
@@ -208,7 +207,7 @@ public class ProcessManager
                 }
                 else
                 {
-                    TerminateProcess(block.Pid, TerminateReasons.Self);
+                   await TerminateProcess(block.Pid, TerminateReasons.Self);
                 }
                 return true;
             }
@@ -217,7 +216,7 @@ public class ProcessManager
 
     }
 
-    public void TerminateAllProcesses(TerminateReasons reason)
+    public async void TerminateAllProcesses(TerminateReasons reason)
     {
         ProcessManagerScheduler.StopRunServiceScheduler();
         foreach (var processBlock in ProcessBlocks.ToList().OrderByDescending(p => p.Pid))
@@ -233,16 +232,16 @@ public class ProcessManager
             else if (processBlock.App is NotepadApp notepadApp)
             {
                 notepadApp.UnsubscribeToFocusedPopUpChangedEvent();
-                TerminateProcess(processBlock.Pid, reason);
+                await TerminateProcess(processBlock.Pid, reason);
             }
             else if (processBlock.App is FileExplorerApp fileExplorerApp)
             {
                 fileExplorerApp.UnsubscribeToFocusedPopUpChangedEvent();
-                TerminateProcess(processBlock.Pid, reason);
+                await TerminateProcess(processBlock.Pid, reason);
             }
             else
             {
-                TerminateProcess(processBlock.Pid, reason);
+                await TerminateProcess(processBlock.Pid, reason);
             }
         }
         nextPid = 100;
@@ -410,7 +409,7 @@ public class ProcessManager
         }
     }
 
-    public void BringToFront(int pid)
+    public async void BringToFront(int pid)
     {
         var processBlock = GetProcessByPid(pid);
         if (processBlock != null && FocusedPopup != processBlock.Popup)
@@ -419,7 +418,7 @@ public class ProcessManager
             processBlock.Popup.IsOpen = false;
             processBlock.Popup.IsOpen = true;
 
-            InterruptQueueAsync(processBlock.Pid);
+            await InterruptQueueAsync(processBlock.Pid);
         }
     }
 

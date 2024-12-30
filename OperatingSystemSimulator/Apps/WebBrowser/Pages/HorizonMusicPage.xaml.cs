@@ -113,31 +113,30 @@ public sealed partial class HorizonMusicPage : UserControl
         }
     }
 
+    private async void Slider_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+    {
+        ProcessManager.Instance.BringToFront(_browserViewModel.PID);
+        await ProcessManager.Instance.EnqueueRunningProcessAsync(_browserViewModel.PID);
+    }
+
     private void SeekSlider_ValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
     {
         if (_audioFile != null && _waveOut != null && Math.Abs(e.NewValue - e.OldValue) > 0.5)
         {
             _audioFile.CurrentTime = TimeSpan.FromSeconds(SeekSlider.Value);
         }
-    }
 
-
-    private void UpdateSliderAndTime(object? sender, ElapsedEventArgs? e)
-    {
-        if (_audioFile != null && _waveOut != null && _waveOut.PlaybackState == PlaybackState.Playing)
+        if (_audioFile != null)
         {
-            ProcessManager.Instance.EnqueueRunningProcessAsync(_browserViewModel.PID);
-            SeekSlider.Value = _audioFile.CurrentTime.TotalSeconds;
-            CurrentTimeText.Text = $"{_audioFile.CurrentTime:mm\\:ss} / {_audioFile.TotalTime:mm\\:ss}";
+            CurrentTimeText.Text = $"{TimeSpan.FromSeconds(e.NewValue):mm\\:ss} / {_audioFile.TotalTime:mm\\:ss}";
         }
     }
 
     private void VolumeSlider_ValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
     {
-        if (_audioFile != null)
-        {
-            Volume = (float)e.NewValue / 100;
-        }
+
+        Volume = (float)e.NewValue / 100;
+
     }
 
     private void BrowserViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -145,6 +144,15 @@ public sealed partial class HorizonMusicPage : UserControl
         if (e.PropertyName == nameof(BrowserViewModel.CurrentPage))
         {
             StopButton_Click(this, null);
+        }
+    }
+    private void UpdateSliderAndTime(object? sender, ElapsedEventArgs? e)
+    {
+        if (_audioFile != null && _waveOut != null && _waveOut.PlaybackState == PlaybackState.Playing)
+        {
+            ProcessManager.Instance.EnqueueRunningProcessAsync(_browserViewModel.PID);
+            SeekSlider.Value = _audioFile.CurrentTime.TotalSeconds;
+            CurrentTimeText.Text = $"{_audioFile.CurrentTime:mm\\:ss} / {_audioFile.TotalTime:mm\\:ss}";
         }
     }
 
@@ -157,11 +165,4 @@ public sealed partial class HorizonMusicPage : UserControl
         _timer.Dispose();
         StopButton_Click(this, null);
     }
-
-    private async void Slider_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
-    {
-        ProcessManager.Instance.BringToFront(_browserViewModel.PID);
-        await ProcessManager.Instance.EnqueueRunningProcessAsync(_browserViewModel.PID);
-    }
-
 }

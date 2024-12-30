@@ -76,14 +76,15 @@
     </Border>
 
     <Border Background="#696969" Visibility="Visible" Grid.Row="1" Grid.Column="4" Grid.RowSpan="2">
-      <!--<StackPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0">
-        <TextBlock Text="PID: " Foreground="White" FontSize="12" />
-        <TextBlock Text="NAME: " Foreground="White" FontSize="12" />
-        <TextBlock Text="MEMORY SIZE: " Foreground="White" FontSize="12" />
-        <TextBlock Text="IDLE STATUS: " Foreground="White" FontSize="12" />
-        <TextBlock Text="ASSIGNED PAGES: " Foreground="White" FontSize="12" />
-        <TextBlock Text="PAGES_LIST" Foreground="White" FontSize="12" />
-      </StackPanel>-->
+      <Grid>
+        <StackPanel x:Name="InfoStack" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" Visibility="Collapsed">
+          <TextBlock x:Name="InfoPID" Text="PID: " Foreground="White" FontSize="12" />
+          <TextBlock x:Name="InfoName" Text="NAME: " Foreground="White" FontSize="12" />
+          <TextBlock x:Name="InfoSize" Text="MEMORY SIZE: " Foreground="White" FontSize="12" />
+          <TextBlock x:Name="InfoIdle" Text="IDLE STATUS: " Foreground="White" FontSize="12" />
+        </StackPanel>
+        <TextBlock x:Name="InfoActiveText" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Select a page to check it" Visibility="Visible"/>
+      </Grid>
     </Border>
 
     <Border Background="Transparent" Grid.Row="1" Grid.Column="5">
