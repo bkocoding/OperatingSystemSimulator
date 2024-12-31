@@ -26,6 +26,8 @@ public sealed partial class HorizonMusicPage : UserControl
         }
     }
 
+    private int loopCounter = 0;
+
     private readonly BrowserViewModel _browserViewModel;
 
     public HorizonMusicPage(BrowserViewModel browserViewModel)
@@ -150,7 +152,6 @@ public sealed partial class HorizonMusicPage : UserControl
     {
         if (_audioFile != null && _waveOut != null && _waveOut.PlaybackState == PlaybackState.Playing)
         {
-            ProcessManager.Instance.EnqueueRunningProcessAsync(_browserViewModel.PID);
             SeekSlider.Value = _audioFile.CurrentTime.TotalSeconds;
             CurrentTimeText.Text = $"{_audioFile.CurrentTime:mm\\:ss} / {_audioFile.TotalTime:mm\\:ss}";
         }

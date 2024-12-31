@@ -412,7 +412,7 @@ public class ProcessManager
     public async void BringToFront(int pid)
     {
         var processBlock = GetProcessByPid(pid);
-        if (processBlock != null && FocusedPopup != processBlock.Popup)
+        if (processBlock != null && FocusedPopup != processBlock.Popup && processBlock.Popup != null)
         {
             FocusedPopup = processBlock.Popup;
             processBlock.Popup.IsOpen = false;

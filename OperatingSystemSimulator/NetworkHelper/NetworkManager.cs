@@ -123,8 +123,12 @@ public class NetworkManager : INotifyPropertyChanged
     public void DisconnectForcefully() 
     {
         IsConnected = false;
-        HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.NetworkInput, HardwareStatuses.Idle);
-        HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.NetworkOutput, HardwareStatuses.Idle);
+        var dispatcher = Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher;
+        dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+        {
+            HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.NetworkInput, HardwareStatuses.Idle);
+            HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.NetworkOutput, HardwareStatuses.Idle);
+        }).AsTask().Wait();
     }
 
     public void OnNetworkStatusChanged()

@@ -381,6 +381,16 @@ public partial class FileExplorerApp : UserControl, INotifyPropertyChanged
         {
             directoryHistory.Push(tempStack.Pop());
         }
+
+        if (directoryHistory.Count > 0)
+        {
+            BackButton.IsEnabled = true;
+        }
+        else 
+        {
+            BackButton.IsEnabled = false;
+
+        }
     }
 
     private static void CollectAllSubdirectories(BKOFSDirectory directory, HashSet<BKOFSDirectory> directoriesToRemove)

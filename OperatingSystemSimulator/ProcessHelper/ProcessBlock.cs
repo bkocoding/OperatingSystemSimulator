@@ -103,6 +103,10 @@ public class ProcessBlock
     {
         if (!HasUI)
             return;
+        if (Popup == null) 
+        {
+            return;
+        }
 
         Popup!.Child = App as UIElement;
 

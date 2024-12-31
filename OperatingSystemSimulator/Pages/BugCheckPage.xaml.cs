@@ -58,7 +58,7 @@ public sealed partial class BugCheckPage : Page
         }
 
         await Task.Delay(1000);
-        await CreateDumpFile();
+        CreateDumpFile();
         ConsoleLogger.Log("BugCheck completed, rebooting...", LogType.Info);
 
         if (BugCheckParameters[2] == "FILE_SYSTEM_ERROR")
@@ -115,7 +115,7 @@ public sealed partial class BugCheckPage : Page
                 {
                     TypeNameHandling = TypeNameHandling.Objects,
                     Formatting = Formatting.Indented,
-                    Converters = new List<JsonConverter> { new CustomTypeNameConverter() }
+                    Converters = [new CustomTypeNameConverter()]
                 };
 
                 await BKOFSManager.ChangeFile(file!.FileID, bugCheckDirectory, newContent: JsonConvert.SerializeObject(data, settings), needsPrinting: false);
