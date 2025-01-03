@@ -16,8 +16,8 @@ public sealed partial class BIOSBootPage : Page
         InitializeComponent();
         ViewModel = new BIOSBootViewModel();
         DataContext = ViewModel;
-        _biosSettingsService = (Application.Current as App)?.Host?.Services.GetRequiredService<BIOSSettingsService>();
-        Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
+        _biosSettingsService = (Application.Current as App)?.Host?.Services.GetRequiredService<BIOSSettingsService>()!;
+        Window.Current!.CoreWindow!.KeyDown += CoreWindow_KeyDown;
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)

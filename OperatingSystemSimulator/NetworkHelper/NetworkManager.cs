@@ -128,7 +128,7 @@ public class NetworkManager : INotifyPropertyChanged
         {
             HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.NetworkInput, HardwareStatuses.Idle);
             HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.NetworkOutput, HardwareStatuses.Idle);
-        }).AsTask().Wait();
+        }).AsTask();
     }
 
     public void OnNetworkStatusChanged()

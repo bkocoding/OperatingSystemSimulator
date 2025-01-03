@@ -121,7 +121,7 @@ public class KeyboardEventsHandler
                 {
                     if (Window.Current!.CoreWindow!.GetKeyState(VirtualKey.Control).HasFlag(CoreVirtualKeyStates.Down))
                     {
-                        ProcessManager.Instance.TerminateFocusedProcess();
+                        await ProcessManager.Instance.TerminateFocusedProcess();
                     }
                 }
             }

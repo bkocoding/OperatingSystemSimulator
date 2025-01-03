@@ -19,7 +19,7 @@
       <ItemsControl ItemsSource="{Binding Pages}">
         <ItemsControl.ItemsPanel>
           <ItemsPanelTemplate>
-            <WrapPanel Orientation="Horizontal" Width="500" />
+            <WrapPanel Orientation="Horizontal" Width="Auto" />
           </ItemsPanelTemplate>
         </ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate>

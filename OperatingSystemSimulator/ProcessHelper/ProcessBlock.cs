@@ -35,6 +35,7 @@ public class ProcessBlock
     [JsonIgnore]
     public bool IsInitialized { get; set; } = false;
 
+    [JsonIgnore]
     public List<PageBlock> PageBlocks { get; set; } = [];
 
     /// <summary>

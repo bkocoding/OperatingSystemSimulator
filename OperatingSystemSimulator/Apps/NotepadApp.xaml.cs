@@ -281,7 +281,6 @@ public sealed partial class NotepadApp : UserControl
     {
         ProcessManager.Instance.FocusedPopupChanged -= OnFocusedPopupChanged;
         NotepadTextBox.ClearUndoRedoHistory();
-        NotepadTextBox.Text = string.Empty;
         ProcessManager.Instance.TerminateProcess(Pid, TerminateReasons.Self);
     }
 
