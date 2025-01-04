@@ -71,7 +71,8 @@ public class FileDialogManager
 
     public void TerminateAllFileDialogs() 
     {
-        foreach (var fileDialogBlock in FileDialogBlocks) 
+        var fileDialogBlocksCopy = FileDialogBlocks.ToList();
+        foreach (var fileDialogBlock in fileDialogBlocksCopy) 
         {
             Close(fileDialogBlock.DId);
         }

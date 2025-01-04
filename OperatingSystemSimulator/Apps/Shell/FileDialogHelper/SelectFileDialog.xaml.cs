@@ -178,7 +178,7 @@ public sealed partial class SelectFileDialog : UserControl, INotifyPropertyChang
         {
             if (FileNameTextBox.Text.Length <= 0 && isNameNeeded)
             {
-                MessageManager.Instance.CreateMessage(Did, "Error", "File name can't be empty!", ShellType.FileDialog);
+                MessageManager.Instance.CreateMessage(BPid, "Error", "File name can't be empty!", ShellType.FileDialog);
             }
             else
             {
@@ -208,7 +208,7 @@ public sealed partial class SelectFileDialog : UserControl, INotifyPropertyChang
                 HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Running);
                 HardwarePageViewModel.Instance.SetHDOperation(HDOperations.ExploringDirectory);
                 await Task.Delay(100);
-                MessageManager.Instance.CreateMessage(Did, "Access Denied", $"You don't have access to directory {directory.Name}!", ShellType.FileDialog);
+                MessageManager.Instance.CreateMessage(BPid, "Access Denied", $"You don't have access to directory {directory.Name}!", ShellType.FileDialog);
                 HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Idle);
                 HardwarePageViewModel.Instance.SetHDOperation(HDOperations.Idle);
             }
@@ -225,7 +225,7 @@ public sealed partial class SelectFileDialog : UserControl, INotifyPropertyChang
                 HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Running);
                 HardwarePageViewModel.Instance.SetHDOperation(HDOperations.ExploringDirectory);
                 await Task.Delay(100);
-                MessageManager.Instance.CreateMessage(Did, "Access Denied", $"You don't have access to file {file.Name}!", ShellType.FileDialog);
+                MessageManager.Instance.CreateMessage(BPid, "Access Denied", $"You don't have access to file {file.Name}!", ShellType.FileDialog);
                 HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Idle);
                 HardwarePageViewModel.Instance.SetHDOperation(HDOperations.Idle);
             }
