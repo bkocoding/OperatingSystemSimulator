@@ -1,6 +1,5 @@
 using Microsoft.UI;
 using Microsoft.UI.Xaml.Data;
-using OperatingSystemSimulator.MemoryHelper;
 using Windows.UI;
 
 namespace OperatingSystemSimulator.Converters;

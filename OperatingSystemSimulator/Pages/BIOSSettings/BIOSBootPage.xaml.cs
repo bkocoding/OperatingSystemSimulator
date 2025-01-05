@@ -1,5 +1,3 @@
-using OperatingSystemSimulator.Extras.ConsoleLogger;
-using OperatingSystemSimulator.Services;
 using Windows.System;
 using Windows.UI.Core;
 

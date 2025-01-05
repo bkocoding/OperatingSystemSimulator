@@ -1,5 +1,3 @@
-using OperatingSystemSimulator.MemoryHelper;
-
 namespace OperatingSystemSimulator.Hardware;
 public sealed partial class PageListPage : Page
 {

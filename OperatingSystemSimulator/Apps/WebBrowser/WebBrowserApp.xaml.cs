@@ -1,6 +1,4 @@
 using Microsoft.UI.Xaml.Input;
-using OperatingSystemSimulator.ProcessHelper;
-using OperatingSystemSimulator.ViewModels.AppViewModels;
 using Windows.System;
 
 namespace OperatingSystemSimulator.Apps.WebBrowser;

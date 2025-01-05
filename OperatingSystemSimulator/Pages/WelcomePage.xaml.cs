@@ -1,6 +1,3 @@
-using OperatingSystemSimulator.Extras.ConsoleLogger;
-using OperatingSystemSimulator.ProcessHelper;
-
 namespace OperatingSystemSimulator.Pages;
 public sealed partial class WelcomePage : Page
 {

@@ -1,9 +1,5 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using OperatingSystemSimulator.Apps.Shell;
-using OperatingSystemSimulator.Apps.Shell.MessageBoxHelper;
-using OperatingSystemSimulator.Extras.ConsoleLogger;
-using OperatingSystemSimulator.FileHelper;
 
 namespace OperatingSystemSimulator.ViewModels.AppViewModels;
 

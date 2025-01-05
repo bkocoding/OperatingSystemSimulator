@@ -1,9 +1,4 @@
 using Newtonsoft.Json;
-using OperatingSystemSimulator.Apps;
-using OperatingSystemSimulator.Apps.Shell;
-using OperatingSystemSimulator.Apps.Shell.MessageBoxHelper;
-using OperatingSystemSimulator.Extras.ConsoleLogger;
-using OperatingSystemSimulator.ProcessHelper;
 
 namespace OperatingSystemSimulator.FileHelper;
 public class BKOFSManager

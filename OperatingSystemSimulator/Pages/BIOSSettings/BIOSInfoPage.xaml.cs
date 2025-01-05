@@ -1,4 +1,3 @@
-using OperatingSystemSimulator.Extras.ConsoleLogger;
 using Windows.System;
 using Windows.UI.Core;
 

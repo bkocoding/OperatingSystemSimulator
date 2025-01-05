@@ -1,8 +1,5 @@
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Newtonsoft.Json;
-using OperatingSystemSimulator.Apps;
-using OperatingSystemSimulator.Apps.WebBrowser;
-using OperatingSystemSimulator.MemoryHelper;
 
 namespace OperatingSystemSimulator.ProcessHelper;
 

@@ -1,6 +1,5 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using OperatingSystemSimulator.Services;
 
 namespace OperatingSystemSimulator.ViewModels.PageViewModels;
 

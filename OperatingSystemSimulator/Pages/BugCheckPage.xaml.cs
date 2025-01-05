@@ -1,13 +1,4 @@
-
 using Newtonsoft.Json;
-using OperatingSystemSimulator.Apps.Shell.FileDialogs;
-using OperatingSystemSimulator.Apps.Shell.MessageBoxHelper;
-using OperatingSystemSimulator.Converters;
-using OperatingSystemSimulator.Extras.ConsoleLogger;
-using OperatingSystemSimulator.FileHelper;
-using OperatingSystemSimulator.NetworkHelper;
-using OperatingSystemSimulator.ProcessHelper;
-using OperatingSystemSimulator.Services;
 
 namespace OperatingSystemSimulator.Pages;
 public sealed partial class BugCheckPage : Page

@@ -1,12 +1,5 @@
 using System.Collections.ObjectModel;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using OperatingSystemSimulator.Apps;
-using OperatingSystemSimulator.Apps.Shell;
-using OperatingSystemSimulator.Apps.Shell.MessageBoxHelper;
-using OperatingSystemSimulator.Apps.WebBrowser;
-using OperatingSystemSimulator.Extras.ConsoleLogger;
-using OperatingSystemSimulator.MemoryHelper;
-using OperatingSystemSimulator.Services;
 
 namespace OperatingSystemSimulator.ProcessHelper;
 

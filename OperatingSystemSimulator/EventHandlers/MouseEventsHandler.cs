@@ -1,8 +1,4 @@
 using Microsoft.UI.Xaml.Controls.Primitives;
-using OperatingSystemSimulator.Apps.Shell;
-using OperatingSystemSimulator.Apps.Shell.FileDialogs;
-using OperatingSystemSimulator.Apps.Shell.MessageBoxHelper;
-using OperatingSystemSimulator.ProcessHelper;
 using Windows.Foundation;
 using Windows.UI.Core;
 

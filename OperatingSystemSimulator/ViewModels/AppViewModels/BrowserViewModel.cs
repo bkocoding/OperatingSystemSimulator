@@ -1,10 +1,5 @@
 using System.ComponentModel;
 using System.Text.RegularExpressions;
-using OperatingSystemSimulator.Apps.WebBrowser;
-using OperatingSystemSimulator.Apps.WebBrowser.Pages;
-using OperatingSystemSimulator.Extras.ConsoleLogger;
-using OperatingSystemSimulator.MemoryHelper;
-using OperatingSystemSimulator.NetworkHelper;
 
 namespace OperatingSystemSimulator.ViewModels.AppViewModels;
 public class BrowserViewModel : INotifyPropertyChanged

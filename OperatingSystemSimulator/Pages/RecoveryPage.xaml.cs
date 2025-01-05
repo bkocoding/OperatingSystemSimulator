@@ -1,8 +1,3 @@
-using OperatingSystemSimulator.Extras.ConsoleLogger;
-using OperatingSystemSimulator.FileHelper;
-using OperatingSystemSimulator.ProcessHelper;
-using OperatingSystemSimulator.Services;
-
 namespace OperatingSystemSimulator.Pages;
 
 public sealed partial class RecoveryPage : Page

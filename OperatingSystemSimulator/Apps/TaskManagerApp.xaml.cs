@@ -1,6 +1,3 @@
-using OperatingSystemSimulator.ProcessHelper;
-using OperatingSystemSimulator.ViewModels.AppViewModels;
-
 namespace OperatingSystemSimulator.Apps;
 public sealed partial class TaskManagerApp : UserControl
 {

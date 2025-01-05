@@ -1,5 +1,4 @@
 using System.Text.Json;
-using OperatingSystemSimulator.Extras.ConsoleLogger;
 
 namespace OperatingSystemSimulator.Services;
 

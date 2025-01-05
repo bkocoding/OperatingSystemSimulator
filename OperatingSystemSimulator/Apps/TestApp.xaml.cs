@@ -1,5 +1,3 @@
-using OperatingSystemSimulator.ProcessHelper;
-
 namespace OperatingSystemSimulator.Apps;
 public sealed partial class TestApp : UserControl
 {

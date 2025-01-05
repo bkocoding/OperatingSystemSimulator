@@ -1,11 +1,6 @@
-using Microsoft.UI.Xaml.Controls.Primitives;
-using OperatingSystemSimulator.Apps.Shell;
-using OperatingSystemSimulator.Apps.Shell.MessageBoxHelper;
-using OperatingSystemSimulator.Extras.ConsoleLogger;
-using OperatingSystemSimulator.FileHelper;
-using OperatingSystemSimulator.ProcessHelper;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace OperatingSystemSimulator.Apps;
 public partial class FileExplorerApp : UserControl, INotifyPropertyChanged

@@ -1,5 +1,4 @@
 using Microsoft.UI.Windowing;
-using OperatingSystemSimulator.Services;
 using Uno.Resizetizer;
 using Windows.UI.ViewManagement;
 

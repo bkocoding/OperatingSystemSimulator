@@ -1,10 +1,4 @@
 using Microsoft.UI.Xaml.Controls.Primitives;
-using OperatingSystemSimulator.Apps.Shell;
-using OperatingSystemSimulator.Apps.Shell.FileDialogs;
-using OperatingSystemSimulator.Apps.Shell.MessageBoxHelper;
-using OperatingSystemSimulator.FileHelper;
-using OperatingSystemSimulator.MemoryHelper;
-using OperatingSystemSimulator.ProcessHelper;
 
 namespace OperatingSystemSimulator.Apps;
 

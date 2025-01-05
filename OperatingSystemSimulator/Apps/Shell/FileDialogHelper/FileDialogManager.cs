@@ -1,5 +1,4 @@
 using System.Collections.ObjectModel;
-using OperatingSystemSimulator.ProcessHelper;
 
 namespace OperatingSystemSimulator.Apps.Shell.FileDialogs;
 public class FileDialogManager

@@ -1,11 +1,3 @@
-using OperatingSystemSimulator.Apps;
-using OperatingSystemSimulator.Apps.Shell.FileDialogs;
-using OperatingSystemSimulator.Apps.Shell.MessageBoxHelper;
-using OperatingSystemSimulator.Apps.WebBrowser;
-using OperatingSystemSimulator.Extras.ConsoleLogger;
-using OperatingSystemSimulator.NetworkHelper;
-using OperatingSystemSimulator.ProcessHelper;
-
 namespace OperatingSystemSimulator.Pages;
 public sealed partial class DesktopPage : Page
 {

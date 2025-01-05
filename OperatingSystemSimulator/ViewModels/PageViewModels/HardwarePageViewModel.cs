@@ -1,7 +1,5 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using OperatingSystemSimulator.Extras.ConsoleLogger;
-using OperatingSystemSimulator.ProcessHelper;
 
 namespace OperatingSystemSimulator.ViewModels.PageViewModels;
 

@@ -1,8 +1,3 @@
-using OperatingSystemSimulator.FileHelper;
-using OperatingSystemSimulator.MemoryHelper;
-using OperatingSystemSimulator.NetworkHelper;
-using OperatingSystemSimulator.ProcessHelper;
-
 namespace OperatingSystemSimulator.Pages;
 
 public sealed partial class ShutdownPage : Page

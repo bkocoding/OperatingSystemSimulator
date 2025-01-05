@@ -1,8 +1,6 @@
-using NAudio.Wave;
-using OperatingSystemSimulator.ProcessHelper;
-using OperatingSystemSimulator.ViewModels.AppViewModels;
 using System.ComponentModel;
 using System.Timers;
+using NAudio.Wave;
 
 namespace OperatingSystemSimulator.Apps.WebBrowser.Pages;
 public sealed partial class HorizonMusicPage : UserControl

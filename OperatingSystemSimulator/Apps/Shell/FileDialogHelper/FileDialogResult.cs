@@ -1,6 +1,4 @@
-using OperatingSystemSimulator.FileHelper;
-
-namespace OperatingSystemSimulator.Apps.Shell.FileDialogs;
+namespace OperatingSystemSimulator.Apps.Shell.FileDialogHelper;
 public class FileDialogResult
 {
     public FileDialogResults Result { get; set; }
@@ -28,7 +26,7 @@ public class FileDialogResult
 }
 
 
-public enum FileDialogResults 
+public enum FileDialogResults
 {
     FileSeleted,
     DirectorySelected,

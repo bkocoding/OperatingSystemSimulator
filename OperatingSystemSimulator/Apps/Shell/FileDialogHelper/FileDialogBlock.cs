@@ -1,8 +1,5 @@
 using Microsoft.UI.Xaml.Controls.Primitives;
-using OperatingSystemSimulator.Apps.Shell.MessageBoxHelper;
-using OperatingSystemSimulator.Extras.ConsoleLogger;
-using OperatingSystemSimulator.FileHelper;
-using OperatingSystemSimulator.ProcessHelper;
+using OperatingSystemSimulator.Apps.Shell.FileDialogHelper;
 
 namespace OperatingSystemSimulator.Apps.Shell.FileDialogs;
 public class FileDialogBlock

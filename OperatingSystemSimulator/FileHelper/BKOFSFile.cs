@@ -1,4 +1,3 @@
-
 namespace OperatingSystemSimulator.FileHelper;
 public class BKOFSFile
 {

@@ -1,8 +1,5 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using OperatingSystemSimulator.Apps.Shell.MessageBoxHelper;
-using OperatingSystemSimulator.FileHelper;
-using OperatingSystemSimulator.ProcessHelper;
 
 namespace OperatingSystemSimulator.Apps.Shell.FileDialogs;
 public sealed partial class SelectFileDialog : UserControl, INotifyPropertyChanged

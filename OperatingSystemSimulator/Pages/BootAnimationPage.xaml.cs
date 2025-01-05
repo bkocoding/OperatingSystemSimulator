@@ -1,7 +1,4 @@
 using Microsoft.UI.Xaml.Media.Animation;
-using OperatingSystemSimulator.FileHelper;
-using OperatingSystemSimulator.ProcessHelper;
-using OperatingSystemSimulator.Services;
 using Windows.Foundation;
 
 namespace OperatingSystemSimulator.Pages;

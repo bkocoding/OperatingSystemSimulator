@@ -1,7 +1,5 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using OperatingSystemSimulator.Extras.ConsoleLogger;
-using OperatingSystemSimulator.ProcessHelper;
 
 namespace OperatingSystemSimulator.MemoryHelper;
 public class MemoryManager : INotifyPropertyChanged

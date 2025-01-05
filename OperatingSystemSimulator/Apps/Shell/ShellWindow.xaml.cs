@@ -1,8 +1,4 @@
 using Microsoft.UI.Xaml.Input;
-using OperatingSystemSimulator.Apps.Shell.FileDialogs;
-using OperatingSystemSimulator.Apps.Shell.MessageBoxHelper;
-using OperatingSystemSimulator.EventHandlers;
-using OperatingSystemSimulator.ProcessHelper;
 
 namespace OperatingSystemSimulator.Apps.Shell;
 

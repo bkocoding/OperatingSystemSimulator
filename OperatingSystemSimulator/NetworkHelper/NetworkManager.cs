@@ -1,6 +1,4 @@
 using System.ComponentModel;
-using OperatingSystemSimulator.Extras.ConsoleLogger;
-using OperatingSystemSimulator.ProcessHelper;
 
 namespace OperatingSystemSimulator.NetworkHelper;
 public class NetworkManager : INotifyPropertyChanged

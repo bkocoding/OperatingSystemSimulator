@@ -1,7 +1,5 @@
 
 using Microsoft.UI.Windowing;
-using OperatingSystemSimulator.Extras.ConsoleLogger;
-using OperatingSystemSimulator.ProcessHelper;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;

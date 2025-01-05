@@ -1,7 +1,3 @@
-using OperatingSystemSimulator.EventHandlers;
-using OperatingSystemSimulator.Extras.ConsoleLogger;
-using OperatingSystemSimulator.ProcessHelper;
-using OperatingSystemSimulator.Services;
 using Windows.System;
 using Windows.UI.Core;
 using MemoryManager = OperatingSystemSimulator.MemoryHelper.MemoryManager;
