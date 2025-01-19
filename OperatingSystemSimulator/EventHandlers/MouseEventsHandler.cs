@@ -105,7 +105,8 @@ public class MouseEventsHandler
                 var newLeft = Math.Max(0, Math.Min(constrainedX - initialPointerOffset.X, windowBounds.Width - popupWidth));
                 var newTop = Math.Max(0, Math.Min(constrainedY - initialPointerOffset.Y, maxHeight - popupHeight));
 
-                ProcessManager.Instance.InterruptQueueAsync(draggingProcessBlock.Pid);
+                //ProcessManager.Instance.InterruptQueueAsync(draggingProcessBlock.Pid);
+                //removed for spam on the console...
 
                 draggingPopup.HorizontalOffset = newLeft;
                 draggingPopup.VerticalOffset = newTop;

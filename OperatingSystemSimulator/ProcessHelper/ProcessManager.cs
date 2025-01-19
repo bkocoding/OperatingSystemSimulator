@@ -151,7 +151,8 @@ public class ProcessManager
             {
                 webBrowserApp.BrowserViewModel.TryDispose();
             }
-
+            FileDialogManager.Instance.TerminateAllFileDialogs(pid);
+            MessageManager.Instance.TerminateAllMessages(pid);
             MemoryManager.Instance.DeallocateMemory(processBlock);
             GC.Collect();
             return ProcessBlocks.Remove(processBlock);

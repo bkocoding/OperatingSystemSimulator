@@ -67,7 +67,7 @@ public class ProcessBlock
         IntializeApp();
     }
     
-    private void IntializeApp()
+    private async void IntializeApp()
     {
         if (App is TestApp testApp)
         {
@@ -83,6 +83,12 @@ public class ProcessBlock
         {
             notepadApp.Pid = Pid;
             Size = 4171428;
+            await Task.Delay(250);
+            HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Running);
+            HardwarePageViewModel.Instance.SetHDOperation(HDOperations.ReadingFile);
+            await Task.Delay(200);
+            HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Idle);
+            HardwarePageViewModel.Instance.SetHDOperation(HDOperations.Idle);
         }
         else if (App is FileExplorerApp explorerApp)
         {

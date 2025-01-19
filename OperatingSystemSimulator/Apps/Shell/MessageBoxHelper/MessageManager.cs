@@ -63,7 +63,7 @@ public class MessageManager
     /// <returns></returns>
     public MessageBlock CreateMessage(int pid, string title, string message, ShellType shellType)
     {
-        MessageBlock messageBlock = new(nextMid, pid, title, message ,shellType);
+        MessageBlock messageBlock = new(nextMid, pid, title, message, shellType);
         nextMid++;
         MessageBlocks.Add(messageBlock);
         messageBlock.Show();
@@ -108,6 +108,19 @@ public class MessageManager
         foreach (var messageBlock in messageBlocksCopy)
         {
             Close(messageBlock.MId);
+        }
+    }
+
+    public void TerminateAllMessages(int BPid)
+    {
+
+        var messageBlocksCopy = MessageBlocks.ToList();
+        foreach (var messageBlock in messageBlocksCopy)
+        {
+            if (messageBlock.BSId == BPid)
+            {
+                Close(messageBlock.MId);
+            }
         }
     }
 }

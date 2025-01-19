@@ -34,11 +34,13 @@ public sealed partial class WebBrowserApp : UserControl
     private void BackButton_Click(object sender, RoutedEventArgs e)
     {
         ProcessManager.Instance.BringToFront(Pid);
+        BrowserViewModel.GoBack();
     }
 
     private void ForwardButton_Click(object sender, RoutedEventArgs e)
     {
         ProcessManager.Instance.BringToFront(Pid);
+        BrowserViewModel.GoForward();
     }
 
     private void RefreshButton_Click(object sender, RoutedEventArgs e)

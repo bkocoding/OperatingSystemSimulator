@@ -104,6 +104,11 @@ public sealed partial class NotepadApp : UserControl
                 }
             }
 
+            HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead , HardwareStatuses.Running);
+            HardwarePageViewModel.Instance.SetHDOperation(HDOperations.ReadingFile);
+            await Task.Delay(200);
+            HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Idle);
+            HardwarePageViewModel.Instance.SetHDOperation(HDOperations.Idle);
 
             currentFile = result.SelectedFile!;
             Title = currentFile.Name;

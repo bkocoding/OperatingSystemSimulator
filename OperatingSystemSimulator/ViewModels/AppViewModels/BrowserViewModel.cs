@@ -64,6 +64,9 @@ public class BrowserViewModel : INotifyPropertyChanged
         }
     }
 
+    private readonly Stack<string> _history = new();
+    private readonly Stack<string> _forward = new();
+
     public int PID { get; set; }
 
     public BrowserViewModel(int pID)
@@ -73,6 +76,7 @@ public class BrowserViewModel : INotifyPropertyChanged
         SetAddress("browser://home");
         PID = pID;
 
+        UpdateNavigationButtons();
     }
 
     public void SetTitle(string newTitle)
@@ -85,19 +89,56 @@ public class BrowserViewModel : INotifyPropertyChanged
         CurrentAddress = newAddress;
     }
 
-
     public void RefreshPage()
     {
         NavigateTo(CurrentAddress);
+    }
+
+    public void GoBack()
+    {
+        if (_history.Count > 0)
+        {
+            _forward.Push((CurrentAddress));
+
+            var previousPage = _history.Pop();
+            NavigateTo(previousPage);
+        }
+
+        UpdateNavigationButtons();
+    }
+
+    public void GoForward()
+    {
+        if (_forward.Count > 0)
+        {
+            _history.Push((CurrentAddress));
+
+            var nextPage = _forward.Pop();
+            NavigateTo(nextPage);
+        }
+
+        UpdateNavigationButtons();
+    }
+
+    private void UpdateNavigationButtons()
+    {
+        IsBackButtonEnabled = _history.Count > 0;
+        IsForwardButtonEnabled = _forward.Count > 0;
     }
 
     public async void NavigateTo(string address)
     {
         string formattedAdress = FormatUrl(address);
 
-        if (CurrentPage is HorizonMusicPage) 
+        if (CurrentPage is HorizonMusicPage)
         {
             MemoryManager.Instance.DeleteFromAdditionalPages(PID, 143049);
+        }
+
+        if (CurrentPage != null)
+        {
+            _history.Push((CurrentAddress));
+            _forward.Clear();
         }
 
         if (NetworkManager.Instance.IsConnected)
@@ -106,6 +147,7 @@ public class BrowserViewModel : INotifyPropertyChanged
             {
                 case "browser://home":
                     NavigateToHomePage();
+                    UpdateNavigationButtons();
                     break;
 
                 case "https://www.horizonmusic.com":
@@ -114,17 +156,21 @@ public class BrowserViewModel : INotifyPropertyChanged
                     await Load();
 
                     var result = MemoryManager.Instance.WriteToAdditionalPages(PID, 143049);
-                    if (result > 0) 
+                    if (result > 0)
                     {
                         NavigateToErrorPage(ErrorCodes.ERR_OUT_OF_MEMORY, formattedAdress);
+                        UpdateNavigationButtons();
+                        break;
                     }
 
                     await NetworkManager.DownloadingWebSiteAsync(formattedAdress);
                     NavigateToHorizonMusicPage();
+                    UpdateNavigationButtons();
                     break;
 
                 case "browser://error":
                     NavigateToErrorPage(ErrorCodes.ERR_NO_ERROR, formattedAdress);
+                    UpdateNavigationButtons();
                     break;
 
                 default:
@@ -132,6 +178,7 @@ public class BrowserViewModel : INotifyPropertyChanged
                     await NetworkManager.DNSQueryAsync();
                     ConsoleLogger.Log("DNS Query failed, IP address has been not found.", LogType.NetworkInput);
                     NavigateToErrorPage(ErrorCodes.ERR_NAME_NOT_RESOLVED, formattedAdress);
+                    UpdateNavigationButtons();
                     break;
             }
         }
@@ -141,13 +188,16 @@ public class BrowserViewModel : INotifyPropertyChanged
             {
                 case "browser://home":
                     NavigateToHomePage();
+                    UpdateNavigationButtons();
                     break;
 
                 case "browser://error":
                     NavigateToErrorPage(ErrorCodes.ERR_NO_ERROR, formattedAdress);
+                    UpdateNavigationButtons();
                     break;
 
                 default:
+                    UpdateNavigationButtons();
                     NavigateToErrorPage(ErrorCodes.ERR_INTERNET_DISCONNECTED, formattedAdress);
                     break;
             }
@@ -164,7 +214,7 @@ public class BrowserViewModel : INotifyPropertyChanged
 
     public void NavigateToHomePage()
     {
-        if(CurrentPage is HorizonMusicPage horizonMusicPage)
+        if (CurrentPage is HorizonMusicPage horizonMusicPage)
         {
             MemoryManager.Instance.DeleteFromAdditionalPages(PID, 143049);
         }

@@ -80,8 +80,10 @@ public sealed partial class HardwarePage : Page
         new Axis
         {
             IsVisible = false,
+            MinZoomDelta = TimeSpan.FromMilliseconds(1).Ticks,
         }
         ];
+
     }
 
     [Obsolete]

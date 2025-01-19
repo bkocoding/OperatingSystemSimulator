@@ -76,4 +76,19 @@ public class FileDialogManager
             Close(fileDialogBlock.DId);
         }
     }
+
+    public void TerminateAllFileDialogs(int BPid) 
+    {
+
+        var fileDialogBlocksCopy = FileDialogBlocks.ToList();
+        foreach (var fileDialogBlock in fileDialogBlocksCopy)
+        {
+            if (fileDialogBlock.BPId == BPid)
+            {
+                Close(fileDialogBlock.DId);
+            }
+        }
+
+
+    }
 }
