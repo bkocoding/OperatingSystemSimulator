@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using OperatingSystemSimulator.Apps.Shell.Enums;
 
 namespace OperatingSystemSimulator.FileHelper;
 public class BKOFSManager

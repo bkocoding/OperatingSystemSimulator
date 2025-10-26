@@ -118,30 +118,30 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ApplicationName" xml:space="preserve">
-    <value>Operating System Simulator</value>
+    <value>İşletim Sistemi Simülatörü</value>
   </data>
   <data name="FileDialogAccesibility" xml:space="preserve">
-    <value>All information displayed and all functions offered on this page are provided by the operating system's file system service.</value>
+    <value>Bu sayfada görüntülenen tüm bilgiler ve sunulan tüm işlevler işletim sisteminin dosya sistemi hizmeti tarafından sağlanmaktadır.</value>
   </data>
   <data name="FileManagerAppAccesibility" xml:space="preserve">
-    <value>This service provides functions such as creating, deleting, searching, listing, and authorizing folders and files. “File Explorer” is a system program provided by the operating system to perform all file and directory operations through a user interface.</value>
+    <value>Bu hizmet; klasörler ve dosyalar oluşturma, silme, arama, listeleme ve yetkilendirme gibi işlevler sağlar. “Dosya Gezgini”, tüm dosya ve dizin işlemlerini bir kullanıcı arayüzü aracılığıyla gerçekleştirmek için işletim sistemi tarafından sağlanan bir sistem programıdır.</value>
   </data>
   <data name="MessageBoxAccesibility" xml:space="preserve">
-    <value>This is a message box. An application requested to show this message.</value>
+    <value>Bu bir mesaj kutusudur. Bir uygulama bu mesajı göstermeyi talep etti.</value>
   </data>
   <data name="NotepadAppAccesibility" xml:space="preserve">
-    <value>System calls are functions that allow processes to access OS services. When you click the Save or Save As button, the corresponding system call is triggered, activating the operating system's file system service.</value>
+    <value>Sistem çağrıları, işlemlerin işletim sistemi hizmetlerine erişmesini sağlayan fonksiyonlardır. Kaydet veya Farklı Kaydet düğmesine tıkladığınızda, ilgili sistem çağrısı tetiklenir ve işletim sisteminin dosya sistemi hizmeti etkinleştirilir.</value>
   </data>
   <data name="TaskManagerAppAccesibility" xml:space="preserve">
-    <value>Programs that are running, i.e., active, are called processes. All processes in the system are under the control of the operating system. Task Manager is a system program that allows users to view processes.</value>
+    <value>Çalışmakta olan, yani aktif durumdaki programlara işlem (process) denir. Sistemdeki tüm süreçler, işletim sisteminin kontrolü altındadır. Görev Yöneticisi, kullanıcıların süreçleri görüntülemesini sağlayan bir sistem programıdır.</value>
   </data>
   <data name="TestAppAccesibility" xml:space="preserve">
-    <value>This app is test purposes only. It only shows the Process ID of the current process.</value>
+    <value>Bu uygulama test amaçlıdır. Sadece sahip olduğu prosesin Proses ID'sini gösterir.</value>
   </data>
   <data name="UnknownAccesibility" xml:space="preserve">
-    <value>This app does not contain any tips.</value>
+    <value>Bu uygulama herhangi bir ipucu içermiyor.</value>
   </data>
   <data name="WebBrowserAppAccesibility" xml:space="preserve">
-    <value>A Web Browser is a system program that enables users to access and view information on the Internet. It communicates with web servers using protocols to retrieve web pages, which are then displayed to the user through a graphical interface.</value>
+    <value>Web Tarayıcısı, kullanıcıların İnternet üzerindeki bilgilere erişmesini ve bu bilgileri görüntülemesini sağlayan bir sistem programıdır. Web sayfalarını almak için bazı protokoller aracılığıyla web sunucularıyla iletişim kurar ve alınan sayfaları kullanıcıya grafiksel bir arayüz üzerinden gösterir.</value>
   </data>
 </root>

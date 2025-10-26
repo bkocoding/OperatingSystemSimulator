@@ -1,8 +1,10 @@
 using Microsoft.UI.Xaml.Input;
+using OperatingSystemSimulator.Apps.Enums;
+using OperatingSystemSimulator.Apps.Interfaces;
 using Windows.System;
 
 namespace OperatingSystemSimulator.Apps.WebBrowser;
-public sealed partial class WebBrowserApp : UserControl
+public sealed partial class WebBrowserApp : UserControl, IApp
 {
 
     private int _pid;
@@ -17,6 +19,8 @@ public sealed partial class WebBrowserApp : UserControl
         }
     }
 
+    public AppType ApplicationType => AppType.WebBrowser;
+
     public BrowserViewModel BrowserViewModel;
 
     public WebBrowserApp()
@@ -24,6 +28,7 @@ public sealed partial class WebBrowserApp : UserControl
         InitializeComponent();
         BrowserViewModel = new BrowserViewModel(Pid);
         DataContext = BrowserViewModel;
+        ShellTitleBar.CurrentAppType = ApplicationType;
     }
 
     private void UserControl_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)

@@ -1,5 +1,8 @@
+using OperatingSystemSimulator.Apps.Enums;
+using OperatingSystemSimulator.Apps.Interfaces;
+
 namespace OperatingSystemSimulator.Apps;
-public sealed partial class TaskManagerApp : UserControl
+public sealed partial class TaskManagerApp : UserControl, IApp
 {
     public TaskManagerViewModel ViewModel { get; set; }
     
@@ -13,12 +16,16 @@ public sealed partial class TaskManagerApp : UserControl
             ShellTitleBar.EId = _pid;
         }
     }
+
+    public AppType ApplicationType => AppType.TaskManager;
+
     public TaskManagerApp()
     {
         InitializeComponent();
         ViewModel = new TaskManagerViewModel();
         DataContext = ViewModel;
         ShellTitleBar.Title = "Task Manager";
+        ShellTitleBar.CurrentAppType = ApplicationType;
     }
 
     private void UserControl_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)

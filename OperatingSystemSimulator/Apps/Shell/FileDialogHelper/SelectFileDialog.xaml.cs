@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using OperatingSystemSimulator.Apps.Shell.Enums;
 
 namespace OperatingSystemSimulator.Apps.Shell.FileDialogs;
 public sealed partial class SelectFileDialog : UserControl, INotifyPropertyChanged
@@ -60,6 +61,7 @@ public sealed partial class SelectFileDialog : UserControl, INotifyPropertyChang
     public SelectFileDialog(int did, int bPid, bool isSelectingFile, bool isNameNeeded, FileDialogBlock parentBlock)
     {
         InitializeComponent();
+        ShellTitleBar.CurrentShellType = ShellType.FileDialog;
         DataContext = this;
         Did = did;
         BPid = bPid;
@@ -68,7 +70,6 @@ public sealed partial class SelectFileDialog : UserControl, INotifyPropertyChang
         FileNameTextBox.MaxLength = BKOFSManager.MaxNameSize;
         _parentBlock = parentBlock;
         ShellTitleBar.Title = (isSelectingFile ? "Select a File" : "Select a Folder");
-        ShellTitleBar.CurrentShellType = ShellType.FileDialog;
         _currentDirectory = BKOFSManager.Instance.RootDirectory;
         OnCurrentDirectoryChanged();
 

@@ -1,8 +1,11 @@
 using Microsoft.UI.Xaml.Controls.Primitives;
+using OperatingSystemSimulator.Apps.Enums;
+using OperatingSystemSimulator.Apps.Interfaces;
+using OperatingSystemSimulator.Apps.Shell.Enums;
 
 namespace OperatingSystemSimulator.Apps;
 
-public sealed partial class NotepadApp : UserControl
+public sealed partial class NotepadApp : UserControl, IApp
 {
     private int _pid;
     public int Pid
@@ -14,6 +17,8 @@ public sealed partial class NotepadApp : UserControl
             ShellTitleBar.EId = _pid;
         }
     }
+
+    public AppType ApplicationType => AppType.Notepad;
 
     private string _title = "";
     public string Title
@@ -52,6 +57,7 @@ public sealed partial class NotepadApp : UserControl
     public NotepadApp()
     {
         InitializeComponent();
+        ShellTitleBar.CurrentAppType = ApplicationType;
         Title = "Untitled";
         ProcessManager.Instance.FocusedPopupChanged += OnFocusedPopupChanged;
     }

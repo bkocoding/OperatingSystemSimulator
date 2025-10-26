@@ -1,4 +1,4 @@
-namespace OperatingSystemSimulator.Apps.Shell;
+namespace OperatingSystemSimulator.Apps.Shell.Enums;
 public enum ShellType
 {
     App,

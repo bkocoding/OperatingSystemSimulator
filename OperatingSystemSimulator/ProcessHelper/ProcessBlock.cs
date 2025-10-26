@@ -1,11 +1,13 @@
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Newtonsoft.Json;
+using OperatingSystemSimulator.Apps.Enums;
+using OperatingSystemSimulator.Apps.Interfaces;
 
 namespace OperatingSystemSimulator.ProcessHelper;
 
 public class ProcessBlock
 {
-    private readonly Random random = new Random();
+    private readonly Random random = new();
     private double previousWidthOffset = 200;
     private double previousHeightOffset = 200;
 
@@ -15,7 +17,9 @@ public class ProcessBlock
     public Popup? Popup { get; set; }
 
     [JsonIgnore]
-    public object? App { get; }
+    public IApp? App { get; }
+    [JsonIgnore]
+    public AppType? ApplicationType { get; set; }
     public string Name { get; }
     public bool IsIdle { get; set; } = false;
 
@@ -43,11 +47,12 @@ public class ProcessBlock
     /// <param name="app"></param>
     /// <param name="name"></param>
     /// <param name="isUtilizationEnough"></param>
-    public ProcessBlock(int pid, Popup popup, object app, string name, bool isUtilizationEnough)
+    public ProcessBlock(int pid, Popup popup, IApp app, string name, bool isUtilizationEnough)
     {
         Pid = pid;
         Popup = popup;
         App = app;
+        ApplicationType = app.ApplicationType;
         Name = name;
         IsUtilizationEnough = isUtilizationEnough;
         IntializeApp();
@@ -57,7 +62,7 @@ public class ProcessBlock
     /// </summary>
     /// <param name="pid"></param>
     /// <param name="name"></param>
-    public ProcessBlock(int pid, string name, bool isUtilizationEnough) 
+    public ProcessBlock(int pid, string name, bool isUtilizationEnough)
     {
         Pid = pid;
         Name = name;
@@ -66,22 +71,24 @@ public class ProcessBlock
         HasUI = false;
         IntializeApp();
     }
-    
+
     private async void IntializeApp()
     {
-        if (App is TestApp testApp)
+        if (App != null)
         {
-            testApp.Pid = Pid;
+            App.Pid = Pid;
+        }
+
+        if (ApplicationType == AppType.TestApp)
+        {
             Size = 1280000;
         }
-        else if (App is TaskManagerApp taskManagerApp)
+        else if (ApplicationType == AppType.TaskManager)
         {
-            taskManagerApp.Pid = Pid;
             Size = 3200465;
         }
-        else if (App is NotepadApp notepadApp)
+        else if (ApplicationType == AppType.Notepad)
         {
-            notepadApp.Pid = Pid;
             Size = 4171428;
             await Task.Delay(250);
             HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Running);
@@ -90,14 +97,12 @@ public class ProcessBlock
             HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Idle);
             HardwarePageViewModel.Instance.SetHDOperation(HDOperations.Idle);
         }
-        else if (App is FileExplorerApp explorerApp)
+        else if (ApplicationType == AppType.FileManager)
         {
-            explorerApp.Pid = Pid;
             Size = 7171428;
         }
-        else if (App is WebBrowserApp webBrowserApp) 
+        else if (ApplicationType == AppType.WebBrowser)
         {
-            webBrowserApp.Pid = Pid;
             Size = 9171429;
         }
 
@@ -107,7 +112,7 @@ public class ProcessBlock
     {
         if (!HasUI)
             return;
-        if (Popup == null) 
+        if (Popup == null)
         {
             return;
         }
@@ -119,12 +124,12 @@ public class ProcessBlock
 
         do
         {
-            newWidthOffset = random.Next(50, (int)(Window.Current!.Bounds.Width)/2);
+            newWidthOffset = random.Next(50, (int)(Window.Current!.Bounds.Width) / 2);
         } while (newWidthOffset == previousWidthOffset);
-        
+
         do
         {
-            newHeightOffset = random.Next(50, (int)(Window.Current.Bounds.Width)/2);
+            newHeightOffset = random.Next(50, (int)(Window.Current.Bounds.Width) / 2);
         } while (newHeightOffset == previousHeightOffset);
 
         previousWidthOffset = newWidthOffset;
@@ -133,13 +138,13 @@ public class ProcessBlock
         int verticalOne = 2;
         int horizontalOne = 4;
 
-        if (App is FileExplorerApp || App is WebBrowserApp)
+        if (ApplicationType == AppType.FileManager || ApplicationType == AppType.WebBrowser)
         {
             verticalOne = 4;
             horizontalOne = 8;
         }
 
-     
+
 
         Popup.HorizontalOffset = (Window.Current.Bounds.Width - newWidthOffset) / verticalOne;
         Popup.VerticalOffset = (Window.Current.Bounds.Height - newHeightOffset) / horizontalOne;

@@ -1,5 +1,5 @@
 using Microsoft.UI.Xaml.Controls.Primitives;
-using OperatingSystemSimulator.Apps.Shell.FileDialogHelper;
+using OperatingSystemSimulator.Apps.Shell.Enums;
 
 namespace OperatingSystemSimulator.Apps.Shell.FileDialogs;
 public class FileDialogBlock

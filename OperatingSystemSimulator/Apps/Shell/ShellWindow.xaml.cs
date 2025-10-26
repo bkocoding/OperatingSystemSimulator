@@ -1,11 +1,25 @@
 using Microsoft.UI.Xaml.Input;
+using Newtonsoft.Json.Linq;
+using OperatingSystemSimulator.Apps.Enums;
+using OperatingSystemSimulator.Apps.Shell.Enums;
+using OperatingSystemSimulator.ToolTipHelper;
 
 namespace OperatingSystemSimulator.Apps.Shell;
 
 public sealed partial class ShellWindow : UserControl
 {
     public int EId { get; set; }
-    public ShellType CurrentShellType { get; set; } = ShellType.App;
+
+    private ShellType _currentShellType;
+    public ShellType CurrentShellType
+    {
+        get => _currentShellType;
+        set
+        {
+            _currentShellType = value;
+            _tooltipManager.ApplyTooltip(Accessibility_button, new ToolTipHelper.ToolTipTools.ToolTipParameters { SType = CurrentShellType });
+        }
+    }
 
     private string? _title;
     public string? Title
@@ -21,9 +35,25 @@ public sealed partial class ShellWindow : UserControl
         }
     }
 
+    TooltipManager _tooltipManager;
+
+    private AppType _currentAppType;
+    public AppType CurrentAppType
+    {
+        get => _currentAppType; set
+        {
+            _currentAppType = value;
+            _tooltipManager.ApplyTooltip(Accessibility_button, new ToolTipHelper.ToolTipTools.ToolTipParameters { SType = CurrentShellType, AType = value });
+        }
+    }
+
+
     public ShellWindow()
     {
         InitializeComponent();
+        _tooltipManager = new();
+
+
     }
 
     private async void Button_Click(object sender, RoutedEventArgs e)
@@ -73,4 +103,5 @@ public sealed partial class ShellWindow : UserControl
             FileDialogManager.Instance.BringToFront(EId);
         }
     }
+
 }

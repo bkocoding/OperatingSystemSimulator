@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using OperatingSystemSimulator.Apps.Shell.Enums;
 using OperatingSystemSimulator.ProcessHelper;
 
 namespace OperatingSystemSimulator.Apps.Shell.MessageBoxHelper;

@@ -1,9 +1,12 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using OperatingSystemSimulator.Apps.Enums;
+using OperatingSystemSimulator.Apps.Interfaces;
+using OperatingSystemSimulator.Apps.Shell.Enums;
 
 namespace OperatingSystemSimulator.Apps;
-public partial class FileExplorerApp : UserControl, INotifyPropertyChanged
+public partial class FileExplorerApp : UserControl, INotifyPropertyChanged, IApp
 {
     private int _pid;
     public int Pid
@@ -15,6 +18,8 @@ public partial class FileExplorerApp : UserControl, INotifyPropertyChanged
             ShellTitleBar.EId = _pid;
         }
     }
+
+    public AppType ApplicationType => AppType.FileManager;
 
     private BKOFSDirectory _currentDirectory;
     public BKOFSDirectory CurrentDirectory
@@ -72,6 +77,7 @@ public partial class FileExplorerApp : UserControl, INotifyPropertyChanged
         _currentDirectory = BKOFSManager.Instance.RootDirectory;
         OnCurrentDirectoryChanged();
         ShellTitleBar.Title = CurrentTitle;
+        ShellTitleBar.CurrentAppType = AppType.FileManager;
     }
 
     private void UserControl_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)

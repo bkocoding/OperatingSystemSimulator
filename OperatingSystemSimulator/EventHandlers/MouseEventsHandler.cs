@@ -1,4 +1,5 @@
 using Microsoft.UI.Xaml.Controls.Primitives;
+using OperatingSystemSimulator.Apps.Shell.Enums;
 using Windows.Foundation;
 using Windows.UI.Core;
 

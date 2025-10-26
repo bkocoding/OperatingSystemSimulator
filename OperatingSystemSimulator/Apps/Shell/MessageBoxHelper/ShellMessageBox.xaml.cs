@@ -1,3 +1,4 @@
+using OperatingSystemSimulator.Apps.Shell.Enums;
 using OperatingSystemSimulator.Apps.Shell.MessageBoxHelper;
 
 namespace OperatingSystemSimulator.Apps.Shell;

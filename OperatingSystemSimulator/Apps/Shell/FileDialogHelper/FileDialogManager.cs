@@ -1,12 +1,12 @@
 using System.Collections.ObjectModel;
 
-namespace OperatingSystemSimulator.Apps.Shell.FileDialogs;
+namespace OperatingSystemSimulator.Apps.Shell.FileDialogHelper;
 public class FileDialogManager
 {
     private static FileDialogManager? instance;
     private static readonly object lockObject = new();
 
-    public ObservableCollection<FileDialogBlock> FileDialogBlocks = new();
+    public ObservableCollection<FileDialogBlock> FileDialogBlocks = [];
     private int nextDId = 10;
 
     public static FileDialogManager Instance
@@ -29,6 +29,7 @@ public class FileDialogManager
 
     public FileDialogBlock CreateFileDialog(int pid, bool isSelectingFile, bool isNameNeeded)
     {
+        //TODO: IMPLEMENT SENDER LOGIC
         FileDialogBlock fileDialogBlock = new(nextDId, pid, isSelectingFile, isNameNeeded);
         nextDId++;
         FileDialogBlocks.Add(fileDialogBlock);

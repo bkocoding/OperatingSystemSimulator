@@ -1,5 +1,7 @@
 using System.Collections.ObjectModel;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using OperatingSystemSimulator.Apps.Interfaces;
+using OperatingSystemSimulator.Apps.Shell.Enums;
 
 namespace OperatingSystemSimulator.ProcessHelper;
 
@@ -62,7 +64,7 @@ public class ProcessManager
     public bool IsTurnedOn = true;
 
 
-    public async Task<ProcessBlock?> CreateProcess(object app, string name, bool isSingleInstance, bool isUtilizationEnough)
+    public async Task<ProcessBlock?> CreateProcess(IApp app, string name, bool isSingleInstance, bool isUtilizationEnough)
     {
         HardwarePageViewModel.Instance.SetHDOperation(HDOperations.AppData);
         HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Running);
