@@ -26,13 +26,11 @@ public class TooltipManager
                 Text = message,
                 TextWrapping = TextWrapping.Wrap,
                 Padding = new Thickness(8),
-                MaxWidth = maxWidth,
-                MaxHeight = maxHeight,
+                //MaxWidth = maxWidth,
+                //MaxHeight = maxHeight,
                 FontSize = 14,
                 TextAlignment = TextAlignment.Justify
             },
-
-
         };
 
         ToolTipService.SetToolTip(target, tooltip);
@@ -54,18 +52,42 @@ public class TooltipManager
 
         else if (parameters.SType == ShellType.FileDialog)
         {
-            return resourceLoader.GetString("FileDialogAccesibility")!;
+            return GetFormattedString("FileDialogAccesibility", parameters.ExtraParams);
         }
 
         else if (parameters.SType == ShellType.Message)
         {
-            return resourceLoader.GetString("MessageBoxAccesibility")!;
-
+            if (parameters.ExtraParams != null)
+            {
+                if (parameters.ExtraParams.GetValueOrDefaultAndRemove("MessageBoxSenderApp") == $"{AppType.TaskManager}")
+                {
+                    return GetFormattedString("MessageBoxTaskMgrDtlAccessibility", parameters.ExtraParams);
+                }
+            }
+            return GetFormattedString("MessageBoxAccesibility", parameters.ExtraParams);
         }
-        else
+        
+        else if (parameters.ExtraParams != null)
         {
-            throw new NotImplementedException();
+            if (parameters.ExtraParams.ContainsKey("Sender")) 
+            {
+                var senderValue = parameters.ExtraParams.GetValueOrDefaultAndRemove("Sender");
+
+                return senderValue switch
+                {
+                    "HardwareWindow" => GetFormattedString("HardwareWindowAccesibility"),
+                    "PageListWindow" => GetFormattedString("PageListWindowAccesibility"),
+                    "BootPage" => GetFormattedString("BootPageAccesibility"),
+                    "BootAnimationPage" => GetFormattedString("BootAnimationPageAccessibility"),
+                    "DesktopPage" => GetFormattedString("DesktopPageAccessibility"),
+                    "BiosInfoPage" => GetFormattedString("BiosInfoPageAccesibility"),
+                    _ => GetFormattedString("UnknownAccesibility")
+                };
+
+            }
         }
+
+        return GetFormattedString("UnknownAccesibility");
     }
 
     private static double GetTooltipWidth(ToolTipParameters parameters)
@@ -88,12 +110,12 @@ public class TooltipManager
 
         else if (parameters.SType == ShellType.Message)
         {
-            throw new NotImplementedException();
+            return 400;
 
         }
         else
         {
-            throw new NotImplementedException();
+            return 400;
         }
     }
 
@@ -116,12 +138,12 @@ public class TooltipManager
 
         else if (parameters.SType == ShellType.Message)
         {
-            throw new NotImplementedException();
+            return 100;
 
         }
         else
         {
-            throw new NotImplementedException();
+            return 400;
         }
     }
 

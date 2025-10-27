@@ -54,13 +54,14 @@ public sealed partial class SelectFileDialog : UserControl, INotifyPropertyChang
         }
     }
 
-    private bool isSelectingFile;
-    private bool isNameNeeded;
-    private FileDialogBlock _parentBlock;
+    private readonly bool isSelectingFile;
+    private readonly bool isNameNeeded;
+    private readonly FileDialogBlock _parentBlock;
 
     public SelectFileDialog(int did, int bPid, bool isSelectingFile, bool isNameNeeded, FileDialogBlock parentBlock)
     {
         InitializeComponent();
+        ShellTitleBar.CurrentFileDialogBlock = parentBlock;
         ShellTitleBar.CurrentShellType = ShellType.FileDialog;
         DataContext = this;
         Did = did;

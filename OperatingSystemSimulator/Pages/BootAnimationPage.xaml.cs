@@ -1,4 +1,5 @@
 using Microsoft.UI.Xaml.Media.Animation;
+using OperatingSystemSimulator.ToolTipHelper;
 using Windows.Foundation;
 
 namespace OperatingSystemSimulator.Pages;
@@ -7,9 +8,12 @@ public sealed partial class BootAnimationPage : Page
 {
     private BIOSSettingsService _biosSettingsService = (Application.Current as App)!.Host!.Services.GetRequiredService<BIOSSettingsService>()!;
 
+    private readonly TooltipManager _toolTipManager = new();
+
     public BootAnimationPage()
     {
         InitializeComponent();
+        _toolTipManager.ApplyTooltip(TopRightButton, new ToolTipHelper.ToolTipTools.ToolTipParameters() { SType = Apps.Shell.Enums.ShellType.None, ExtraParams = new Dictionary<string, string> { { "Sender", "BootAnimationPage" } } });
         HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Running);
         StartAnimationSequence();
     }

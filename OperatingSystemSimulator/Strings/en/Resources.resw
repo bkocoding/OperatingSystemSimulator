@@ -120,23 +120,46 @@
   <data name="ApplicationName" xml:space="preserve">
     <value>Operating System Simulator</value>
   </data>
+  <data name="BiosInfoPageAccesibility" xml:space="preserve">
+    <value>The BIOS (now known as UEFI) is installed on a memory chip (usually flash memory) on the motherboard. BIOS is the first software to run when the computer is turned on and performs tasks such as POST testing, hardware initialization, operating system loading, hardware configuration, and security.</value>
+  </data>
+  <data name="BootAnimationPageAccessibility" xml:space="preserve">
+    <value>The computer is now booting. This is the operating system loading phase.</value>
+  </data>
+  <data name="BootPageAccesibility" xml:space="preserve">
+    <value>The POST test is currently being performed. As part of POST, all hardware components are being checked to ensure they are functioning properly.</value>
+  </data>
+  <data name="DesktopPageAccessibility" xml:space="preserve">
+    <value>The Graphical User Interface (GUI) is an operating system service. The operating system serves users and programs through various system services.</value>
+  </data>
   <data name="FileDialogAccesibility" xml:space="preserve">
-    <value>All information displayed and all functions offered on this page are provided by the operating system's file system service.</value>
+    <value>All information displayed and all functions offered on this page are provided by the operating system's file system service.
+PID: {PID}
+DID: {DID}</value>
   </data>
   <data name="FileManagerAppAccesibility" xml:space="preserve">
-    <value>This service provides functions such as creating, deleting, searching, listing, and authorizing folders and files. “File Explorer” is a system program provided by the operating system to perform all file and directory operations through a user interface.</value>
+    <value>File System Operations is one of the fundamental services of the operating system. This service provides functions such as creating, deleting, searching, listing, and authorizing folders and files. “File Explorer” is a system program provided by the operating system to perform all file and directory operations through a user interface.</value>
+  </data>
+  <data name="HardwareWindowAccesibility" xml:space="preserve">
+    <value>Every program requires various resources (CPU, RAM, I/O devices, etc.) during its execution. The operating system manages the hardware to serve users and their applications, and allocates resources among processes in a balanced and efficient manner.</value>
   </data>
   <data name="MessageBoxAccesibility" xml:space="preserve">
     <value>This is a message box. An application requested to show this message.</value>
   </data>
+  <data name="MessageBoxTaskMgrDtlAccessibility" xml:space="preserve">
+    <value>Each process in the operating system is represented by a PCB (Process Control Block) structure that contains process-specific information (such as process number, process status, memory information allocated to the process, I/O status information.</value>
+  </data>
   <data name="NotepadAppAccesibility" xml:space="preserve">
     <value>System calls are functions that allow processes to access OS services. When you click the Save or Save As button, the corresponding system call is triggered, activating the operating system's file system service.</value>
+  </data>
+  <data name="PageListWindowAccesibility" xml:space="preserve">
+    <value>The operating system organizes memory into pages and allocates a certain number of pages to each process according to its needs.</value>
   </data>
   <data name="TaskManagerAppAccesibility" xml:space="preserve">
     <value>Programs that are running, i.e., active, are called processes. All processes in the system are under the control of the operating system. Task Manager is a system program that allows users to view processes.</value>
   </data>
   <data name="TestAppAccesibility" xml:space="preserve">
-    <value>This app is test purposes only. It only shows the Process ID of the current process.</value>
+    <value>The operating system creates a process for each application that is run, and each process has a unique ID. The ID (PID) of the process created for this application is: {PID}</value>
   </data>
   <data name="UnknownAccesibility" xml:space="preserve">
     <value>This app does not contain any tips.</value>

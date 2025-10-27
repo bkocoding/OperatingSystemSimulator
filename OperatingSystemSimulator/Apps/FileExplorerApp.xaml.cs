@@ -387,7 +387,7 @@ public partial class FileExplorerApp : UserControl, INotifyPropertyChanged, IApp
         {
             BackButton.IsEnabled = true;
         }
-        else 
+        else
         {
             BackButton.IsEnabled = false;
 
@@ -526,6 +526,50 @@ public partial class FileExplorerApp : UserControl, INotifyPropertyChanged, IApp
         FileSystemItems = new ObservableCollection<FileSystemItemModel>(directories.Concat(files));
     }
 
+    private async void ExplorerList_RightTapped(object sender, Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs e)
+    {
+        var source = e.OriginalSource as DependencyObject;
+
+        // Walk up the visual tree to find the enclosing ListViewItem (I feel stupid but this version of Uno needs this i guess...)
+        DependencyObject? current = source;
+        ListViewItem? container = null;
+        while (current != null)
+        {
+            if (current is ListViewItem lvi)
+            {
+                container = lvi;
+                break;
+            }
+            current = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(current);
+        }
+
+        FileSystemItemModel? clickedItem = null;
+        if (container != null)
+        {
+            clickedItem = container.DataContext as FileSystemItemModel;
+        }
+
+        // fallback: if no container found, use the selected item
+        clickedItem ??= ExplorerList.SelectedItem as FileSystemItemModel;
+
+        if (clickedItem != null && clickedItem.Type == "Directory")
+        {
+            var directory = (BKOFSDirectory)clickedItem.Content;
+                HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Running);
+                HardwarePageViewModel.Instance.SetHDOperation(HDOperations.ExploringDirectory);
+                await Task.Delay(100);
+                MessageManager.Instance.CreateMessage(Pid, "Directory Info",
+                   $"Name: {directory.Name}\nSize: {BKOFSManager.FormatSize(directory.GetTotalSize())}\nCreated at: {directory.CreatedAt}\nLast Changed at: {directory.LastChanged}\nPath: {directory.GetPath()}\nDirID: {directory.DirID}\nIs Restricted: {directory.IsRestricted}", ShellType.App);
+                HardwarePageViewModel.Instance.SetHardwareStatus(HardwareProperties.HdRead, HardwareStatuses.Idle);
+                HardwarePageViewModel.Instance.SetHDOperation(HDOperations.Idle);
+        }
+        else if (clickedItem != null && clickedItem.Type == "File")
+        {
+            var file = (BKOFSFile)clickedItem.Content;
+            MessageManager.Instance.CreateMessage(Pid, "File Info",
+                   $"Name: {file.Name}\nSize: {BKOFSManager.FormatSize(file.Size)}\nCreated at: {file.CreatedAt}\nLast Changed at: {file.LastChanged}\nPath: {CurrentDirectory.GetPath()}/{file.Name}\nFileID: {file.FileID}\nIs Restricted: {file.IsRestricted}", ShellType.App);
+        }
+    }
 
     private void OnPropertyChanged(string propertyName)
     {

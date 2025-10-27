@@ -1,12 +1,17 @@
+using OperatingSystemSimulator.ToolTipHelper;
+
 namespace OperatingSystemSimulator.Pages;
 public sealed partial class DesktopPage : Page
 {
+    private TooltipManager _toolTipManager = new();
+
     public DesktopViewModel ViewModel { get; set; }
     public DesktopPage()
     {
         InitializeComponent();
         ViewModel = new DesktopViewModel();
         DataContext = ViewModel;
+        _toolTipManager.ApplyTooltip(TopRightButton, new ToolTipHelper.ToolTipTools.ToolTipParameters() { SType = Apps.Shell.Enums.ShellType.None, ExtraParams = new Dictionary<string, string> { { "Sender", "DesktopPage" } } });
     }
 
     private void Shutdown_Click(object sender, RoutedEventArgs e)

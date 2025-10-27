@@ -1,11 +1,12 @@
 using OperatingSystemSimulator.Apps.Enums;
 using OperatingSystemSimulator.Apps.Interfaces;
+using OperatingSystemSimulator.Apps.Shell.Enums;
 
 namespace OperatingSystemSimulator.Apps;
 public sealed partial class TaskManagerApp : UserControl, IApp
 {
     public TaskManagerViewModel ViewModel { get; set; }
-    
+
     private int _pid;
     public int Pid
     {
@@ -50,6 +51,7 @@ public sealed partial class TaskManagerApp : UserControl, IApp
             }
         }
     }
+
     private void Terminate_Click(object sender, RoutedEventArgs e)
     {
         ProcessManager.Instance.InterruptQueueAsync(Pid);
@@ -66,7 +68,7 @@ public sealed partial class TaskManagerApp : UserControl, IApp
             {
                 notepad.UnsubscribeToFocusedPopUpChangedEvent();
             }
-            else if (ProcessManager.Instance.GetProcessByPid(pid)!.App is FileExplorerApp fileExplorer) 
+            else if (ProcessManager.Instance.GetProcessByPid(pid)!.App is FileExplorerApp fileExplorer)
             {
                 fileExplorer.UnsubscribeToFocusedPopUpChangedEvent();
             }
@@ -78,6 +80,22 @@ public sealed partial class TaskManagerApp : UserControl, IApp
             //It appears that the gesture recogniser is hanging but it does not affect the app for it has a ignore previous gesture function...
         }
     }
+
+    private void Details_Click(object sender, RoutedEventArgs e)
+    {
+        var button = sender as Button;
+        if (button != null)
+        {
+            int pid = (int)button.Tag;
+            var process = ProcessManager.Instance.GetProcessByPid(pid);
+            if (process != null)
+            {
+                MessageManager.Instance.CreateMessage(Pid, process.Name, $"PID: {process.Pid}\nName: {process.Name}\nSize: {BKOFSManager.FormatSize(process.Size)}\nIdle Status: {(process.IsIdle ? "Idle" : "Not Idle")}", ShellType.App);
+            }
+
+        }
+    }
+
     private void ProcessListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         ProcessManager.Instance.BringToFront(Pid);

@@ -1,16 +1,24 @@
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
+using OperatingSystemSimulator.Apps.Enums;
+using OperatingSystemSimulator.Apps.Shell.Enums;
+using OperatingSystemSimulator.ToolTipHelper;
+using OperatingSystemSimulator.ToolTipHelper.ToolTipTools;
 using SkiaSharp;
 
 namespace OperatingSystemSimulator.Hardware;
 
 public sealed partial class HardwarePage : Page
 {
+    private readonly TooltipManager _tooltipManager = new();
+
     private readonly HardwarePageViewModel ViewModel;
+
     public HardwarePage()
     {
         ViewModel = HardwarePageViewModel.Instance;
+        Loaded += HardwarePage_Loaded;
         //DataContext = ViewModel;
         ViewModel.hardwarePage = this;
         InitializeComponent();
@@ -27,6 +35,26 @@ public sealed partial class HardwarePage : Page
             }
         };
 
+    }
+
+    private void HardwarePage_Loaded(object sender, RoutedEventArgs e)
+    {
+        foreach (var element in GetAllChildren<FrameworkElement>(this))
+        {
+            if (element is TextBlock or Button or Border)
+            {
+                var parameters = new ToolTipParameters
+                {
+                    SType = ShellType.None,
+                    ExtraParams = new Dictionary<string, string>
+                    {
+                        { "Sender", "HardwareWindow" }
+                    }
+                };
+
+                _tooltipManager.ApplyTooltip(element, parameters);
+            }
+        }
     }
 
     public void SetRunningProcess(string processName)
@@ -156,7 +184,7 @@ public sealed partial class HardwarePage : Page
         InfoPID.Text = "PID: " + processBlock.Pid.ToString();
         InfoName.Text = "NAME: " + processBlock.Name;
         InfoSize.Text = "MEMORY USAGE: " + BKOFSManager.FormatSize(MemoryManager.Instance.GetTotalMemoryUsage(processBlock)).ToString();
-        InfoIdle.Text = "IDLE STATUS: " + (processBlock.IsIdle ? "Yes" : "No");
+        InfoIdle.Text = "IDLE STATUS: " + (processBlock.IsIdle ? "Idle" : "Not Idle");
         InfoIdle.Visibility = Visibility.Visible;
         InfoPID.Visibility = Visibility.Visible;
         InfoStack.Visibility = Visibility.Visible;
@@ -176,5 +204,19 @@ public sealed partial class HardwarePage : Page
         InfoStack.Visibility = Visibility.Visible;
         InfoName.Text = "NAME: BIOS";
         InfoSize.Text = $"MEMORY USAGE: {BKOFSManager.FormatSize(1108000)}";
+    }
+
+    private static IEnumerable<T> GetAllChildren<T>(DependencyObject parent) where T : DependencyObject
+    {
+        int count = VisualTreeHelper.GetChildrenCount(parent);
+        for (int i = 0; i < count; i++)
+        {
+            var child = VisualTreeHelper.GetChild(parent, i);
+            if (child is T t)
+                yield return t;
+
+            foreach (var subchild in GetAllChildren<T>(child))
+                yield return subchild;
+        }
     }
 }

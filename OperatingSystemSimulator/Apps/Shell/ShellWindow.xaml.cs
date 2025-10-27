@@ -1,5 +1,4 @@
 using Microsoft.UI.Xaml.Input;
-using Newtonsoft.Json.Linq;
 using OperatingSystemSimulator.Apps.Enums;
 using OperatingSystemSimulator.Apps.Shell.Enums;
 using OperatingSystemSimulator.ToolTipHelper;
@@ -8,7 +7,15 @@ namespace OperatingSystemSimulator.Apps.Shell;
 
 public sealed partial class ShellWindow : UserControl
 {
-    public int EId { get; set; }
+    private int _eId;
+    public int EId
+    {
+        get => _eId; set
+        {
+            _eId = value;
+            UpdateTooltip();
+        }
+    }
 
     private ShellType _currentShellType;
     public ShellType CurrentShellType
@@ -17,7 +24,7 @@ public sealed partial class ShellWindow : UserControl
         set
         {
             _currentShellType = value;
-            _tooltipManager.ApplyTooltip(Accessibility_button, new ToolTipHelper.ToolTipTools.ToolTipParameters { SType = CurrentShellType });
+            UpdateTooltip();
         }
     }
 
@@ -35,7 +42,6 @@ public sealed partial class ShellWindow : UserControl
         }
     }
 
-    TooltipManager _tooltipManager;
 
     private AppType _currentAppType;
     public AppType CurrentAppType
@@ -43,17 +49,22 @@ public sealed partial class ShellWindow : UserControl
         get => _currentAppType; set
         {
             _currentAppType = value;
-            _tooltipManager.ApplyTooltip(Accessibility_button, new ToolTipHelper.ToolTipTools.ToolTipParameters { SType = CurrentShellType, AType = value });
+            UpdateTooltip();
         }
     }
 
+    private FileDialogBlock? _currentFileDialogBlock;
+    public FileDialogBlock? CurrentFileDialogBlock { get => _currentFileDialogBlock; set { _currentFileDialogBlock = value; UpdateTooltip(); } }
+
+    private MessageBlock? _currentMessageBlock;
+    public MessageBlock? CurrentMessageBlock { get => _currentMessageBlock; set { _currentMessageBlock = value; UpdateTooltip(); } }
+
+    private readonly TooltipManager _tooltipManager;
 
     public ShellWindow()
     {
         InitializeComponent();
         _tooltipManager = new();
-
-
     }
 
     private async void Button_Click(object sender, RoutedEventArgs e)
@@ -102,6 +113,45 @@ public sealed partial class ShellWindow : UserControl
         {
             FileDialogManager.Instance.BringToFront(EId);
         }
+    }
+
+    private void UpdateTooltip()
+    {
+        if (_tooltipManager == null || Accessibility_button == null)
+            return;
+
+        Dictionary<string, string> extraParams = new() { { "PID", $"{_eId}" } };
+
+        if (CurrentShellType == ShellType.FileDialog)
+        {
+            if (CurrentFileDialogBlock != null)
+            {
+                extraParams.Clear();
+                extraParams.Add("PID", $"{CurrentFileDialogBlock.BPId}");
+                extraParams.Add("DID", $"{CurrentFileDialogBlock.DId}");
+            }
+        }
+        else if (CurrentShellType == ShellType.Message)
+        {
+            if (CurrentMessageBlock != null)
+            {
+                extraParams.Clear();
+                var process = ProcessManager.Instance.GetProcessByPid(CurrentMessageBlock.BSId);
+                if (process != null)
+                {
+                    extraParams.Add("MessageBoxSenderApp", $"{process.ApplicationType}");
+                }
+                extraParams.Add("PID", $"{CurrentMessageBlock.BSId}");
+                extraParams.Add("MID", $"{CurrentMessageBlock.MId}");
+            }
+        }
+
+        _tooltipManager.ApplyTooltip(Accessibility_button, new ToolTipHelper.ToolTipTools.ToolTipParameters
+        {
+            SType = _currentShellType,
+            AType = _currentAppType,
+            ExtraParams = extraParams
+        });
     }
 
 }

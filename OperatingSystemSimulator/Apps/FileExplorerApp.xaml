@@ -70,7 +70,7 @@
           <TextBlock Grid.Column="4" HorizontalAlignment="Center" Text="Size" Foreground="#FFFFFF" Margin="5"/>
         </Grid>
 
-        <ListView x:Name="ExplorerList" SelectionMode="Single" Margin="10,10,10,10" Grid.Row="3" ItemsSource="{Binding FileSystemItems}" SelectionChanged="ExplorerList_SelectionChanged" DoubleTapped="ExplorerList_DoubleTapped">
+        <ListView x:Name="ExplorerList" SelectionMode="Single" Margin="10,10,10,10" Grid.Row="3" ItemsSource="{Binding FileSystemItems}" SelectionChanged="ExplorerList_SelectionChanged" RightTapped="ExplorerList_RightTapped" DoubleTapped="ExplorerList_DoubleTapped">
           <ListView.ItemTemplate>
             <DataTemplate x:DataType="models:FileSystemItemModel">
               <Grid>

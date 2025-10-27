@@ -39,6 +39,7 @@ public sealed partial class ShellMessageBox : Page
     public ShellMessageBox(int mid, int bPid, string message, string title, string OKButtonText, string notOKButtonText, string cancelButtonText, MessageBlock parentBlock)
     {
         InitializeComponent();
+        ShellTitleBar.CurrentMessageBlock = parentBlock;
         ShellTitleBar.Title = title;
         ShellTitleBar.CurrentShellType = ShellType.Message;
         Message.Text = message;
@@ -69,6 +70,7 @@ public sealed partial class ShellMessageBox : Page
     public ShellMessageBox(int mid, int bPid, string message, string title, MessageBlock parentBlock) 
     {
         InitializeComponent();
+        ShellTitleBar.CurrentMessageBlock = parentBlock;
         ShellTitleBar.Title = title;
         ShellTitleBar.CurrentShellType = ShellType.Message;
         Message.Text = message;

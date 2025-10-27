@@ -1,3 +1,4 @@
+using OperatingSystemSimulator.ToolTipHelper;
 using Windows.System;
 using Windows.UI.Core;
 
@@ -5,6 +6,8 @@ namespace OperatingSystemSimulator.Pages.BIOSSettings;
 
 public sealed partial class BIOSInfoPage : Page
 	{
+    private readonly TooltipManager _toolTipManager = new();
+
     public BIOSInfoViewModel ViewModel { get; set; }
     public BIOSInfoPage()
 		{
@@ -12,6 +15,7 @@ public sealed partial class BIOSInfoPage : Page
         ViewModel = new BIOSInfoViewModel();
         DataContext = ViewModel;
         Window.Current!.CoreWindow!.KeyDown += CoreWindow_KeyDown;
+        _toolTipManager.ApplyTooltip(TopRightButton, new ToolTipHelper.ToolTipTools.ToolTipParameters() { SType = Apps.Shell.Enums.ShellType.None, ExtraParams = new Dictionary<string, string> { { "Sender", "BiosInfoPage" } } });
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)

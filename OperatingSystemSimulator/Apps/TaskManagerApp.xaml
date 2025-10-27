@@ -9,7 +9,7 @@
     xmlns:processHelper="using:OperatingSystemSimulator.ProcessHelper"
     mc:Ignorable="d"
     d:DesignHeight="400"
-    d:DesignWidth="470"
+    d:DesignWidth="520"
     PointerPressed="UserControl_PointerPressed">
 
   <Grid>
@@ -20,7 +20,7 @@
 
     <shell:ShellWindow x:Name="ShellTitleBar" Grid.Row="0"/>
 
-    <Border Background="#424651" BorderBrush="Black" BorderThickness="1" Width="470" Height="400" Grid.Row="1">
+    <Border Background="#424651" BorderBrush="Black" BorderThickness="1" Width="520" Height="400" Grid.Row="1">
       <Grid>
         <Grid.RowDefinitions>
           <RowDefinition Height="Auto"/>
@@ -40,8 +40,9 @@
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition Width="50"/>
                   <ColumnDefinition Width="150"/>
+                  <ColumnDefinition Width="Auto"/>
                   <ColumnDefinition Width="*"/>
-                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <TextBlock VerticalAlignment="Center" Foreground="WhiteSmoke" Text="{x:Bind Pid}" Grid.Column="0"/>
@@ -49,6 +50,7 @@
 
                 <Button Foreground="WhiteSmoke" Content="Bring To Front" Tag="{x:Bind Pid}" HorizontalAlignment="Center" Grid.Column="2" BorderThickness="0" Padding="10,5" Click="BringToFront_Click" IsEnabled="{x:Bind HasUI}"/>
                 <Button Foreground="WhiteSmoke" Content="Terminate" Tag="{x:Bind Pid}" HorizontalAlignment="Center" Grid.Column="3" BorderThickness="0" Padding="10,5" Click="Terminate_Click"/>
+                <Button Foreground="WhiteSmoke" Content="Details" Tag="{x:Bind Pid}" HorizontalAlignment="Center" Grid.Column="4" BorderThickness="0" Padding="10,5" Click="Details_Click"/>
               </Grid>
             </DataTemplate>
           </ListView.ItemTemplate>

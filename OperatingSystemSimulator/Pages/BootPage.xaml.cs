@@ -1,3 +1,4 @@
+using OperatingSystemSimulator.ToolTipHelper;
 using Windows.System;
 using Windows.UI.Core;
 using MemoryManager = OperatingSystemSimulator.MemoryHelper.MemoryManager;
@@ -15,6 +16,8 @@ public sealed partial class BootPage : Page
     private readonly HardwarePageViewModel HardwarePageViewModel = HardwarePageViewModel.Instance;
 
     private readonly BIOSSettingsService _biosSettingsService;
+
+    private readonly TooltipManager _toolTipManager = new();
 
     private readonly string[] _postMessages =
     {
@@ -45,14 +48,17 @@ public sealed partial class BootPage : Page
     {
         InitializeComponent();
         MouseEventsHandler.Instance.Initialize();
+
         _biosSettingsService = (Application.Current as App)!.Host!.Services.GetRequiredService<BIOSSettingsService>()!;
         _firstBootOrder = _biosSettingsService.Settings!.FirstBootOption;
-
+        _toolTipManager.ApplyTooltip(TopRightButton, new ToolTipHelper.ToolTipTools.ToolTipParameters() { SType = Apps.Shell.Enums.ShellType.None, ExtraParams = new Dictionary<string, string> { {"Sender","BootPage" } } });
         Window.Current!.CoreWindow!.KeyDown += CoreWindow_KeyDown;
         ProcessManager.Instance.IsTurnedOn = true;
         SetBootPartition();
-        _timer = new DispatcherTimer();
-        _timer.Interval = TimeSpan.FromMilliseconds(new Random().Next(200, 800));
+        _timer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromMilliseconds(new Random().Next(200, 800))
+        };
         _timer.Tick += OnTimerTick!;
         _currentMessages = _postMessages;
         StartPOST();
