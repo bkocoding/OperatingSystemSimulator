@@ -1,0 +1,28 @@
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Hosting;
+global using Microsoft.Extensions.Logging;
+global using OperatingSystemSimulator.Models;
+#if MAUI_EMBEDDING
+global using OperatingSystemSimulator.MauiControls;
+#endif
+global using OperatingSystemSimulator.Pages;
+global using OperatingSystemSimulator.Pages.BIOSSettings;
+global using OperatingSystemSimulator.ViewModels.PageViewModels;
+global using OperatingSystemSimulator.Hardware;
+global using static OperatingSystemSimulator.EventHandlers.KeyboardEventsHandler;
+global using OperatingSystemSimulator.Apps.Shell.FileDialogs;
+global using OperatingSystemSimulator.Apps.Shell.MessageBoxHelper;
+global using OperatingSystemSimulator.Converters;
+global using OperatingSystemSimulator.Extras.ConsoleLogger;
+global using OperatingSystemSimulator.FileHelper;
+global using OperatingSystemSimulator.NetworkHelper;
+global using OperatingSystemSimulator.ProcessHelper;
+global using OperatingSystemSimulator.Services;
+global using OperatingSystemSimulator.Apps;
+global using OperatingSystemSimulator.Apps.WebBrowser;
+global using OperatingSystemSimulator.MemoryHelper;
+global using OperatingSystemSimulator.EventHandlers;
+global using OperatingSystemSimulator.ViewModels.AppViewModels;
+global using OperatingSystemSimulator.Apps.Shell;
+global using OperatingSystemSimulator.Apps.Shell.FileDialogHelper;
+global using OperatingSystemSimulator.Apps.WebBrowser.Pages;

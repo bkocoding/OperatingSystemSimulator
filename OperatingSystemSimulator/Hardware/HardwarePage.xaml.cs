@@ -1,0 +1,239 @@
+using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using Microsoft.UI;
+using OperatingSystemSimulator.Apps.Shell.Enums;
+using OperatingSystemSimulator.ToolTipHelper;
+using OperatingSystemSimulator.ToolTipHelper.ToolTipTools;
+using SkiaSharp;
+
+namespace OperatingSystemSimulator.Hardware;
+
+public sealed partial class HardwarePage : Page
+{
+    private readonly TooltipManager _tooltipManager = new();
+
+    private readonly HardwarePageViewModel ViewModel;
+
+    public HardwarePage()
+    {
+        ViewModel = HardwarePageViewModel.Instance;
+        Loaded += HardwarePage_Loaded;
+        //DataContext = ViewModel;
+        ViewModel.hardwarePage = this;
+        InitializeComponent();
+        ViewModel.ShutDownStatusesChange();
+        RunningProcess.Text = "BIOS Firmware";
+        InitializeRamChart();
+        UpdateRamChart();
+
+        MemoryManager.Instance.PropertyChanged += (sender, e) =>
+        {
+            if (e.PropertyName == nameof(MemoryManager.Pages))
+            {
+                UpdateRamChart();
+            }
+        };
+
+    }
+
+    private void HardwarePage_Loaded(object sender, RoutedEventArgs e)
+    {
+        foreach (var element in GetAllChildren<FrameworkElement>(this))
+        {
+            if (element is TextBlock or Button or Border)
+            {
+                var parameters = new ToolTipParameters
+                {
+                    SType = ShellType.None,
+                    ExtraParams = new Dictionary<string, string>
+                    {
+                        { "Sender", "HardwareWindow" }
+                    }
+                };
+
+                _tooltipManager.ApplyTooltip(element, parameters);
+            }
+        }
+    }
+
+    public void SetRunningProcess(string processName)
+    {
+        RunningProcess.Text = processName;
+    }
+
+    public void SetHDOperation(HDOperations operation)
+    {
+        HdOperation.Text = operation.GetDescription();
+    }
+
+    public async void ShowContextSwitch(string lastProcess, string currentProcess)
+    {
+        ContextSwitchText.Text = "CONTEXT SWITCHING";
+        DispatchingText.Text = $"DISPATCHING:\n{currentProcess.ToUpper()}";
+        ContextSwitchBorder.Background = new SolidColorBrush(Colors.Gold);
+        ContextSwitchText.Foreground = new SolidColorBrush(Colors.Black);
+        DispatchingText.Foreground = new SolidColorBrush(Colors.Black);
+
+        await Task.Delay(150);
+
+        ContextSwitchText.Text = " ";
+        DispatchingText.Text = " \n ";
+        ContextSwitchBorder.Background = new SolidColorBrush(Colors.Transparent);
+        ContextSwitchText.Foreground = new SolidColorBrush(Colors.White);
+        DispatchingText.Foreground = new SolidColorBrush(Colors.White);
+    }
+
+    public void SetHardwareStatus(HardwareProperties property, HardwareStatuses status)
+    {
+        switch (property)
+        {
+            case HardwareProperties.KeyStroke:
+                KeyStrokeInput.Foreground = status.GetBrush();
+                break;
+            case HardwareProperties.HdWrite:
+                HdWrite.Foreground = status.GetBrush();
+                break;
+            case HardwareProperties.HdRead:
+                HdRead.Foreground = status.GetBrush();
+                break;
+            case HardwareProperties.AudioOutput:
+                AudioOutput.Foreground = status.GetBrush();
+                break;
+            case HardwareProperties.NetworkInput:
+                NetworkInput.Foreground = status.GetBrush();
+                break;
+            case HardwareProperties.NetworkOutput:
+                NetworkOutput.Foreground = status.GetBrush();
+                break;
+        }
+    }
+
+    private void InitializeRamChart()
+    {
+        RamChart.Series = new List<ISeries>();
+        RamChart.XAxes =
+    [
+        new Axis
+        {
+            MaxLimit = 68000000,
+            IsVisible = false,
+        }
+    ];
+        RamChart.YAxes =
+        [
+        new Axis
+        {
+            IsVisible = false,
+            MinZoomDelta = TimeSpan.FromMilliseconds(1).Ticks,
+        }
+        ];
+
+    }
+
+    [Obsolete]
+    private void UpdateRamChart()
+    {
+        var newSeries = new List<ISeries>();
+
+        var processBlocks = MemoryManager.Instance.GetAllProcesses();
+        int pageSize = MemoryManager.pageSize;
+
+        int biosSize = 0;
+        for (int i = 0; i <= 14; i++)
+        {
+            var page = MemoryManager.Instance.Pages.First(p => p.PageNumber == i);
+            biosSize += page.UsedSpace;
+        }
+
+        newSeries.Add(new StackedRowSeries<int>
+        {
+            Values = new List<int> { biosSize },
+            Stroke = new SolidColorPaint(SKColors.Black, 1),
+            Fill = new SolidColorPaint(SKColors.Blue),
+            //StackGroup = 0,
+            AnimationsSpeed = TimeSpan.FromMilliseconds(0),
+            IsHoverable = false,
+        });
+        foreach (var processBlock in processBlocks)
+        {
+            var processPages = MemoryManager.Instance.GetProcessPages(processBlock);
+            int processMemory = processPages.Sum(page => page.UsedSpace);
+
+
+            var processSeries = new StackedRowSeries<int>
+            {
+                Values = new List<int> { processMemory },
+                Stroke = new SolidColorPaint(SKColors.Black, 1),
+                Fill = new SolidColorPaint(SKColors.Green),
+                //StackGroup = 0,
+                AnimationsSpeed = TimeSpan.FromMilliseconds(0),
+                IsHoverable = false,
+                TooltipLabelFormatter = point =>
+                {
+                    return $"Process: {processBlock.Name}, Memory: {point.PrimaryValue}";
+                }
+            };
+
+
+            newSeries.Add(processSeries);
+        }
+
+        int usedMemory = processBlocks.Sum(pb => MemoryManager.Instance.GetProcessPages(pb).Count * pageSize);
+        int emptyMemory = MemoryManager.memorySize - usedMemory - biosSize;
+
+        newSeries.Add(new StackedRowSeries<int>
+        {
+            Values = new List<int> { emptyMemory },
+            Stroke = new SolidColorPaint(SKColors.Black, 1),
+            Fill = new SolidColorPaint(SKColors.Gray),
+            //StackGroup = 0,
+            AnimationsSpeed = TimeSpan.FromMilliseconds(0),
+            IsHoverable = false
+        });
+
+        RamChart.Series = newSeries;
+    }
+
+    public void ShowInfo(ProcessBlock processBlock)
+    {
+        InfoActiveText.Visibility = Visibility.Collapsed;
+        InfoPID.Text = "PID: " + processBlock.Pid.ToString();
+        InfoName.Text = "NAME: " + processBlock.Name;
+        InfoSize.Text = "MEMORY USAGE: " + BKOFSManager.FormatSize(MemoryManager.Instance.GetTotalMemoryUsage(processBlock)).ToString();
+        InfoIdle.Text = "IDLE STATUS: " + (processBlock.IsIdle ? "Idle" : "Not Idle");
+        InfoIdle.Visibility = Visibility.Visible;
+        InfoPID.Visibility = Visibility.Visible;
+        InfoStack.Visibility = Visibility.Visible;
+    }
+
+    public void DismissInfo()
+    {
+        InfoStack.Visibility = Visibility.Collapsed;
+        InfoActiveText.Visibility = Visibility.Visible;
+    }
+
+    public void ShowBiosInfo()
+    {
+        InfoActiveText.Visibility = Visibility.Collapsed;
+        InfoPID.Visibility = Visibility.Collapsed;
+        InfoIdle.Visibility = Visibility.Collapsed;
+        InfoStack.Visibility = Visibility.Visible;
+        InfoName.Text = "NAME: BIOS";
+        InfoSize.Text = $"MEMORY USAGE: {BKOFSManager.FormatSize(1108000)}";
+    }
+
+    private static IEnumerable<T> GetAllChildren<T>(DependencyObject parent) where T : DependencyObject
+    {
+        int count = VisualTreeHelper.GetChildrenCount(parent);
+        for (int i = 0; i < count; i++)
+        {
+            var child = VisualTreeHelper.GetChild(parent, i);
+            if (child is T t)
+                yield return t;
+
+            foreach (var subchild in GetAllChildren<T>(child))
+                yield return subchild;
+        }
+    }
+}

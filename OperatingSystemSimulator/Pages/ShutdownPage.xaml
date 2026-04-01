@@ -1,0 +1,15 @@
+﻿<Page
+    x:Class="OperatingSystemSimulator.Pages.ShutdownPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:OperatingSystemSimulator.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="#095fa1">
+
+    <Grid>
+    <TextBlock x:Name="sdtext" FontSize="20" Text="Shutting Down" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <Button x:Name="restartButton" Content="Restart Computer" HorizontalAlignment="Center" VerticalAlignment="Center" Click="restartbtn_click"/>
+  </Grid>
+</Page>

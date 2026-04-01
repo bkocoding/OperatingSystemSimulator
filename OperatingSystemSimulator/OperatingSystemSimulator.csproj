@@ -1,0 +1,350 @@
+<Project Sdk="Uno.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0-desktop</TargetFrameworks>
+
+    <OutputType>Exe</OutputType>
+    <UnoSingleProject>true</UnoSingleProject>
+
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>false</SelfContained>
+    <SatelliteResourceLanguages>en;tr</SatelliteResourceLanguages>
+    <DebugType>embedded</DebugType>
+
+    <!-- Display name -->
+    <ApplicationTitle>OperatingSystemSimulator</ApplicationTitle>
+    <!-- App Identifier -->
+    <ApplicationId>com.companyname.OperatingSystemSimulator</ApplicationId>
+    <!-- Versions -->
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <ApplicationVersion>1</ApplicationVersion>
+    <!-- Package Publisher -->
+    <ApplicationPublisher>bkocoding</ApplicationPublisher>
+    <!-- Package Description -->
+    <Description>OperatingSystemSimulator powered by Uno Platform.</Description>
+    <!--
+      If you encounter this error message:
+
+        error NETSDK1148: A referenced assembly was compiled using a newer version of Microsoft.Windows.SDK.NET.dll.
+        Please update to a newer .NET SDK in order to reference this assembly.
+
+      This means that the two packages below must be aligned with the "build" version number of
+      the "Microsoft.Windows.SDK.BuildTools" package above, and the "revision" version number
+      must be the highest found in https://www.nuget.org/packages/Microsoft.Windows.SDK.NET.Ref.
+    -->
+    <WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
+
+    <!--
+      UnoFeatures let's you quickly add and manage implicit package references based on the features you want to use.
+      https://aka.platform.uno/singleproject-features
+    -->
+    <UnoFeatures>
+      Lottie;
+      MediaElement;
+      Hosting;
+      Toolkit;
+      Logging;
+      LoggingSerilog;
+      Mvvm;
+      Configuration;
+    </UnoFeatures>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Apps\FileExplorerApp.xaml" />
+    <None Remove="Apps\NotepadApp.xaml" />
+    <None Remove="Apps\Shell\FileDialogHelper\SelectFileDialog.xaml" />
+    <None Remove="Apps\Shell\ShellMessageBox.xaml" />
+    <None Remove="Apps\Shell\ShellWindow.xaml" />
+    <None Remove="Apps\TaskManagerApp.xaml" />
+    <None Remove="Apps\TestApp.xaml" />
+    <None Remove="Apps\WebBrowserApp.xaml" />
+    <None Remove="Apps\WebBrowser\Pages\ErrorPage.xaml" />
+    <None Remove="Apps\WebBrowser\Pages\HomePage.xaml" />
+    <None Remove="Apps\WebBrowser\Pages\HorizonMusicPage.xaml" />
+    <None Remove="Apps\WebBrowser\Pages\LoadingPage.xaml" />
+    <None Remove="Apps\WebBrowser\WebBrowserApp.xaml" />
+    <None Remove="Hardware\HardwarePage.xaml" />
+    <None Remove="Hardware\PageListPage.xaml" />
+    <None Remove="Pages\BIOSSettingsPage.xaml" />
+    <None Remove="Pages\BIOSSettings\BIOSBootPage.xaml" />
+    <None Remove="Pages\BIOSSettings\BIOSInfoPage.xaml" />
+    <None Remove="Pages\BootAnimationPage.xaml" />
+    <None Remove="Pages\BootPage.xaml" />
+    <None Remove="Pages\BugCheckPage.xaml" />
+    <None Remove="Pages\DesktopPage.xaml" />
+    <None Remove="Pages\NetworkBootPage.xaml" />
+    <None Remove="Pages\RecoveryPage.xaml" />
+    <None Remove="Pages\ShutdownPage.xaml" />
+    <None Remove="Pages\WelcomePage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OperatingSystemSimulator.Extras\OperatingSystemSimulator.Extras.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\BootPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Hardware\HardwareWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Hardware\HardwarePage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Hardware\HardwarePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Pages\BIOSSsettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\BIOSSettingsPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Pages\BIOSSettings\BIOSSettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Pages\BIOSSettings\BIOSSettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Pages\BIOSSettings\BIOSBootPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\BIOSSettings\BIOSInfoPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Pages\BIOSSettings\BIOSInfoPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\BIOSSettings\BIOSBootPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\WelcomePage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\BootAnimationPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\DesktopPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\ShutdownPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\BugCheckPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Pages\BugCheckPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\NetworkBootPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Pages\NetworkBootPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Apps\Shell\ShellWindow.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Apps\Shell\ShellWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Apps\TestApp.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Apps\TestApp.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Apps\TaskManagerApp.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Apps\TaskManagerApp.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Apps\NotepadApp.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Apps\NotepadApp.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Apps\Shell\ShellMessageBox.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CSharpMarkup.WinUI.LiveChartsCore.SkiaSharpView" />
+    <PackageReference Include="NAudio" />
+    <PackageReference Include="NetCoreAudio" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Apps\Shell\MessageBoxHelper\ShellMessageBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Apps\Shell\MessageBoxHelper\ShellMessageBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Apps\FileExplorerApp.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Apps\FileExplorerApp.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Apps\Shell\FileDialogHelper\SelectFileDialog.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Hardware\PageListPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Include="Apps\Shell\FileDialogHelper\SelectFileDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Hardware\PageListPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\RecoveryPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Pages\RecoveryPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Apps\WebBrowserApp.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Apps\WebBrowser\WebBrowserApp.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Apps\WebBrowser\WebBrowserApp.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Apps\WebBrowser\Pages\HomePage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Apps\WebBrowser\Pages\HomePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Apps\WebBrowser\Pages\ErrorPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Apps\WebBrowser\Pages\ErrorPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Apps\WebBrowser\Pages\HorizonMusicPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Apps\WebBrowser\Pages\HorizonMusicPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Apps\WebBrowser\Pages\LoadingPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Apps\WebBrowser\Pages\LoadingPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Assets\Musics\music.mp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

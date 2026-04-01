@@ -1,0 +1,38 @@
+﻿<Page
+    x:Class="OperatingSystemSimulator.Apps.Shell.ShellMessageBox"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:OperatingSystemSimulator.Apps.Shell"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="#2e2e2e"
+    MinWidth="300"
+    PointerPressed="Page_PointerPressed">
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+    <local:ShellWindow x:Name="ShellTitleBar" Grid.Row="0"/>
+
+    <Border Background="#2E2E2E" BorderBrush="Black" BorderThickness="1" Grid.Row="1">
+      <Grid Margin="10">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Name="Message" Foreground="White" TextWrapping="Wrap" MaxWidth="400"/>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,30,0,0">
+          <Button x:Name="OkButton" Content="Ok" Width="Auto" Margin="0,0,10,0"/>
+          <Button x:Name="NotOkButton" Content="No" Width="Auto" Margin="0,0,10,0" Visibility="Collapsed"/>
+          <Button x:Name="CancelButton" Content="Cancel" Width="Auto" Visibility="Collapsed"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+  </Grid>
+</Page>

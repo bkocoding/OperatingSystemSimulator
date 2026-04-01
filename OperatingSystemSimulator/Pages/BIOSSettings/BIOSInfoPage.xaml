@@ -1,0 +1,100 @@
+﻿<Page
+    x:Class="OperatingSystemSimulator.Pages.BIOSSettings.BIOSInfoPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:OperatingSystemSimulator.Pages.BIOSSettings"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="Lavender">
+
+  <Grid>
+    <StackPanel>
+      <Border Background="#222E50" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+        <TextBlock Text="BIOS Firmware Settings"
+                           Foreground="White"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="24"
+                           Padding="10"/>
+      </Border>
+
+      <Grid HorizontalAlignment="Stretch">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Border Background="Lavender" Grid.Column="0">
+          <TextBlock Text="INFO"
+                               Foreground="#333333"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="24"
+                               Padding="10"/>
+        </Border>
+
+        <Border Background="#333333" Grid.Column="1">
+          <TextBlock Text="BOOT"
+                               Foreground="White"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="24"
+                               Padding="10"/>
+        </Border>
+      </Grid>
+
+      <Grid HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,50,0,0">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="System Time" Foreground="#333333" FontSize="18" Grid.Row="0" Grid.Column="0" Margin="0,10,10,0"/>
+        <TextBlock Text="System Date" Foreground="#333333" FontSize="18" Grid.Row="1" Grid.Column="0" Margin="0,10,10,0"/>
+        <TextBlock Text="Product Name" Foreground="#333333" FontSize="18" Grid.Row="2" Grid.Column="0" Margin="0,10,10,0"/>
+        <TextBlock Text="BIOS Version" Foreground="#333333" FontSize="18" Grid.Row="3" Grid.Column="0" Margin="0,10,10,0"/>
+        <TextBlock Text="Processor Type" Foreground="#333333" FontSize="18" Grid.Row="4" Grid.Column="0" Margin="0,10,10,0"/>
+        <TextBlock Text="Total Memory" Foreground="#333333" FontSize="18" Grid.Row="5" Grid.Column="0" Margin="0,10,10,0"/>
+
+        <TextBlock Text="{Binding CurrentTime}" Foreground="#333333" FontSize="18" Grid.Row="0" Grid.Column="1" Margin="10,10,0,0"/>
+        <TextBlock Text="{Binding CurrentDate}" Foreground="#333333" FontSize="18" Grid.Row="1" Grid.Column="1" Margin="10,10,0,0"/>
+        <TextBlock Text=": Operating System Simulator Hardware" Foreground="#333333" FontSize="18" Grid.Row="2" Grid.Column="1" Margin="10,10,0,0"/>
+        <TextBlock Text=": 1.2" Foreground="#333333" FontSize="18" Grid.Row="3" Grid.Column="1" Margin="10,10,0,0"/>
+        <TextBlock Text=": Generic X86_64 CPU @ 1.0 GHz" Foreground="#333333" FontSize="18" Grid.Row="4" Grid.Column="1" Margin="10,10,0,0"/>
+        <TextBlock Text="{Binding MemorySize}" Foreground="#333333" FontSize="18" Grid.Row="5" Grid.Column="1" Margin="10,10,0,0"/>
+      </Grid>
+
+    </StackPanel>
+
+    <Border Background="#222E50" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" >
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,25,0,10">
+        <TextBlock Text="←/→ : Cycle through pages" Foreground="White" FontSize="18" Margin="10"/>
+        <TextBlock Text="↓/↑ : Cycle through menu items" Foreground="White" FontSize="18" Margin="10"/>
+        <TextBlock Text="F5/F6 : Change values" Foreground="White" FontSize="18" Margin="10"/>
+        <TextBlock Text="F8 : Discard changes and exit" Foreground="White" FontSize="18" Margin="10"/>
+        <TextBlock Text="F9 : Save and exit" Foreground="White" FontSize="18" Margin="10"/>
+      </StackPanel>
+    </Border>
+    <Button x:Name="TopRightButton"
+        Content="?"
+        Width="35"
+        Height="35"
+        HorizontalAlignment="Right"
+        VerticalAlignment="Top"
+        Margin="0,10,10,0"
+        Foreground="White"
+        FontWeight="Bold"
+        BorderBrush="White"
+        BorderThickness="1"
+        CornerRadius="4"/>
+  </Grid>
+</Page>
