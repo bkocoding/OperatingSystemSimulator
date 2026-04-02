@@ -1,0 +1,75 @@
+﻿<UserControl
+    x:Class="OperatingSystemSimulator.Apps.NotepadApp"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:OperatingSystemSimulator.Apps"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:shell="using:OperatingSystemSimulator.Apps.Shell"
+    mc:Ignorable="d"
+    d:DesignHeight="400"
+    d:DesignWidth="400"
+    PointerPressed="UserControl_PointerPressed">
+
+  <Grid Background="#3a3a3a" BorderThickness="1" BorderBrush="Black">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+    <shell:ShellWindow x:Name="ShellTitleBar" Grid.Row="0" MaxWidth="400"/>
+
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" Margin="5">
+      <Button x:Name="OpenButton" Content="Open" Height="28" Margin="0,0,10,0" Click="OpenButton_Click" Foreground="Black" Background="#D2D7DF"/>
+      <Button x:Name="SaveButton" Content="Save" Height="28" Margin="0,0,10,0" Click="SaveButton_Click" Foreground="Black" Background="#D2D7DF" IsEnabled="False"/>
+      <Button x:Name="SaveAsButton" Content="Save As" Height="28" Margin="0,0,10,0" Click="SaveAsButton_Click" Foreground="Black" Background="#D2D7DF"/>
+      <Button x:Name="WrappingButton" Content="Wrap" Height="28" Click="WrappingButton_Click" Foreground="Black" Background="#D2D7DF"/>
+    </StackPanel>
+
+    <TextBox
+    x:Name="NotepadTextBox"
+    Grid.Row="2"
+    AcceptsReturn="True"
+    TextWrapping="Wrap"
+    VerticalAlignment="Stretch"
+    HorizontalAlignment="Stretch"
+    Height="300"
+    Width="400"
+    FontSize="14"
+    Padding="10"
+    Background="#2E2E2E"
+    Foreground="White"
+    BorderThickness="0"
+    GotFocus="NotepadTextBox_GotFocus"
+    TextChanged="NotepadTextBox_TextChanged"
+      >
+
+      <TextBox.Template>
+        <ControlTemplate TargetType="TextBox">
+          <Grid>
+            <ScrollViewer x:Name="ContentElement"
+                              Padding="{TemplateBinding Padding}"
+                              Background="{TemplateBinding Background}"
+                              BorderBrush="{TemplateBinding BorderBrush}"
+                              BorderThickness="{TemplateBinding BorderThickness}"
+                              HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Auto"
+                              IsTabStop="False" />
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup x:Name="CommonStates">
+                <VisualState x:Name="Normal" />
+                <VisualState x:Name="PointerOver">
+                  <Storyboard>
+                  </Storyboard>
+                </VisualState>
+                <VisualState x:Name="Disabled" />
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+          </Grid>
+        </ControlTemplate>
+      </TextBox.Template>
+    </TextBox>
+
+  </Grid>
+</UserControl>

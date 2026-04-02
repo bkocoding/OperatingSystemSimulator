@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ApplicationName" xml:space="preserve">
+    <value>Operating System Simulator</value>
+  </data>
+  <data name="BiosInfoPageAccesibility" xml:space="preserve">
+    <value>The BIOS, which has been largely superseded by the modern UEFI standard, is firmware stored on a non-volatile flash memory chip located on the motherboard. As the primary software layer to execute upon system power-on, it manages the Power-On Self-Test (POST) to verify hardware integrity, initializes essential system components, and facilitates the handoff to the operating system bootloader. Beyond basic startup, it provides a low-level interface for hardware configuration and enforces fundamental system security protocols.</value>
+  </data>
+  <data name="BootAnimationPageAccessibility" xml:space="preserve">
+    <value>The computer is now booting. This is the operating system loading phase.</value>
+  </data>
+  <data name="BootPageAccesibility" xml:space="preserve">
+    <value>The POST test is currently being performed. As part of POST, all hardware components are being checked to ensure they are functioning properly.</value>
+  </data>
+  <data name="DesktopPageAccessibility" xml:space="preserve">
+    <value>The Graphical User Interface (GUI) is an operating system service. The operating system serves users and programs through various system services.</value>
+  </data>
+  <data name="FileDialogAccesibility" xml:space="preserve">
+    <value>All information displayed and all functions offered on this page are provided by the operating system's file system service.
+PID: {PID}
+DID: {DID}</value>
+  </data>
+  <data name="FileManagerAppAccesibility" xml:space="preserve">
+    <value>File System Operations is one of the fundamental services of the operating system. This service provides functions such as creating, deleting, searching, listing, and authorizing folders and files. “File Explorer” is a system program provided by the operating system to perform all file and directory operations through a user interface.</value>
+  </data>
+  <data name="HardwareWindowAccesibility" xml:space="preserve">
+    <value>Every program requires various resources (CPU, RAM, I/O devices, etc.) during its execution. The operating system manages the hardware to serve users and their applications, and allocates resources among processes in a balanced and efficient manner.</value>
+  </data>
+  <data name="MessageBoxAccesibility" xml:space="preserve">
+    <value>This is a message box. An application requested to show this message.</value>
+  </data>
+  <data name="MessageBoxTaskMgrDtlAccessibility" xml:space="preserve">
+    <value>Each process in the operating system is represented by a PCB (Process Control Block) structure that contains process-specific information (such as process number, process status, memory information allocated to the process, I/O status information.</value>
+  </data>
+  <data name="NotepadAppAccesibility" xml:space="preserve">
+    <value>System calls are functions that allow processes to access OS services. When you click the Save or Save As button, the corresponding system call is triggered, activating the operating system's file system service.</value>
+  </data>
+  <data name="PageListWindowAccesibility" xml:space="preserve">
+    <value>The operating system organizes memory into pages and allocates a certain number of pages to each process according to its needs.</value>
+  </data>
+  <data name="TaskManagerAppAccesibility" xml:space="preserve">
+    <value>Programs that are running, i.e., active, are called processes. All processes in the system are under the control of the operating system. Task Manager is a system program that allows users to view processes.</value>
+  </data>
+  <data name="TestAppAccesibility" xml:space="preserve">
+    <value>The operating system creates a process for each application that is run, and each process has a unique ID. The ID (PID) of the process created for this application is: {PID}</value>
+  </data>
+  <data name="UnknownAccesibility" xml:space="preserve">
+    <value>This app does not contain any tips.</value>
+  </data>
+  <data name="WebBrowserAppAccesibility" xml:space="preserve">
+    <value>A Web Browser is a system program that enables users to access and view information on the Internet. It communicates with web servers using protocols to retrieve web pages, which are then displayed to the user through a graphical interface.</value>
+  </data>
+</root>

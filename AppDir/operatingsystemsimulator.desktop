@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Operating System Simulator
+Comment=Educational OS Simulator
+Exec=OperatingSystemSimulator
+Icon=operatingsystemsimulator
+Categories=Education;
+Terminal=false

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ApplicationName" xml:space="preserve">
+    <value>İşletim Sistemi Simülatörü</value>
+  </data>
+  <data name="BiosInfoPageAccesibility" xml:space="preserve">
+    <value>Günümüzde yerini büyük ölçüde modern UEFI standartlarına bırakmış olan BIOS, anakart üzerinde bulunan kalıcı bir flash bellek yongası içine gömülü bir yazılımdır (firmware). Sisteme güç verildiği anda yürütülen ilk yazılım katmanı olarak; donanım bütünlüğünü doğrulamak için POST (Açılış Öncü Testi) işlemini yönetir, temel sistem bileşenlerini başlatır ve sistemin kontrolünü işletim sistemi önyükleyicisine devreder. BIOS, yalnızca başlangıç sürecini yönetmekle kalmaz; aynı zamanda donanım yapılandırması için alt seviye bir arayüz sağlar ve temel sistem güvenliği protokollerini uygular.</value>
+  </data>
+  <data name="BootAnimationPageAccessibility" xml:space="preserve">
+    <value>Bilgisayar şu anda önyükleme aşamasında. Bu, işletim sisteminin yüklenme aşamasıdır.</value>
+  </data>
+  <data name="BootPageAccesibility" xml:space="preserve">
+    <value>POST testi şu anda gerçekleştiriliyor. POST kapsamında, tüm donanım bileşenlerinin düzgün çalıştığından emin olmak için kontroller yapılıyor.</value>
+  </data>
+  <data name="DesktopPageAccessibility" xml:space="preserve">
+    <value>Grafiksel Kullanıcı Arayüzü (GUI), bir işletim sistemi hizmetidir. İşletim sistemi, kullanıcılara ve programlara çeşitli sistem hizmetleri aracılığıyla hizmet verir.</value>
+  </data>
+  <data name="FileDialogAccesibility" xml:space="preserve">
+    <value>Bu sayfada görüntülenen tüm bilgiler ve sunulan tüm işlevler işletim sisteminin dosya sistemi hizmeti tarafından sağlanmaktadır.</value>
+  </data>
+  <data name="FileManagerAppAccesibility" xml:space="preserve">
+    <value>Dosya Sistemi İşlemleri, işletim sisteminin temel hizmetlerinden biridir. Bu hizmet, klasör ve dosya oluşturma, silme, arama, listeleme ve yetkilendirme gibi işlevler sağlar. "File Explorer", işletim sistemi tarafından sağlanan ve tüm dosya ve dizin işlemlerini bir kullanıcı arayüzü aracılığıyla gerçekleştiren bir sistem programıdır.</value>
+  </data>
+  <data name="HardwareWindowAccesibility" xml:space="preserve">
+    <value>Her program, çalışması sırasında çeşitli kaynaklara (CPU, RAM, G/Ç aygıtları vb.) ihtiyaç duyar. İşletim sistemi, kullanıcılara ve uygulamalarına hizmet etmek için donanımı yönetir ve kaynakları süreçler arasında dengeli ve verimli bir şekilde dağıtır.</value>
+  </data>
+  <data name="MessageBoxAccesibility" xml:space="preserve">
+    <value>Bu bir mesaj kutusudur. Bir uygulama bu mesajı göstermeyi talep etti.</value>
+  </data>
+  <data name="MessageBoxTaskMgrDtlAccessibility" xml:space="preserve">
+    <value>İşletim sistemindeki her işlem, işlem numarası, işlem durumu, işleme tahsis edilen bellek bilgisi, G/Ç durum bilgisi gibi işleme özgü bilgileri içeren bir PCB (İşlem Kontrol Bloğu) yapısıyla temsil edilir.</value>
+  </data>
+  <data name="NotepadAppAccesibility" xml:space="preserve">
+    <value>Sistem çağrıları, işlemlerin işletim sistemi hizmetlerine erişmesini sağlayan fonksiyonlardır. Kaydet veya Farklı Kaydet düğmesine tıkladığınızda, ilgili sistem çağrısı tetiklenir ve işletim sisteminin dosya sistemi hizmeti etkinleştirilir.</value>
+  </data>
+  <data name="PageListWindowAccesibility" xml:space="preserve">
+    <value>İşletim sistemi belleği sayfalara ayırır ve her işleme ihtiyaçlarına göre belirli sayıda sayfa tahsis eder.</value>
+  </data>
+  <data name="TaskManagerAppAccesibility" xml:space="preserve">
+    <value>Çalışmakta olan, yani aktif durumdaki programlara işlem (process) denir. Sistemdeki tüm süreçler, işletim sisteminin kontrolü altındadır. Görev Yöneticisi, kullanıcıların süreçleri görüntülemesini sağlayan bir sistem programıdır.</value>
+  </data>
+  <data name="TestAppAccesibility" xml:space="preserve">
+    <value>İşletim sistemi, çalıştırılan her uygulama için bir işlem oluşturur ve her işlemin benzersiz bir kimliği vardır. Bu uygulama için oluşturulan işlemin kimliği (PID) şudur: {PID}</value>
+  </data>
+  <data name="UnknownAccesibility" xml:space="preserve">
+    <value>Bu uygulama herhangi bir ipucu içermiyor.</value>
+  </data>
+  <data name="WebBrowserAppAccesibility" xml:space="preserve">
+    <value>Web Tarayıcısı, kullanıcıların İnternet üzerindeki bilgilere erişmesini ve bu bilgileri görüntülemesini sağlayan bir sistem programıdır. Web sayfalarını almak için bazı protokoller aracılığıyla web sunucularıyla iletişim kurar ve alınan sayfaları kullanıcıya grafiksel bir arayüz üzerinden gösterir.</value>
+  </data>
+</root>

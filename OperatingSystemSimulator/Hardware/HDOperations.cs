@@ -1,0 +1,46 @@
+namespace OperatingSystemSimulator.Hardware;
+
+public enum HDOperations
+{
+    NotMounted,
+    Idle,
+    OperatingSystem,
+    MBR,
+    SMART,
+    Recovery,
+    AppData,
+    CreatingFile,
+    ChangingFile,
+    DeletingFile,
+    ReadingFile,
+    CreatingDirectory,
+    DeletingDirectory,
+    ChangingDirectory,
+    ExploringDirectory
+}
+
+public static class HDOperationsExtensions
+{
+    public static string GetDescription(this HDOperations operation)
+    {
+        return operation switch
+        {
+            HDOperations.NotMounted => "Disk Not Mounted",
+            HDOperations.Idle => "Idle",
+            HDOperations.OperatingSystem => "Operating System",
+            HDOperations.MBR => "Master Boot Record",
+            HDOperations.SMART => "S.M.A.R.T. Status",
+            HDOperations.Recovery => "Recovery Partition",
+            HDOperations.AppData => "Application Data",
+            HDOperations.CreatingFile => "Creating File",
+            HDOperations.ChangingFile => "Changing File",
+            HDOperations.DeletingFile => "Deleting File",
+            HDOperations.ReadingFile => "Reading File",
+            HDOperations.CreatingDirectory => "Creating Directory",
+            HDOperations.DeletingDirectory => "Deleting Directory",
+            HDOperations.ChangingDirectory => "Changing Directory",
+            HDOperations.ExploringDirectory => "Exploring Directory",
+            _ => "Standard Operation"
+        };
+    }
+}

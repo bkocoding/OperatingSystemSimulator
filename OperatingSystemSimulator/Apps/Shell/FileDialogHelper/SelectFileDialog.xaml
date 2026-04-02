@@ -1,0 +1,74 @@
+﻿<UserControl
+    x:Class="OperatingSystemSimulator.Apps.Shell.FileDialogs.SelectFileDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:OperatingSystemSimulator.Apps.Shell.FileDialogs"
+    xmlns:shell="using:OperatingSystemSimulator.Apps.Shell"
+    xmlns:models ="using:OperatingSystemSimulator.Models"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="#2e2e2e">
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+    <shell:ShellWindow x:Name="ShellTitleBar" Grid.Row="0"/>
+
+    <Border Background="#2E2E2E" BorderBrush="Black" BorderThickness="1" Grid.Row="1" Width="500" Height="400">
+      <Grid Margin="10">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0">
+          <Grid>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto"/>
+              <RowDefinition Height="Auto"/>
+              <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBox x:Name="PathTextBox" Height="30" IsReadOnly="True" Foreground="White" Background="#383838" Grid.Row="0"/>
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Height="41">
+              <Button x:Name="BackButton" Content="⬅" Margin="4,4,0,0" Foreground="#69beff" Height="33" Width="40" FontSize="20" Click="BackButton_Click" Background="Transparent" BorderBrush="#69beff"/>
+              <Button x:Name="UpButton" Content="⬆" Margin="4,4,0,0" Foreground="#69beff" Height="33" Width="40" FontSize="20" Click="UpButton_Click" Background="Transparent" BorderBrush="#69beff"/>
+              <Button x:Name="RefreshButton" Content="↻" Margin="4,4,0,0" Foreground="#69beff" Height="33" Width="40" FontSize="20" Click="RefreshButton_Click" Background="Transparent" BorderBrush="#69beff"/>
+            </StackPanel>
+          </Grid>
+        </Border>
+        
+        <ListView x:Name="FileDialogList" SelectionMode="Single" Margin="10" Grid.Row="1" ItemsSource="{Binding FileSystemItems}" SelectionChanged="FileDialogList_SelectionChanged" DoubleTapped="FileDialogList_DoubleTapped">
+          <ListView.ItemTemplate>
+            <DataTemplate x:DataType="models:FileSystemItemModel">
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="70"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" HorizontalAlignment="Left" Text="{Binding Type}" Margin="5"/>
+                <TextBlock Grid.Column="1" HorizontalAlignment="Left" Text="{Binding Name}" Margin="5"/>
+              </Grid>
+            </DataTemplate>
+          </ListView.ItemTemplate>
+        </ListView>
+
+        <TextBox x:Name="FileNameTextBox" Foreground="White" Background="#383838" Margin="10" Height="30" Grid.Row="2" IsReadOnly="True"/>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,30,0,0">
+          <Button x:Name="OkButton" Content="Select" Width="Auto" Margin="0,0,10,0" IsEnabled="false" Click="OkButton_Click"/>
+          <Button x:Name="CancelButton" Content="Cancel" Width="Auto" Click="CancelButton_Click"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+
+  </Grid>
+</UserControl>
